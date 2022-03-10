@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue';
 import { resolve } from 'path';
 
 export default defineConfig({
+  assetsInclude: ['**/*.gexf'],
   resolve: {
     alias: {
       '@': resolve(__dirname, 'src')
