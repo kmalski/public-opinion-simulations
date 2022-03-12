@@ -1,0 +1,34 @@
+name: Build and push Web UI and API to Docker Hub
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: The resulting image version
+        default: latest
+        type: string
+        required: false
+
+jobs:
+  api-docker:
+    runs-on: ubuntu-20.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: ./api
+          push: true
+          tags: "kmalski/simulations-api:${{ github.event.inputs.version }}"

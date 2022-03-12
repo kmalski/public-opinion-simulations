@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  api:
+    container_name: simulations-api
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./api:/opt/api
+      - /opt/api/node_modules
+    networks:
+      - simulations
+
+  web-ui:
+    build:
+      context: web-ui
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./web-ui:/opt/web-ui
+      - /opt/web-ui/node_modules
+
+networks:
+  simulations:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.24.24.0/24
