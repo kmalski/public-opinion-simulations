@@ -1,25 +1,41 @@
 version: "3.8"
 
 services:
-  api:
+  simulations-api:
+    image: kmalski/simulations-api:latest
     container_name: simulations-api
     ports:
       - "4000:4000"
-    volumes:
-      - ./api:/opt/api
-      - /opt/api/node_modules
     networks:
       - simulations
 
-  web-ui:
-    build:
-      context: web-ui
-      dockerfile: Dockerfile
+  simulations-ui:
+    image: kmalski/simulations-ui:latest
+    container_name: simulations-ui
     ports:
       - "3000:3000"
+    networks:
+      - simulations
+
+  swag:
+    image: ghcr.io/linuxserver/swag:1.22.0
+    container_name: swag
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Europe/Warsaw
+      - URL=simulations.malski.pl
+      - VALIDATION=http
     volumes:
-      - ./web-ui:/opt/web-ui
-      - /opt/web-ui/node_modules
+      - ./swag:/config
+    ports:
+      - "443:443"
+      - "80:80"
+    restart: unless-stopped
+    networks:
+      - simulations
 
 networks:
   simulations:
