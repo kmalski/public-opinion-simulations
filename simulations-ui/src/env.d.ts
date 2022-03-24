@@ -5,7 +5,7 @@ declare module '*.vue' {
   export default component;
 }
 
-declare module '*.gexf'
+declare module '*.gexf';
 
 interface ImportMetaEnv {
   readonly VITE_SERVER_URL: string;

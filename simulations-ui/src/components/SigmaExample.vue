@@ -5,9 +5,10 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { Sigma } from 'sigma';
-import Graph from 'graphology';
-import { parse } from 'graphology-gexf/browser';
-import graphUrl from '@/assets/arctic.gexf';
+import { parseDot } from '@/util/graph-parser/dot.parser';
+import dotGraphUrl from '@/assets/graph.dot';
+import FA2LayoutSupervisor from 'graphology-layout-forceatlas2/worker';
+import forceAtlas2 from 'graphology-layout-forceatlas2';
 
 export default defineComponent({
   data() {
@@ -15,15 +16,16 @@ export default defineComponent({
       renderer: {} as Sigma
     };
   },
-  mounted() {
-    fetch(graphUrl)
-      .then((res) => res.text())
-      .then((gexf) => {
-        const graph = parse(Graph, gexf);
-        const container = this.$refs.sigmaContainer as HTMLDivElement;
-
-        this.renderer = new Sigma(graph, container);
-      });
+  async mounted() {
+    const graph = await parseDot(dotGraphUrl);
+    const container = this.$refs.sigmaContainer as HTMLDivElement;
+    const sensibleSettings = forceAtlas2.inferSettings(graph);
+    const fa2Layout = new FA2LayoutSupervisor(graph, {
+      settings: sensibleSettings
+    });
+    fa2Layout.start();
+    this.renderer = new Sigma(graph, container);
+    setTimeout(() => fa2Layout.stop(), 2000);
   }
 });
 </script>

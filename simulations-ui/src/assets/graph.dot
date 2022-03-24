@@ -1,0 +1,10 @@
+graph G {
+
+  a [label="A"]
+  b [label="B"]
+  c [label="C"]
+  d [label="D"]
+
+  a -- {b, c} -- d;
+  a -- d
+}
