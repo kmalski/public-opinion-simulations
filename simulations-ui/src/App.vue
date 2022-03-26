@@ -1,35 +1,53 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link>
-    |
-    <router-link to="/about">About</router-link>
+  <div class="container">
+    <graph-card class="graph-card"></graph-card>
+    <menu-card class="menu-card"></menu-card>
   </div>
-  <router-view />
 </template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import GraphCard from '@/components/GraphCard.vue';
+import MenuCard from '@/components/MenuCard.vue';
+
+export default defineComponent({
+  components: { MenuCard, GraphCard }
+});
+</script>
 
 <style lang="scss">
 body {
   margin: 0;
+  padding: 1rem;
+  height: 100vh;
+  width: 100vw;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 7fr 3fr;
+  column-gap: 1rem;
+  place-content: stretch;
+  place-items: stretch;
+  width: 100%;
+  height: 100%;
+}
+
+.graph-card {
+  grid-column: 1;
+}
+
+.menu-card {
+  grid-column: 2;
 }
 
 #app {
+  width: 100%;
+  height: 100%;
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
 }
 </style>

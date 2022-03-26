@@ -20,7 +20,8 @@ module.exports = {
       {
         singleQuote: true,
         bracketSpacing: true,
-        trailingComma: 'none'
+        trailingComma: 'none',
+        printWidth: 120
       }
     ]
   }
