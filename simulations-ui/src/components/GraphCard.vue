@@ -11,28 +11,43 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { Sigma } from 'sigma';
-import forceAtlas2 from 'graphology-layout-forceatlas2';
-import FA2LayoutSupervisor from 'graphology-layout-forceatlas2/worker';
-import { parseGexf } from '@/helpers/parser';
-import graphUrl from '@/assets/arctic.gexf';
+import Graph from 'graphology';
 
 export default defineComponent({
   name: 'GraphCard',
   data() {
     return {
-      renderer: {} as Sigma
+      renderer: null as Sigma | null
     };
   },
-  async mounted() {
-    const graph = await parseGexf(graphUrl);
-    const container = this.$refs.container as HTMLDivElement;
-    const sensibleSettings = forceAtlas2.inferSettings(graph);
-    const fa2Layout = new FA2LayoutSupervisor(graph, {
-      settings: sensibleSettings
-    });
-    fa2Layout.start();
-    this.renderer = new Sigma(graph, container);
-    setTimeout(() => fa2Layout.stop(), 5000);
+  mounted() {
+    this.$store.commit('setGraph', this.createExampleGraph());
+  },
+  methods: {
+    createExampleGraph() {
+      const graph = new Graph();
+      graph.addNode('n1', { x: 0, y: 0, size: 10, color: '#f51b00' });
+      graph.addNode('n2', { x: -5, y: 5, size: 10, color: '#009dff' });
+      graph.addNode('n3', { x: 5, y: 5, size: 10, color: '#009dff' });
+      graph.addNode('n4', { x: 0, y: 10, size: 10, color: '#f51b00' });
+      graph.addEdge('n1', 'n2');
+      graph.addEdge('n2', 'n4');
+      graph.addEdge('n4', 'n3');
+      graph.addEdge('n3', 'n1');
+      return graph;
+    }
+  },
+  computed: {
+    graph() {
+      return this.$store.state.graph;
+    }
+  },
+  watch: {
+    graph(newGraph) {
+      if (this.renderer instanceof Sigma) this.renderer.kill();
+      const container = this.$refs.container as HTMLDivElement;
+      this.renderer = new Sigma(newGraph, container);
+    }
   }
 });
 </script>

@@ -6,10 +6,8 @@ import Graph from 'graphology';
 
 const defaultSize = 10;
 
-export async function parseGexf(fileUrl: RequestInfo): Promise<Graph> {
-  const file = await fetch(fileUrl);
-  const gexf = await file.text();
-  const graph = gexfParse(Graph, gexf);
+export function parseGexf(fileText: string): Graph {
+  const graph = gexfParse(Graph, fileText);
 
   if (graph.everyNode((node, attributes) => attributes['x'] && attributes['y'])) {
     return graph;
@@ -19,10 +17,8 @@ export async function parseGexf(fileUrl: RequestInfo): Promise<Graph> {
   }
 }
 
-export async function parseDot(fileUrl: RequestInfo): Promise<Graph> {
-  const file = await fetch(fileUrl);
-  const dot = await file.text();
-  const graphDot = graphvizParse(dot);
+export function parseDot(fileText: string): Graph {
+  const graphDot = graphvizParse(fileText);
   const graph = new Graph();
 
   graphDot.nodes.forEach((node) =>

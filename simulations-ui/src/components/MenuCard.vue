@@ -8,6 +8,7 @@
               <i :class="`icon pi ${tab.icon}`"></i>
               <span>{{ tab.title }}</span>
             </template>
+            <component :is="tab.item"></component>
           </tab-panel>
         </tab-view>
       </template>
@@ -18,23 +19,30 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { PrimeIcons } from 'primevue/api';
+import GraphTab from '@/components/GraphTab.vue';
+import ChartsTab from '@/components/ChartsTab.vue';
+import SimulationTab from '@/components/SimulationTab.vue';
 
 export default defineComponent({
   name: 'MenuCard',
+  components: { ChartsTab, GraphTab, SimulationTab },
   data() {
     return {
       tabs: [
         {
           title: 'Simulation',
-          icon: PrimeIcons.PLAY
+          icon: PrimeIcons.PLAY,
+          item: 'simulation-tab'
         },
         {
           title: 'Graph',
-          icon: PrimeIcons.BOX
+          icon: PrimeIcons.BOX,
+          item: 'graph-tab'
         },
         {
           title: 'Charts',
-          icon: PrimeIcons.CHART_LINE
+          icon: PrimeIcons.CHART_LINE,
+          item: 'charts-tab'
         }
       ]
     };
@@ -52,8 +60,16 @@ export default defineComponent({
   height: 100%;
   width: 100%;
 
-  .p-card-content {
-    padding-top: 0;
+  .p-card-body {
+    padding: 0;
+
+    .p-card-content {
+      padding: 0 1rem;
+
+      .p-tabview-panels {
+        padding: 1rem 0;
+      }
+    }
   }
 }
 

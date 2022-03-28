@@ -1,3 +1,6 @@
+import { Store } from 'vuex';
+import Graph from 'graphology';
+
 /* eslint-disable */
 declare module '*.vue' {
   import type { DefineComponent } from 'vue';
@@ -5,7 +8,20 @@ declare module '*.vue' {
   export default component;
 }
 
+declare module '@vue/runtime-core' {
+  // declare your own store states
+  interface State {
+    graph: Graph
+  }
+
+  // provide typings for `this.$store`
+  interface ComponentCustomProperties {
+    $store: Store<State>
+  }
+}
+
 declare module '*.gexf';
+declare module '*.dot';
 
 interface ImportMetaEnv {
   readonly VITE_SERVER_URL: string;
