@@ -26,10 +26,10 @@ export default defineComponent({
   methods: {
     createExampleGraph() {
       const graph = new Graph();
-      graph.addNode('n1', { x: 0, y: 0, size: 10, color: '#f51b00' });
-      graph.addNode('n2', { x: -5, y: 5, size: 10, color: '#009dff' });
-      graph.addNode('n3', { x: 5, y: 5, size: 10, color: '#009dff' });
-      graph.addNode('n4', { x: 0, y: 10, size: 10, color: '#f51b00' });
+      graph.addNode('n1', { x: 0, y: 0, size: 10, label: '-1', color: '#f51b00' });
+      graph.addNode('n2', { x: -5, y: 5, size: 10, label: '1', color: '#009dff' });
+      graph.addNode('n3', { x: 5, y: 5, size: 10, label: '1', color: '#009dff' });
+      graph.addNode('n4', { x: 0, y: 10, size: 10, label: '-1', color: '#f51b00' });
       graph.addEdge('n1', 'n2');
       graph.addEdge('n2', 'n4');
       graph.addEdge('n4', 'n3');

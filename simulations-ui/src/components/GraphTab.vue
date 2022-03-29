@@ -2,7 +2,10 @@
   <div class="file-section">
     <div class="file-section-hint">
       <p>Load graph from file</p>
-      <p>(*.gexf, *.dot)</p>
+      <div class="file-section-links">
+        <a class="file-section-link" :href="'/files/graph.dot'" download>*.dot</a>
+        <a class="file-section-link" :href="'/files/graph.gexf'" download>*.gexf</a>
+      </div>
     </div>
     <div class="file-section-button">
       <file-upload
@@ -73,6 +76,18 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+
+  &-links {
+    text-align: left;
+    > :first-child {
+      margin-left: 0;
+    }
+  }
+
+  &-link {
+    margin: auto 0.5rem;
+    color: #2196f3;
   }
 }
 

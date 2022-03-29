@@ -1,38 +1,41 @@
 import { parse as graphvizParse } from '@ts-graphviz/parser';
 import { parse as gexfParse } from 'graphology-gexf';
 import { random } from 'graphology-layout';
-import { EdgeTarget, EdgeTargetTuple } from 'ts-graphviz';
+import { AttributesValue, EdgeTarget, EdgeTargetTuple } from 'ts-graphviz';
 import Graph from 'graphology';
-
-const defaultSize = 10;
+import { COLOR_DOWN, COLOR_UP, SIZE } from '@/helpers/defaults';
 
 export function parseGexf(fileText: string): Graph {
   const graph = gexfParse(Graph, fileText);
-
-  if (graph.everyNode((node, attributes) => attributes['x'] && attributes['y'])) {
-    return graph;
-  } else {
-    random.assign(graph);
-    return graph;
-  }
+  graph.forEachNode((node, attributes) => {
+    attributes['color'] = labelToColor(attributes['label']);
+    attributes['size'] = SIZE;
+  });
+  checkPositions(graph);
+  return graph;
 }
 
 export function parseDot(fileText: string): Graph {
   const graphDot = graphvizParse(fileText);
   const graph = new Graph();
 
-  graphDot.nodes.forEach((node) =>
+  graphDot.nodes.forEach((node) => {
+    const pos = parseDotPos(node.attributes.get('pos'));
+    const label = node.attributes.get('label');
+    const color = labelToColor(label);
     graph.addNode(node.id, {
-      size: defaultSize,
-      label: node.attributes.get('label') || node.id
-    })
-  );
+      size: SIZE,
+      color: color,
+      label: label,
+      x: pos[0],
+      y: pos[1]
+    });
+  });
 
-  // TODO: read possible attributes
   // Note: assumes that every node was already defined
   graphDot.edges.forEach((edge) => addTargets(graph, edge.targets));
 
-  random.assign(graph);
+  checkPositions(graph);
   return graph;
 }
 
@@ -69,5 +72,34 @@ function addEdges(graph: Graph, from: EdgeTarget, to: EdgeTarget): void {
     to.forEach((toNode) => graph.addEdge(from.id, toNode.id));
   } else {
     graph.addEdge(from.id, to.id);
+  }
+}
+
+function parseDotPos(pos: AttributesValue | undefined): [number, number] | [undefined, undefined] {
+  let posArray;
+  if (typeof pos === 'string' && pos?.endsWith('!')) posArray = pos.slice(0, -1);
+  if (posArray) {
+    posArray = posArray.split(',');
+    return [+posArray[0], +posArray[1]];
+  } else {
+    return [undefined, undefined];
+  }
+}
+
+function labelToColor(label: AttributesValue | string | undefined): string {
+  if (typeof label === 'string') {
+    const value = +label;
+    return value > 0 ? COLOR_UP : COLOR_DOWN;
+  } else {
+    throw new Error('Invalid label value');
+  }
+}
+
+function checkPositions(graph: Graph) {
+  if (!graph.everyNode((node, attributes) => attributes['x'] && attributes['y'])) {
+    random.assign(graph);
+    graph.setAttribute('predefinedPositions', false);
+  } else {
+    graph.setAttribute('predefinedPositions', true);
   }
 }

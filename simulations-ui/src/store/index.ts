@@ -20,13 +20,15 @@ export default createStore<State>({
   },
   actions: {
     changeGraph(context, graph) {
-      const sensibleSettings = forceAtlas2.inferSettings(graph);
-      const fa2Layout = new FA2LayoutSupervisor(graph, {
-        settings: sensibleSettings
-      });
+      if (!graph.getAttribute('predefinedPositions')) {
+        const sensibleSettings = forceAtlas2.inferSettings(graph);
+        const fa2Layout = new FA2LayoutSupervisor(graph, {
+          settings: sensibleSettings
+        });
+        fa2Layout.start();
+        setTimeout(() => fa2Layout.stop(), 5000);
+      }
       context.commit('setGraph', graph);
-      fa2Layout.start();
-      setTimeout(() => fa2Layout.stop(), 5000);
     }
   },
   modules: {}
