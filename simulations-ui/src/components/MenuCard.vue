@@ -5,7 +5,7 @@
         <tab-view>
           <tab-panel v-for="tab in tabs" :key="tab.title">
             <template #header>
-              <i :class="`icon pi ${tab.icon}`"></i>
+              <i :class="`menu-card-icon pi ${tab.icon}`"></i>
               <span>{{ tab.title }}</span>
             </template>
             <component :is="tab.item"></component>
@@ -54,26 +54,30 @@ export default defineComponent({
 .menu-card {
   height: 100%;
   width: 100%;
-}
 
-::v-deep(.p-card) {
-  height: 100%;
-  width: 100%;
+  &-icon {
+    margin-right: 10px;
+  }
 
-  .p-card-body {
-    padding: 0;
+  :deep(.p-card) {
+    height: 100%;
+    width: 100%;
 
-    .p-card-content {
-      padding: 0 1rem;
+    .p-card-body {
+      padding: 0;
 
-      .p-tabview-panels {
-        padding: 1rem 0;
+      .p-card-content {
+        padding: 0 1rem;
+
+        .p-tabview-panels {
+          padding: 1rem 0;
+
+          .p-divider.p-divider-horizontal:before {
+            border-top: 2px solid #dee2e6;
+          }
+        }
       }
     }
   }
-}
-
-.icon {
-  margin-right: 10px;
 }
 </style>

@@ -21,6 +21,7 @@ body {
   padding: 1rem;
   height: 100vh;
   width: 100vw;
+  background-color: #eff3f8;
 }
 
 .container {

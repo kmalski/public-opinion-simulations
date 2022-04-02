@@ -1,7 +1,7 @@
 import { createStore } from 'vuex';
-import Graph from 'graphology';
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 import FA2LayoutSupervisor from 'graphology-layout-forceatlas2/worker';
+import { Graph } from '@/helpers/types';
 
 interface State {
   graph: Graph;
@@ -10,7 +10,7 @@ interface State {
 export default createStore<State>({
   state() {
     return {
-      graph: {} as Graph
+      graph: new Graph()
     };
   },
   mutations: {
@@ -19,7 +19,7 @@ export default createStore<State>({
     }
   },
   actions: {
-    changeGraph(context, graph) {
+    changeGraph(context, graph: Graph) {
       if (!graph.getAttribute('predefinedPositions')) {
         const sensibleSettings = forceAtlas2.inferSettings(graph);
         const fa2Layout = new FA2LayoutSupervisor(graph, {

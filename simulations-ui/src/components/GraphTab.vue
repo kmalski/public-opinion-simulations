@@ -25,31 +25,29 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { parseDot, parseGexf } from '@/helpers/parser';
-import Graph from 'graphology';
+import { Graph } from '@/helpers/types';
 
 export default defineComponent({
   name: 'GraphTab',
-  data() {
-    return {
-      reader: new FileReader(),
-      graph: {} as Graph,
-      filename: ''
-    };
-  },
   methods: {
-    async readFile(event: { files: File[] }) {
-      const file = event.files[0] as File;
+    async readFile(event: { files: File | File[] }) {
+      const file = Array.isArray(event.files) ? event.files[0] : event.files;
       const extension = file.name.split('.').pop();
       const text = await file.text();
+
+      let graph: Graph;
       switch (extension) {
         case 'gexf':
-          this.graph = parseGexf(text);
+          graph = parseGexf(text);
           break;
         case 'dot':
-          this.graph = parseDot(text);
+          graph = parseDot(text);
           break;
+        default:
+          graph = new Graph();
+        //TODO: add toast message
       }
-      await this.$store.dispatch('changeGraph', this.graph);
+      await this.$store.dispatch('changeGraph', graph);
     }
   }
 });
@@ -89,9 +87,5 @@ export default defineComponent({
     margin: auto 0.5rem;
     color: #2196f3;
   }
-}
-
-.p-divider.p-divider-horizontal:before {
-  border-top: 2px solid #dee2e6;
 }
 </style>

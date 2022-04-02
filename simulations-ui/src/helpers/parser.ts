@@ -2,16 +2,17 @@ import { parse as graphvizParse } from '@ts-graphviz/parser';
 import { parse as gexfParse } from 'graphology-gexf';
 import { random } from 'graphology-layout';
 import { AttributesValue, EdgeTarget, EdgeTargetTuple } from 'ts-graphviz';
-import Graph from 'graphology';
 import { COLOR_DOWN, COLOR_UP, SIZE } from '@/helpers/defaults';
+import { Graph } from '@/helpers/types';
 
 export function parseGexf(fileText: string): Graph {
   const graph = gexfParse(Graph, fileText);
   graph.forEachNode((node, attributes) => {
-    attributes['color'] = labelToColor(attributes['label']);
-    attributes['size'] = SIZE;
+    const label = parseLabel(attributes['label']);
+    attributes.color = labelToColor(label);
+    attributes.size = SIZE;
   });
-  checkPositions(graph);
+  validatePositions(graph);
   return graph;
 }
 
@@ -20,8 +21,8 @@ export function parseDot(fileText: string): Graph {
   const graph = new Graph();
 
   graphDot.nodes.forEach((node) => {
+    const label = parseLabel(node.attributes.get('label'));
     const pos = parseDotPos(node.attributes.get('pos'));
-    const label = node.attributes.get('label');
     const color = labelToColor(label);
     graph.addNode(node.id, {
       size: SIZE,
@@ -35,7 +36,7 @@ export function parseDot(fileText: string): Graph {
   // Note: assumes that every node was already defined
   graphDot.edges.forEach((edge) => addTargets(graph, edge.targets));
 
-  checkPositions(graph);
+  validatePositions(graph);
   return graph;
 }
 
@@ -95,8 +96,13 @@ function labelToColor(label: AttributesValue | string | undefined): string {
   }
 }
 
-function checkPositions(graph: Graph) {
-  if (!graph.everyNode((node, attributes) => attributes['x'] && attributes['y'])) {
+function parseLabel(label: AttributesValue | string | undefined): string {
+  if (typeof label !== 'string') throw new Error('Invalid label value');
+  return label;
+}
+
+function validatePositions(graph: Graph) {
+  if (!graph.everyNode((node, { x, y }) => typeof x === 'number' && typeof y === 'number')) {
     random.assign(graph);
     graph.setAttribute('predefinedPositions', false);
   } else {

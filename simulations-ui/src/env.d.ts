@@ -1,5 +1,5 @@
 import { Store } from 'vuex';
-import Graph from 'graphology';
+import { Graph } from '@/helpers/types';
 
 /* eslint-disable */
 declare module '*.vue' {
