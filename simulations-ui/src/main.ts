@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import App from './App.vue';
-import store from './store';
 import PrimeVue from 'primevue/config';
 import VueFullscreen from 'vue-fullscreen';
 
@@ -14,10 +14,9 @@ import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import FileUpload from 'primevue/fileupload';
 import Divider from 'primevue/divider';
-import SpeedDial from 'primevue/speeddial';
 
 createApp(App)
-  .use(store)
+  .use(createPinia())
   .use(PrimeVue)
   .use(VueFullscreen)
   .component('Button', Button)
@@ -26,5 +25,4 @@ createApp(App)
   .component('TabPanel', TabPanel)
   .component('FileUpload', FileUpload)
   .component('Divider', Divider)
-  .component('SpeedDial', SpeedDial)
   .mount('#app');

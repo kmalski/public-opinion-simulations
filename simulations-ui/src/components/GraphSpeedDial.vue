@@ -17,19 +17,16 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { PrimeIcons } from 'primevue/api';
+import SpeedDial from '@/components/primevue/SpeedDial.vue';
+import { mapActions, mapState } from 'pinia';
+import { useGraphStore } from '@/stores/graph.store';
 
 export default defineComponent({
   name: 'GraphSpeedDial',
+  components: { SpeedDial },
   data() {
     return {
       items: [
-        {
-          label: 'Vue Website 1',
-          icon: 'pi pi-external-link',
-          command: () => {
-            window.location.href = 'https://vuejs.org/';
-          }
-        },
         {
           label: 'Maximize',
           icon: PrimeIcons.WINDOW_MAXIMIZE,
@@ -39,13 +36,42 @@ export default defineComponent({
               callback: (fullscreen) => this.toggleFullscreen(fullscreen)
             });
           }
+        },
+        {
+          label: 'Download',
+          icon: PrimeIcons.DOWNLOAD,
+          command: () => {
+            console.log('Download');
+          }
+        },
+        {
+          label: 'Center',
+          icon: PrimeIcons.MAP_MARKER,
+          command: () => this.centerLayout()
+        },
+        {
+          label: 'Start layout',
+          icon: PrimeIcons.PLAY,
+          command: () => this.startLayout()
         }
       ]
     };
   },
+  computed: {
+    ...mapState(useGraphStore, ['isLayoutRunning'])
+  },
+  watch: {
+    isLayoutRunning(newIsLayoutRunning) {
+      const item = this.items[3];
+      item.label = newIsLayoutRunning ? 'Stop layout' : 'Start layout';
+      item.icon = newIsLayoutRunning ? PrimeIcons.STOP : PrimeIcons.PLAY;
+      item.command = newIsLayoutRunning ? this.stopLayout : this.startLayout;
+    }
+  },
   methods: {
+    ...mapActions(useGraphStore, ['startLayout', 'stopLayout', 'centerLayout']),
     toggleFullscreen(fullscreen: boolean) {
-      const item = this.items[this.items.length - 1];
+      const item = this.items[0];
       item.label = fullscreen ? 'Minimize' : 'Maximize';
       item.icon = fullscreen ? PrimeIcons.WINDOW_MINIMIZE : PrimeIcons.WINDOW_MAXIMIZE;
     }

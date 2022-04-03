@@ -26,10 +26,13 @@
 import { defineComponent } from 'vue';
 import { parseDot, parseGexf } from '@/helpers/parser';
 import { Graph } from '@/helpers/types';
+import { mapActions } from 'pinia';
+import { useGraphStore } from '@/stores/graph.store';
 
 export default defineComponent({
   name: 'GraphTab',
   methods: {
+    ...mapActions(useGraphStore, ['setGraph']),
     async readFile(event: { files: File | File[] }) {
       const file = Array.isArray(event.files) ? event.files[0] : event.files;
       const extension = file.name.split('.').pop();
@@ -45,9 +48,9 @@ export default defineComponent({
           break;
         default:
           graph = new Graph();
-        //TODO: add toast message
+        // TODO: add toast message
       }
-      await this.$store.dispatch('changeGraph', graph);
+      this.setGraph(graph);
     }
   }
 });
