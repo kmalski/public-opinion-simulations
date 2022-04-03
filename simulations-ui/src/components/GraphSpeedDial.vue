@@ -46,7 +46,7 @@ export default defineComponent({
         },
         {
           label: 'Center',
-          icon: PrimeIcons.MAP_MARKER,
+          icon: PrimeIcons.CIRCLE_FILL,
           command: () => this.centerLayout()
         },
         {
@@ -88,6 +88,10 @@ export default defineComponent({
     .p-speeddial-button {
       height: 50px;
       width: 50px;
+    }
+
+    .p-speeddial-action {
+      text-decoration-line: none;
     }
   }
 }

@@ -8,7 +8,7 @@ declare module '*.vue' {
 declare module '*.gexf';
 declare module '*.dot';
 
-interface ImportMetaEnv {z
+interface ImportMetaEnv {
   readonly VITE_SERVER_URL: string;
 }
 
