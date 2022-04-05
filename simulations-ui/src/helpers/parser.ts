@@ -87,17 +87,14 @@ function parseDotPos(pos: AttributesValue | undefined): [number, number] | [unde
   }
 }
 
-function labelToColor(label: AttributesValue | string | undefined): string {
-  if (typeof label === 'string') {
-    const value = +label;
-    return value > 0 ? COLOR_UP : COLOR_DOWN;
-  } else {
-    throw new Error('Invalid label value');
-  }
+function labelToColor(label: string): string {
+  const value = +label;
+  return value > 0 ? COLOR_UP : COLOR_DOWN;
 }
 
 function parseLabel(label: AttributesValue | string | undefined): string {
-  if (typeof label !== 'string') throw new Error('Invalid label value');
+  if (!label) throw new Error(`Missing required attribute 'label'`);
+  if (typeof label !== 'string') throw new Error(`Attribute 'label' must be an number of type string`);
   return label;
 }
 

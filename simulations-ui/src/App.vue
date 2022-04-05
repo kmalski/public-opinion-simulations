@@ -1,5 +1,6 @@
 <template>
-  <div class="container">
+  <div class="app">
+    <toast class="toast" position="bottom-right"></toast>
     <graph-card class="graph-card"></graph-card>
     <menu-card class="menu-card"></menu-card>
   </div>
@@ -16,15 +17,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-body {
-  margin: 0;
-  padding: 1rem;
-  height: 100vh;
-  width: 100vw;
-  background-color: #eff3f8;
-}
-
-.container {
+.app {
   display: grid;
   grid-template-columns: 7fr 3fr;
   column-gap: 1rem;
@@ -32,14 +25,41 @@ body {
   place-items: stretch;
   width: 100%;
   height: 100%;
+
+  .toast {
+    position: absolute;
+  }
+
+  .graph-card {
+    grid-column: 1;
+  }
+
+  .menu-card {
+    grid-column: 2;
+  }
 }
 
-.graph-card {
-  grid-column: 1;
-}
+body {
+  margin: 0;
+  padding: 1rem;
+  height: 100vh;
+  width: 100vw;
+  background-color: #eff3f8;
 
-.menu-card {
-  grid-column: 2;
+  .p-toast {
+    width: calc(30vw - 1.5rem);
+    min-width: 20rem;
+    font-size: 0.8rem;
+
+    .p-toast-message {
+      margin: 0.5rem 0 0 0;
+    }
+
+    &-bottom-right {
+      bottom: 1.4rem;
+      right: 1.4rem;
+    }
+  }
 }
 
 #app {

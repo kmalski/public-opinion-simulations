@@ -25,9 +25,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { parseDot, parseGexf } from '@/helpers/parser';
-import { Graph } from '@/helpers/types';
 import { mapActions } from 'pinia';
 import { useGraphStore } from '@/stores/graph.store';
+import { ToastSeverity } from 'primevue/api';
 
 export default defineComponent({
   name: 'GraphTab',
@@ -38,19 +38,23 @@ export default defineComponent({
       const extension = file.name.split('.').pop();
       const text = await file.text();
 
-      let graph: Graph;
-      switch (extension) {
-        case 'gexf':
-          graph = parseGexf(text);
-          break;
-        case 'dot':
-          graph = parseDot(text);
-          break;
-        default:
-          graph = new Graph();
-        // TODO: add toast message
+      try {
+        switch (extension) {
+          case 'gexf':
+            this.setGraph(parseGexf(text));
+            break;
+          case 'dot':
+            this.setGraph(parseDot(text));
+            break;
+        }
+      } catch (error) {
+        this.$toast.add({
+          severity: ToastSeverity.ERROR,
+          summary: 'Error while reading graph',
+          detail: error instanceof Error ? error.message : 'Unknown error',
+          life: 10000
+        });
       }
-      this.setGraph(graph);
     }
   }
 });
