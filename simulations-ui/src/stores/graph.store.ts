@@ -1,14 +1,17 @@
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 import FA2LayoutSupervisor from 'graphology-layout-forceatlas2/worker';
+import { random } from 'graphology-layout';
 import { Graph } from '@/helpers/types';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { Sigma } from 'sigma';
+import { animateNodes } from 'sigma/utils/animate';
 
 interface State {
   sigma?: Sigma;
   graph: Graph;
   fa2Layout?: FA2LayoutSupervisor;
   isLayoutRunning: boolean;
+  cancelCurrentAnimation?: () => void;
 }
 
 function initState() {
@@ -40,6 +43,7 @@ export const useGraphStore = defineStore('graph', {
       }
     },
     startLayout() {
+      if (this.cancelCurrentAnimation) this.cancelCurrentAnimation();
       if (this.fa2Layout) this.fa2Layout.kill();
 
       const sensibleSettings = forceAtlas2.inferSettings(this.graph);
@@ -58,6 +62,18 @@ export const useGraphStore = defineStore('graph', {
         this.fa2Layout.kill();
         this.fa2Layout = undefined;
       }
+    },
+    randomLayout() {
+      if (this.isLayoutRunning) this.stopLayout();
+      if (this.cancelCurrentAnimation) this.cancelCurrentAnimation();
+
+      const randomPositions = random(this.graph, { scale: 100 });
+      this.cancelCurrentAnimation = animateNodes(
+        this.graph,
+        randomPositions,
+        { duration: 2000 },
+        () => (this.cancelCurrentAnimation = undefined)
+      );
     },
     centerLayout() {
       if (this.sigma) {

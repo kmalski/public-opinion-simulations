@@ -3,8 +3,8 @@
     <div class="file-section-hint">
       <p>Load graph from file</p>
       <div class="file-section-links">
-        <a class="file-section-link" :href="'/files/graph.dot'" download>*.dot</a>
-        <a class="file-section-link" :href="'/files/graph.gexf'" download>*.gexf</a>
+        <a class="file-section-link" :href="'/files/graph.dot'" download="graph.dot">*.dot</a>
+        <a class="file-section-link" :href="'/files/graph.gexf'" download="graph.gexf">*.gexf</a>
       </div>
     </div>
     <div class="file-section-button">

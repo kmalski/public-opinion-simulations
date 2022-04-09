@@ -36,7 +36,7 @@ export default defineComponent({
         },
         {
           title: 'Graph',
-          icon: PrimeIcons.BOX,
+          icon: PrimeIcons.SITEMAP,
           item: 'graph-tab'
         },
         {
