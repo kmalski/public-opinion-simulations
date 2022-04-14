@@ -5,6 +5,15 @@ import { AttributesValue, EdgeTarget, EdgeTargetTuple } from 'ts-graphviz';
 import { COLOR_DOWN, COLOR_UP, SIZE } from '@/helpers/defaults';
 import { Graph } from '@/helpers/types';
 
+export function validatePositions(graph: Graph) {
+  if (!graph.everyNode((node, { x, y }) => typeof x === 'number' && typeof y === 'number')) {
+    random.assign(graph);
+    graph.setAttribute('predefinedPositions', false);
+  } else {
+    graph.setAttribute('predefinedPositions', true);
+  }
+}
+
 export function parseGexf(fileText: string): Graph {
   const graph = gexfParse(Graph, fileText);
   graph.forEachNode((node, attributes) => {
@@ -12,7 +21,6 @@ export function parseGexf(fileText: string): Graph {
     attributes.color = labelToColor(label);
     attributes.size = SIZE;
   });
-  validatePositions(graph);
   return graph;
 }
 
@@ -36,7 +44,6 @@ export function parseDot(fileText: string): Graph {
   // Note: assumes that every node was already defined
   graphDot.edges.forEach((edge) => addTargets(graph, edge.targets));
 
-  validatePositions(graph);
   return graph;
 }
 
@@ -96,13 +103,4 @@ function parseLabel(label: AttributesValue | string | undefined): string {
   if (!label) throw new Error(`Missing required attribute 'label'`);
   if (typeof label !== 'string') throw new Error(`Attribute 'label' must be an number of type string`);
   return label;
-}
-
-function validatePositions(graph: Graph) {
-  if (!graph.everyNode((node, { x, y }) => typeof x === 'number' && typeof y === 'number')) {
-    random.assign(graph);
-    graph.setAttribute('predefinedPositions', false);
-  } else {
-    graph.setAttribute('predefinedPositions', true);
-  }
 }

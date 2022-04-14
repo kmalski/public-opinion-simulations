@@ -19,9 +19,9 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { PrimeIcons } from 'primevue/api';
-import GraphTab from '@/components/GraphTab.vue';
-import ChartsTab from '@/components/ChartsTab.vue';
-import SimulationTab from '@/components/SimulationTab.vue';
+import GraphTab from '@/components/menu/graph/GraphTab.vue';
+import ChartsTab from '@/components/menu/charts/ChartsTab.vue';
+import SimulationTab from '@/components/menu/simulation/SimulationTab.vue';
 
 export default defineComponent({
   name: 'MenuCard',
@@ -65,9 +65,11 @@ export default defineComponent({
 
     .p-card-body {
       padding: 0;
+      height: 100%;
 
       .p-card-content {
         padding: 0 1rem;
+        height: 100%;
 
         .p-tabview-panels {
           padding: 1rem 0;

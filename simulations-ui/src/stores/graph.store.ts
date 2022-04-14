@@ -5,6 +5,7 @@ import { Graph } from '@/helpers/types';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { Sigma } from 'sigma';
 import { animateNodes } from 'sigma/utils/animate';
+import { validatePositions } from '@/helpers/parser';
 
 interface State {
   sigma?: Sigma;
@@ -36,6 +37,7 @@ export const useGraphStore = defineStore('graph', {
       this.sigma = new Sigma(this.graph, container);
     },
     setGraph(graph: Graph) {
+      validatePositions(graph);
       this.graph = graph;
       if (!graph.getAttribute('predefinedPositions')) {
         this.startLayout();

@@ -9,24 +9,30 @@ import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 
-import Button from 'primevue/button';
+import ClassicButton from 'primevue/button';
 import Card from 'primevue/card';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
 import FileUpload from 'primevue/fileupload';
 import Divider from 'primevue/divider';
 import Toast from 'primevue/toast';
+import Dropdown from 'primevue/dropdown';
+import InputText from 'primevue/inputtext';
+import InputNumber from 'primevue/inputnumber';
 
 createApp(App)
   .use(createPinia())
   .use(PrimeVue)
   .use(ToastService)
   .use(VueFullscreen)
-  .component('Button', Button)
+  .component('ClassicButton', ClassicButton)
   .component('Card', Card)
   .component('TabView', TabView)
   .component('TabPanel', TabPanel)
   .component('FileUpload', FileUpload)
   .component('Divider', Divider)
   .component('Toast', Toast)
+  .component('Dropdown', Dropdown)
+  .component('InputNumber', InputNumber)
+  .component('InputText', InputText)
   .mount('#app');

@@ -11,8 +11,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import GraphContainer from '@/components/GraphContainer.vue';
-import GraphSpeedDial from '@/components/GraphSpeedDial.vue';
+import GraphContainer from '@/components/graph/GraphContainer.vue';
+import GraphSpeedDial from '@/components/graph/GraphSpeedDial.vue';
 
 export default defineComponent({
   name: 'GraphCard',

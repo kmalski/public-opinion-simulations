@@ -8,8 +8,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import GraphCard from '@/components/GraphCard.vue';
-import MenuCard from '@/components/MenuCard.vue';
+import GraphCard from '@/components/graph/GraphCard.vue';
+import MenuCard from '@/components/menu/MenuCard.vue';
 
 export default defineComponent({
   components: { MenuCard, GraphCard }

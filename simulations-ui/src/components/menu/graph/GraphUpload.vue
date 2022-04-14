@@ -1,13 +1,13 @@
 <template>
-  <div class="file-section">
-    <div class="file-section-hint">
+  <div class="graph-upload">
+    <div class="graph-upload-hint">
       <p>Load graph from file</p>
-      <div class="file-section-links">
-        <a class="file-section-link" :href="'/files/graph.dot'" download="graph.dot">*.dot</a>
-        <a class="file-section-link" :href="'/files/graph.gexf'" download="graph.gexf">*.gexf</a>
+      <div class="graph-upload-links">
+        <a class="graph-upload-link" :href="'/files/graph.dot'" download="graph.dot">*.dot</a>
+        <a class="graph-upload-link" :href="'/files/graph.gexf'" download="graph.gexf">*.gexf</a>
       </div>
     </div>
-    <div class="file-section-button">
+    <div class="graph-upload-button">
       <file-upload
         name="graph"
         url="/"
@@ -18,8 +18,6 @@
       ></file-upload>
     </div>
   </div>
-
-  <divider> </divider>
 </template>
 
 <script lang="ts">
@@ -30,7 +28,7 @@ import { useGraphStore } from '@/stores/graph.store';
 import { ToastSeverity } from 'primevue/api';
 
 export default defineComponent({
-  name: 'GraphTab',
+  name: 'GraphUpload',
   methods: {
     ...mapActions(useGraphStore, ['setGraph']),
     async readFile(event: { files: File | File[] }) {
@@ -61,15 +59,16 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.file-section {
+.graph-upload {
   display: flex;
   flex-direction: row;
+  width: 90%;
+  justify-content: space-between;
+  align-items: center;
 
   &-hint {
     flex: 60%;
     text-align: left;
-    padding-left: 1rem;
-    margin: 0.5rem;
 
     p {
       margin: 0;

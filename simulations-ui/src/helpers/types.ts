@@ -1,4 +1,4 @@
-import GraphologyGraph from 'graphology';
+import { MultiUndirectedGraph } from 'graphology';
 import { Attributes } from 'graphology-types';
 
 export type Optional<T> = T | null;
@@ -15,7 +15,7 @@ export interface NodeAttributes extends Attributes {
   y?: number;
 }
 
-export class Graph<EdgeAttributes extends Attributes = Attributes> extends GraphologyGraph<
+export class Graph<EdgeAttributes extends Attributes = Attributes> extends MultiUndirectedGraph<
   NodeAttributes,
   EdgeAttributes,
   GraphAttributes
