@@ -54,6 +54,7 @@ export default defineComponent({
 .menu-card {
   height: 100%;
   width: 100%;
+  max-height: calc(100vh - 2rem);
 
   &-icon {
     margin-right: 10px;
@@ -61,15 +62,14 @@ export default defineComponent({
 
   :deep(.p-card) {
     height: 100%;
+    max-height: 100%;
     width: 100%;
 
     .p-card-body {
       padding: 0;
-      height: 100%;
 
       .p-card-content {
         padding: 0 1rem;
-        height: 100%;
 
         .p-tabview-panels {
           padding: 1rem 0;

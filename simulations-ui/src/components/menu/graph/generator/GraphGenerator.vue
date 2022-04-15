@@ -7,8 +7,8 @@ export default defineComponent({
   name: 'GraphGenerator',
   methods: {
     ...mapActions(useGraphStore, ['setGraph']),
-    generateGraph() {
-      console.log('Not implemented');
+    generateGraph(positiveProbability: number) {
+      // abstract
     }
   }
 });

@@ -1,36 +1,30 @@
 <template>
-  <div class="caveman-generator">
+  <div class="girvan-newman-generator">
     <span class="p-float-label">
-      <input-number id="clustersNumber" v-model="componentsNumber"></input-number>
-      <label for="clustersNumber">Number of clusters</label>
-    </span>
-
-    <span class="p-float-label">
-      <input-number id="nodesNumber" v-model="nodesNumber"></input-number>
-      <label for="nodesNumber">Number of nodes in cluster</label>
+      <input-number id="zOut" v-model="zOut"></input-number>
+      <label for="zOut">zOut parameter</label>
     </span>
   </div>
 </template>
 
 <script lang="ts">
-import caveman from 'graphology-generators/community/caveman';
+import girvanNewman from 'graphology-generators/random/girvan-newman';
 import { Graph } from '@/helpers/types';
 import { defineComponent } from 'vue';
 import GraphGenerator from '@/components/menu/graph/generator/GraphGenerator.vue';
 import { assignOpinion } from '@/helpers/parser';
 
 export default defineComponent({
-  name: 'CavemanGenerator',
+  name: 'GirvanNewmanGenerator',
   extends: GraphGenerator,
   data() {
     return {
-      componentsNumber: 3,
-      nodesNumber: 10
+      zOut: 4
     };
   },
   methods: {
     generateGraph(positiveProbability: number) {
-      const graph = caveman(Graph, this.componentsNumber, this.nodesNumber);
+      const graph = girvanNewman(Graph, { zOut: this.zOut });
       assignOpinion(graph, positiveProbability);
       this.setGraph(graph);
     }
@@ -39,7 +33,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.caveman-generator {
+.girvan-newman-generator {
   width: 100%;
 }
 </style>

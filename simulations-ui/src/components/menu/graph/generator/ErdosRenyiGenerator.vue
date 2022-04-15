@@ -1,36 +1,39 @@
 <template>
-  <div class="caveman-generator">
+  <div class="erdos-renyi-generator">
     <span class="p-float-label">
-      <input-number id="clustersNumber" v-model="componentsNumber"></input-number>
-      <label for="clustersNumber">Number of clusters</label>
+      <input-number id="nodesNumber" v-model="nodesNumber"></input-number>
+      <label for="nodesNumber">Number of nodes</label>
     </span>
 
     <span class="p-float-label">
-      <input-number id="nodesNumber" v-model="nodesNumber"></input-number>
-      <label for="nodesNumber">Number of nodes in cluster</label>
+      <input-number id="edgeProbability" v-model="edgeProbability"></input-number>
+      <label for="edgeProbability">Probability for edge creation</label>
     </span>
   </div>
 </template>
 
 <script lang="ts">
-import caveman from 'graphology-generators/community/caveman';
+import erdosRenyi from 'graphology-generators/random/erdos-renyi';
 import { Graph } from '@/helpers/types';
 import { defineComponent } from 'vue';
 import GraphGenerator from '@/components/menu/graph/generator/GraphGenerator.vue';
 import { assignOpinion } from '@/helpers/parser';
 
 export default defineComponent({
-  name: 'CavemanGenerator',
+  name: 'ErdosRenyiGenerator',
   extends: GraphGenerator,
   data() {
     return {
-      componentsNumber: 3,
-      nodesNumber: 10
+      nodesNumber: 10,
+      edgeProbability: 0.5
     };
   },
   methods: {
     generateGraph(positiveProbability: number) {
-      const graph = caveman(Graph, this.componentsNumber, this.nodesNumber);
+      const graph = erdosRenyi(Graph, {
+        order: this.nodesNumber,
+        probability: this.edgeProbability
+      });
       assignOpinion(graph, positiveProbability);
       this.setGraph(graph);
     }
@@ -39,7 +42,7 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
-.caveman-generator {
+.erdos-renyi-generator {
   width: 100%;
 }
 </style>

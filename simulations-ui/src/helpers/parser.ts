@@ -5,6 +5,15 @@ import { AttributesValue, EdgeTarget, EdgeTargetTuple } from 'ts-graphviz';
 import { COLOR_DOWN, COLOR_UP, SIZE } from '@/helpers/defaults';
 import { Graph } from '@/helpers/types';
 
+export function assignOpinion(graph: Graph, positiveProbability: number) {
+  graph.forEachNode((node, attributes) => {
+    const opinion = randomOpinion(positiveProbability);
+    attributes.label = opinion;
+    attributes.color = labelToColor(opinion);
+    attributes.size = SIZE;
+  });
+}
+
 export function validatePositions(graph: Graph) {
   if (!graph.everyNode((node, { x, y }) => typeof x === 'number' && typeof y === 'number')) {
     random.assign(graph);
@@ -103,4 +112,9 @@ function parseLabel(label: AttributesValue | string | undefined): string {
   if (!label) throw new Error(`Missing required attribute 'label'`);
   if (typeof label !== 'string') throw new Error(`Attribute 'label' must be an number of type string`);
   return label;
+}
+
+function randomOpinion(positiveProbability: number): '-1' | '1' {
+  if (Math.random() < positiveProbability) return '1';
+  return '-1';
 }

@@ -17,6 +17,7 @@ import connectedCaveman from 'graphology-generators/community/connected-caveman'
 import { Graph } from '@/helpers/types';
 import { defineComponent } from 'vue';
 import GraphGenerator from '@/components/menu/graph/generator/GraphGenerator.vue';
+import { assignOpinion } from '@/helpers/parser';
 
 export default defineComponent({
   name: 'ConnectedCavemanGenerator',
@@ -28,8 +29,9 @@ export default defineComponent({
     };
   },
   methods: {
-    generateGraph() {
+    generateGraph(positiveProbability: number) {
       const graph = connectedCaveman(Graph, this.componentsNumber, this.nodesNumber);
+      assignOpinion(graph, positiveProbability);
       this.setGraph(graph);
     }
   }
@@ -38,6 +40,6 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .connected-caveman-generator {
-  width: 90%;
+  width: 100%;
 }
 </style>
