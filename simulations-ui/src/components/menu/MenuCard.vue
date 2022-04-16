@@ -51,6 +51,8 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use '../../styles/variables';
+
 .menu-card {
   height: 100%;
   width: 100%;
@@ -75,7 +77,7 @@ export default defineComponent({
           padding: 1rem 0;
 
           .p-divider.p-divider-horizontal:before {
-            border-top: 2px solid #dee2e6;
+            border-top: 2px solid variables.$divider-color;
           }
         }
       }

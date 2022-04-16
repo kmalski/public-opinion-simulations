@@ -27,7 +27,7 @@ import clusters from 'graphology-generators/random/clusters';
 import { Graph } from '@/helpers/types';
 import { defineComponent } from 'vue';
 import GraphGenerator from '@/components/menu/graph/generator/GraphGenerator.vue';
-import { assignOpinion } from '@/helpers/parser';
+import { assignOpinion } from '@/helpers/graph';
 
 export default defineComponent({
   name: 'ClustersGenerator',
@@ -56,7 +56,9 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use '../../../../styles/forms';
+
 .clusters-generator {
-  width: 100%;
+  @include forms.graph-generator;
 }
 </style>

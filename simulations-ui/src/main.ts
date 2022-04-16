@@ -19,6 +19,7 @@ import Toast from 'primevue/toast';
 import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
+import InputSwitch from 'primevue/inputswitch';
 
 createApp(App)
   .use(createPinia())
@@ -35,4 +36,5 @@ createApp(App)
   .component('Dropdown', Dropdown)
   .component('InputNumber', InputNumber)
   .component('InputText', InputText)
+  .component('InputSwitch', InputSwitch)
   .mount('#app');

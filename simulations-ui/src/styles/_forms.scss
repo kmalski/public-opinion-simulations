@@ -1,0 +1,33 @@
+@use 'variables';
+
+@mixin graph-generator {
+  width: 100%;
+}
+
+.p-float-label {
+  margin-top: 2rem;
+  width: 100%;
+
+  .p-inputnumber {
+    width: 100%;
+  }
+}
+
+.float-input {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: flex-start;
+  justify-content: center;
+  margin-top: 2rem;
+  position: relative;
+
+  &-label {
+    position: absolute;
+    top: -1.25rem;
+    left: 0.5rem;
+    font-size: 12px;
+    color: variables.$text-color;
+    line-height: 1;
+  }
+}

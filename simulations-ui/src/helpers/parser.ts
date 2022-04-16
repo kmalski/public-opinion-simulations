@@ -1,33 +1,15 @@
 import { parse as graphvizParse } from '@ts-graphviz/parser';
 import { parse as gexfParse } from 'graphology-gexf';
-import { random } from 'graphology-layout';
 import { AttributesValue, EdgeTarget, EdgeTargetTuple } from 'ts-graphviz';
-import { COLOR_DOWN, COLOR_UP, SIZE } from '@/helpers/defaults';
-import { Graph } from '@/helpers/types';
-
-export function assignOpinion(graph: Graph, positiveProbability: number) {
-  graph.forEachNode((node, attributes) => {
-    const opinion = randomOpinion(positiveProbability);
-    attributes.label = opinion;
-    attributes.color = labelToColor(opinion);
-    attributes.size = SIZE;
-  });
-}
-
-export function validatePositions(graph: Graph) {
-  if (!graph.everyNode((node, { x, y }) => typeof x === 'number' && typeof y === 'number')) {
-    random.assign(graph);
-    graph.setAttribute('predefinedPositions', false);
-  } else {
-    graph.setAttribute('predefinedPositions', true);
-  }
-}
+import { SIZE } from '@/helpers/defaults';
+import { BinaryOpinion, Graph } from '@/helpers/types';
+import { opinionToColor } from '@/helpers/graph';
 
 export function parseGexf(fileText: string): Graph {
   const graph = gexfParse(Graph, fileText);
   graph.forEachNode((node, attributes) => {
-    const label = parseLabel(attributes['label']);
-    attributes.color = labelToColor(label);
+    const opinion = parseLabel(attributes['label']);
+    attributes.color = opinionToColor(opinion);
     attributes.size = SIZE;
   });
   return graph;
@@ -38,13 +20,13 @@ export function parseDot(fileText: string): Graph {
   const graph = new Graph();
 
   graphDot.nodes.forEach((node) => {
-    const label = parseLabel(node.attributes.get('label'));
+    const opinion = parseLabel(node.attributes.get('label'));
     const pos = parseDotPos(node.attributes.get('pos'));
-    const color = labelToColor(label);
+    const color = opinionToColor(opinion);
     graph.addNode(node.id, {
       size: SIZE,
       color: color,
-      label: label,
+      label: opinion,
       x: pos[0],
       y: pos[1]
     });
@@ -103,18 +85,9 @@ function parseDotPos(pos: AttributesValue | undefined): [number, number] | [unde
   }
 }
 
-function labelToColor(label: string): string {
-  const value = +label;
-  return value > 0 ? COLOR_UP : COLOR_DOWN;
-}
-
-function parseLabel(label: AttributesValue | string | undefined): string {
+function parseLabel(label: string | number | boolean | undefined): BinaryOpinion {
   if (!label) throw new Error(`Missing required attribute 'label'`);
-  if (typeof label !== 'string') throw new Error(`Attribute 'label' must be an number of type string`);
-  return label;
-}
-
-function randomOpinion(positiveProbability: number): '-1' | '1' {
-  if (Math.random() < positiveProbability) return '1';
-  return '-1';
+  if (typeof label === 'string') return +label > 0 ? '1' : '-1';
+  if (typeof label === 'boolean') return label ? '1' : '-1';
+  return label > 0 ? '1' : '-1';
 }

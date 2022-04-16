@@ -30,6 +30,7 @@ lerna-debug.log*
 *.launch
 .settings/
 *.sublime-workspace
+webstorm.config.js
 
 # IDE - VSCode
 .vscode/*

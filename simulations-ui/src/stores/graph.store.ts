@@ -5,7 +5,7 @@ import { Graph } from '@/helpers/types';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { Sigma } from 'sigma';
 import { animateNodes } from 'sigma/utils/animate';
-import { validatePositions } from '@/helpers/parser';
+import { validatePositions } from '@/helpers/graph';
 
 interface State {
   sigma?: Sigma;

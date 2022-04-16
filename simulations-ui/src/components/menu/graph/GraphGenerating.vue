@@ -66,13 +66,14 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use '../../../styles/forms';
+
 .graph-generating {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-content: center;
   align-items: center;
-  height: 100%;
   width: 90%;
 
   &-hint {

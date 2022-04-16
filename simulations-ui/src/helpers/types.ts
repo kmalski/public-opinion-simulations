@@ -1,8 +1,6 @@
 import { MultiUndirectedGraph } from 'graphology';
 import { Attributes } from 'graphology-types';
 
-export type Optional<T> = T | null;
-
 export interface GraphAttributes extends Attributes {
   predefinedPositions: boolean;
 }
@@ -20,3 +18,5 @@ export class Graph<EdgeAttributes extends Attributes = Attributes> extends Multi
   EdgeAttributes,
   GraphAttributes
 > {}
+
+export type BinaryOpinion = '-1' | '1';

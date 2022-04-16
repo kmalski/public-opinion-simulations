@@ -11,7 +11,7 @@
 import { defineComponent } from 'vue';
 import path from 'graphology-generators/classic/path';
 import { Graph } from '@/helpers/types';
-import { assignOpinion } from '@/helpers/parser';
+import { assignOpinion } from '@/helpers/graph';
 import GraphGenerator from '@/components/menu/graph/generator/GraphGenerator.vue';
 
 export default defineComponent({
@@ -33,7 +33,9 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use '../../../../styles/forms';
+
 .path-generator {
-  width: 100%;
+  @include forms.graph-generator;
 }
 </style>

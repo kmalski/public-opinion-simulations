@@ -1,7 +1,7 @@
 <template>
   <div class="girvan-newman-generator">
     <span class="p-float-label">
-      <input-number id="zOut" v-model="zOut"></input-number>
+      <input-number id="zOut" v-model="zOut" mode="decimal" :max-fraction-digits="2"></input-number>
       <label for="zOut">zOut parameter</label>
     </span>
   </div>
@@ -12,7 +12,7 @@ import girvanNewman from 'graphology-generators/random/girvan-newman';
 import { Graph } from '@/helpers/types';
 import { defineComponent } from 'vue';
 import GraphGenerator from '@/components/menu/graph/generator/GraphGenerator.vue';
-import { assignOpinion } from '@/helpers/parser';
+import { assignOpinion } from '@/helpers/graph';
 
 export default defineComponent({
   name: 'GirvanNewmanGenerator',
@@ -33,7 +33,9 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use '../../../../styles/forms';
+
 .girvan-newman-generator {
-  width: 100%;
+  @include forms.graph-generator;
 }
 </style>

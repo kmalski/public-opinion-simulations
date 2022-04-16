@@ -17,7 +17,7 @@ import connectedCaveman from 'graphology-generators/community/connected-caveman'
 import { Graph } from '@/helpers/types';
 import { defineComponent } from 'vue';
 import GraphGenerator from '@/components/menu/graph/generator/GraphGenerator.vue';
-import { assignOpinion } from '@/helpers/parser';
+import { assignOpinion } from '@/helpers/graph';
 
 export default defineComponent({
   name: 'ConnectedCavemanGenerator',
@@ -39,7 +39,9 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use '../../../../styles/forms';
+
 .connected-caveman-generator {
-  width: 100%;
+  @include forms.graph-generator;
 }
 </style>

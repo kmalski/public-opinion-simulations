@@ -13,14 +13,3 @@ export default defineComponent({
   }
 });
 </script>
-
-<style lang="scss">
-.p-float-label {
-  margin-top: 2rem;
-  width: 100%;
-
-  .p-inputnumber {
-    width: 100%;
-  }
-}
-</style>

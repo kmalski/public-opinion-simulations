@@ -59,12 +59,14 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use '../../../styles/variables';
+
 .graph-upload {
   display: flex;
   flex-direction: row;
-  width: 90%;
   justify-content: space-between;
   align-items: center;
+  width: 90%;
 
   &-hint {
     flex: 60%;
@@ -91,7 +93,7 @@ export default defineComponent({
 
   &-link {
     margin: auto 0.5rem;
-    color: #2196f3;
+    color: variables.$saga-blue;
   }
 }
 </style>
