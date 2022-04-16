@@ -9,23 +9,26 @@
       :tooltipOptions="{ position: 'top' }"
       :hideOnClickOutside="false"
     />
+    <graph-download v-model="downloadVisible"></graph-download>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { PrimeIcons, ToastSeverity } from 'primevue/api';
-import SpeedDial from '@/components/primevue/SpeedDial.vue';
 import { mapActions, mapState } from 'pinia';
 import { useGraphStore } from '@/stores/graph.store';
-import saveAsPNG from '@/helpers/download';
+import { saveAsPng } from '@/helpers/download';
 import { Sigma } from 'sigma';
+import SpeedDial from '@/components/primevue/SpeedDial.vue';
+import GraphDownload from '@/components/graph/GraphDownload.vue';
 
 export default defineComponent({
   name: 'GraphSpeedDial',
-  components: { SpeedDial },
+  components: { GraphDownload, SpeedDial },
   data() {
     return {
+      downloadVisible: false,
       items: [
         {
           label: 'Start layout',
@@ -45,12 +48,12 @@ export default defineComponent({
         {
           label: 'Download as image',
           icon: PrimeIcons.IMAGE,
-          command: () => this.downloadGraphAsPng()
+          command: () => this.downloadImage()
         },
         {
           label: 'Download graph',
           icon: PrimeIcons.DOWNLOAD,
-          command: () => console.log('Download')
+          command: () => this.downloadGraph()
         },
         {
           label: 'Maximize',
@@ -66,7 +69,7 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapState(useGraphStore, ['isLayoutRunning', 'sigma'])
+    ...mapState(useGraphStore, ['isLayoutRunning', 'sigma', 'graph'])
   },
   watch: {
     isLayoutRunning(newIsLayoutRunning) {
@@ -83,8 +86,8 @@ export default defineComponent({
       item.label = fullscreen ? 'Minimize' : 'Maximize';
       item.icon = fullscreen ? PrimeIcons.WINDOW_MINIMIZE : PrimeIcons.WINDOW_MAXIMIZE;
     },
-    downloadGraphAsPng() {
-      if (this.sigma) saveAsPNG(this.sigma as Sigma);
+    downloadImage() {
+      if (this.sigma) saveAsPng(this.sigma as Sigma);
       else
         this.$toast.add({
           severity: ToastSeverity.ERROR,
@@ -92,6 +95,9 @@ export default defineComponent({
           detail: 'Can not save graph as image, because it is not initialized',
           life: 10000
         });
+    },
+    downloadGraph() {
+      this.downloadVisible = true;
     }
   }
 });

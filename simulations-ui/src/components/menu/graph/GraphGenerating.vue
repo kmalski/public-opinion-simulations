@@ -12,7 +12,7 @@
       <label for="positiveProbability">Probability of positive opinion</label>
     </span>
     <component v-if="currentGenerator" ref="generator" :is="currentGenerator"></component>
-    <classic-button class="graph-generating-button" label="Generate" @click="generateGraph"></classic-button>
+    <prime-button class="graph-generating-button" label="Generate" @click="generateGraph"></prime-button>
   </div>
 </template>
 

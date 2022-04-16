@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gexf xmlns="http://www.gephi.org/gexf">
-    <graph type="static">
+    <graph type="static" defaultedgetype="undirected">
         <nodes>
             <node id="a" label="1"/>
             <node id="b" label="-1"/>

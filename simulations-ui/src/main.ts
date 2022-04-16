@@ -9,7 +9,7 @@ import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 
-import ClassicButton from 'primevue/button';
+import PrimeButton from 'primevue/button';
 import Card from 'primevue/card';
 import TabView from 'primevue/tabview';
 import TabPanel from 'primevue/tabpanel';
@@ -20,14 +20,13 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
 import InputSwitch from 'primevue/inputswitch';
-import ScrollPanel from 'primevue/scrollpanel';
 
 createApp(App)
   .use(createPinia())
   .use(PrimeVue)
   .use(ToastService)
   .use(VueFullscreen)
-  .component('ClassicButton', ClassicButton)
+  .component('PrimeButton', PrimeButton)
   .component('Card', Card)
   .component('TabView', TabView)
   .component('TabPanel', TabPanel)
@@ -38,5 +37,4 @@ createApp(App)
   .component('InputNumber', InputNumber)
   .component('InputText', InputText)
   .component('InputSwitch', InputSwitch)
-  .component('ScrollPanel', ScrollPanel)
   .mount('#app');

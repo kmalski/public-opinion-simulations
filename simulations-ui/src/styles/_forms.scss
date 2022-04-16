@@ -11,6 +11,10 @@
   .p-inputnumber {
     width: 100%;
   }
+
+  .p-inputtext {
+    width: 100%;
+  }
 }
 
 .float-input {
@@ -21,6 +25,7 @@
   justify-content: center;
   margin-top: 2rem;
   position: relative;
+  width: 100%;
 
   &-label {
     position: absolute;
