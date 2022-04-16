@@ -67,6 +67,7 @@ export default defineComponent({
   justify-content: space-between;
   align-items: center;
   width: 90%;
+  margin: 0 1rem;
 
   &-hint {
     flex: 60%;

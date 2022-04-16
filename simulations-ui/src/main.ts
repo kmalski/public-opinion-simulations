@@ -20,6 +20,7 @@ import Dropdown from 'primevue/dropdown';
 import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
 import InputSwitch from 'primevue/inputswitch';
+import ScrollPanel from 'primevue/scrollpanel';
 
 createApp(App)
   .use(createPinia())
@@ -37,4 +38,5 @@ createApp(App)
   .component('InputNumber', InputNumber)
   .component('InputText', InputText)
   .component('InputSwitch', InputSwitch)
+  .component('ScrollPanel', ScrollPanel)
   .mount('#app');

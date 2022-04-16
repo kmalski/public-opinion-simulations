@@ -69,15 +69,39 @@ export default defineComponent({
 
     .p-card-body {
       padding: 0;
+      height: 100%;
+      max-height: 100%;
+      position: relative;
 
       .p-card-content {
         padding: 0 1rem;
+        height: 100%;
+        max-height: 100%;
+        position: relative;
 
-        .p-tabview-panels {
-          padding: 1rem 0;
+        .p-tabview {
+          display: flex;
+          flex-direction: column;
+          height: 100%;
+          max-height: 100%;
+          position: relative;
 
-          .p-divider.p-divider-horizontal:before {
-            border-top: 2px solid variables.$divider-color;
+          .p-tabview-panels {
+            padding: 1rem 0;
+            height: 100%;
+            max-height: 100%;
+            position: relative;
+            overflow: hidden;
+
+            .p-tabview-panel {
+              height: 100%;
+              max-height: 100%;
+              position: relative;
+            }
+
+            .p-divider.p-divider-horizontal:before {
+              border-top: 2px solid variables.$divider-color;
+            }
           }
         }
       }

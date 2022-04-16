@@ -74,7 +74,10 @@ export default defineComponent({
   justify-content: flex-start;
   align-content: center;
   align-items: center;
-  width: 90%;
+  height: 100%;
+  width: 95%;
+  padding: 0 1rem;
+  overflow: auto;
 
   &-hint {
     width: 100%;
@@ -85,7 +88,9 @@ export default defineComponent({
   &-button {
     justify-self: flex-end;
     margin-top: 2rem;
+    margin-bottom: 2rem;
     width: 100%;
+    overflow: visible;
   }
 }
 </style>

@@ -22,10 +22,13 @@ export default defineComponent({
 
 <style scoped lang="scss">
 .graph-tab {
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
+  align-items: flex-start;
   align-content: center;
-  align-items: center;
+  height: 100%;
+  max-height: 100%;
 }
 </style>
