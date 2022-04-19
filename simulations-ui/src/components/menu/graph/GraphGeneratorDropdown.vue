@@ -2,7 +2,6 @@
   <dropdown
     class="graph-generator-dropdown"
     v-model="selectedGenerator"
-    @change="onChange"
     :options="options"
     option-label="name"
     placeholder="Select Generator"
@@ -11,15 +10,11 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-
-interface Option {
-  name: string;
-  generator: string;
-}
+import { mapActions } from 'pinia';
+import { useGeneratorStore } from '@/stores/generator.store';
 
 export default defineComponent({
   name: 'GraphGeneratorDropdown',
-  emits: ['change'],
   data() {
     return {
       options: [
@@ -37,10 +32,13 @@ export default defineComponent({
       selectedGenerator: null
     };
   },
-  methods: {
-    onChange(event: { value: Option }) {
-      this.$emit('change', event.value.generator);
+  watch: {
+    selectedGenerator(newGenerator) {
+      this.setGeneratorName(newGenerator.generator);
     }
+  },
+  methods: {
+    ...mapActions(useGeneratorStore, ['setGeneratorName'])
   }
 });
 </script>

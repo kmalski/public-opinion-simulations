@@ -17,7 +17,7 @@
   }
 }
 
-.float-input {
+.form-input {
   display: flex;
   flex-direction: column;
   align-content: center;
@@ -35,4 +35,13 @@
     color: variables.$text-color;
     line-height: 1;
   }
+
+  .p-inputnumber {
+    width: 100%;
+  }
+
+  .p-inputtext {
+    width: 100%;
+  }
+
 }

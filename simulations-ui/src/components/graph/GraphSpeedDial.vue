@@ -6,7 +6,7 @@
       showIcon="pi pi-bars"
       hideIcon="pi pi-times"
       buttonClass="p-button-outlined"
-      :tooltipOptions="{ position: 'top' }"
+      :tooltipOptions="{ position: 'top', event: 'hover' }"
       :hideOnClickOutside="false"
     />
     <graph-download v-model="downloadVisible"></graph-download>

@@ -1,8 +1,6 @@
 <template>
   <div class="graph-generating">
-    <p class="graph-generating-hint">Enter the graph parameters</p>
-    <graph-generator-dropdown @change="onGeneratorChange"></graph-generator-dropdown>
-    <span v-if="currentGenerator" class="p-float-label">
+    <span v-if="generatorName" class="p-float-label">
       <input-number
         id="positiveProbability"
         v-model="positiveProbability"
@@ -11,15 +9,17 @@
       ></input-number>
       <label for="positiveProbability">Probability of positive opinion</label>
     </span>
-    <component v-if="currentGenerator" ref="generator" :is="currentGenerator"></component>
-    <prime-button class="graph-generating-button" label="Generate" @click="generateGraph"></prime-button>
+    <p v-if="!generatorName" class="graph-generating-hint">
+      The parameters will be available after selecting generator
+    </p>
+    <component v-if="generatorName" :is="generatorName"></component>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import GraphUpload from '@/components/menu/graph/GraphUpload.vue';
-import GraphGeneratorDropdown from '@/components/menu/graph/GraphGeneratorDropdown.vue';
+import { mapActions, mapState } from 'pinia';
+import { useGeneratorStore } from '@/stores/generator.store';
 import CompleteGenerator from '@/components/menu/graph/generator/CompleteGenerator.vue';
 import EmptyGenerator from '@/components/menu/graph/generator/EmptyGenerator.vue';
 import LadderGenerator from '@/components/menu/graph/generator/LadderGenerator.vue';
@@ -30,13 +30,10 @@ import ConnectedCavemanGenerator from '@/components/menu/graph/generator/Connect
 import ClustersGenerator from '@/components/menu/graph/generator/ClustersGenerator.vue';
 import ErdosRenyiGenerator from '@/components/menu/graph/generator/ErdosRenyiGenerator.vue';
 import GirvanNewmanGenerator from '@/components/menu/graph/generator/GirvanNewmanGenerator.vue';
-import GraphGenerator from '@/components/menu/graph/generator/GraphGenerator.vue';
 
 export default defineComponent({
   name: 'GraphGenerating',
   components: {
-    GraphUpload,
-    GraphGeneratorDropdown,
     CompleteGenerator,
     EmptyGenerator,
     LadderGenerator,
@@ -50,17 +47,19 @@ export default defineComponent({
   },
   data() {
     return {
-      positiveProbability: 0.5,
-      currentGenerator: ''
+      positiveProbability: 0.5
     };
   },
-  methods: {
-    onGeneratorChange(generator: string) {
-      this.currentGenerator = generator;
-    },
-    generateGraph() {
-      (this.$refs.generator as typeof GraphGenerator).generateGraph(this.positiveProbability);
+  watch: {
+    positiveProbability(newProbability) {
+      this.setPositiveProbability(newProbability);
     }
+  },
+  computed: {
+    ...mapState(useGeneratorStore, ['generatorName'])
+  },
+  methods: {
+    ...mapActions(useGeneratorStore, ['setPositiveProbability'])
   }
 });
 </script>
@@ -81,16 +80,8 @@ export default defineComponent({
 
   &-hint {
     width: 100%;
-    margin: 0 0 1rem;
+    margin: 0;
     text-align: left;
-  }
-
-  &-button {
-    justify-self: flex-end;
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-    width: 100%;
-    overflow: visible;
   }
 }
 </style>

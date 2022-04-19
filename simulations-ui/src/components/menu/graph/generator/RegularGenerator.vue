@@ -10,8 +10,8 @@
       <label for="nodesNumber">Number of nodes</label>
     </span>
 
-    <span class="float-input">
-      <label class="float-input-label" for="periodicBoundary">Periodic boundaries</label>
+    <span class="form-input">
+      <label class="form-input-label" for="periodicBoundary">Periodic boundaries</label>
       <input-switch id="periodicBoundary" v-model="periodicBoundary"></input-switch>
     </span>
   </div>

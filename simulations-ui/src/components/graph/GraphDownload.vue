@@ -1,27 +1,36 @@
 <template>
-  <prime-dialog header="Download" v-model:visible="visible" :modal="true" @hide="onHide" @show="onShow">
-    <div class="graph-download">
+  <prime-dialog
+    class="graph-download"
+    header="Download"
+    v-model:visible="visible"
+    :modal="true"
+    @hide="onHide"
+    @show="onShow"
+  >
+    <div class="graph-download-content">
       <p class="graph-download-hint">Enter download options</p>
 
-      <span class="float-input">
-        <label class="float-input-label" for="filename">File name</label>
+      <span class="form-input">
+        <label class="form-input-label" for="filename">File name</label>
         <input-text id="filename" v-model="filename"></input-text>
       </span>
 
-      <span class="float-input">
-        <label class="float-input-label" for="format">File format</label>
+      <span class="form-input">
+        <label class="form-input-label" for="format">File format</label>
         <dropdown id="format" v-model="format" :options="formats" placeholder="Select Format"></dropdown>
       </span>
 
-      <span class="float-input">
-        <label class="float-input-label" for="withPositions">Export positions</label>
+      <span class="form-input">
+        <label class="form-input-label" for="withPositions">Export positions</label>
         <input-switch id="withPositions" v-model="withPositions"></input-switch>
       </span>
     </div>
 
     <template #footer>
-      <prime-button label="Cancel" icon="pi pi-times" @click="onCancel" class="p-button-text" />
-      <prime-button label="OK" icon="pi pi-check" @click="onOk" />
+      <div class="graph-download-footer">
+        <prime-button label="Cancel" icon="pi pi-times" @click="onCancel" class="p-button-text" />
+        <prime-button label="OK" icon="pi pi-check" @click="onOk" />
+      </div>
     </template>
   </prime-dialog>
 </template>
@@ -91,31 +100,37 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @use '../../styles/forms';
-
 .graph-download {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-content: center;
-  align-items: flex-start;
-  width: 20rem;
+  &-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-content: center;
+    align-items: flex-start;
+    width: 15rem;
 
-  &-hint {
-    width: 100%;
-    margin: 0 0 1rem;
-    text-align: left;
+    &-hint {
+      width: 100%;
+      margin: 0 0 1rem;
+      text-align: left;
+    }
+
+    .p-inputtext {
+      width: 100%;
+    }
+
+    .p-dropdown {
+      width: 100%;
+    }
   }
 
-  .p-inputnumber {
-    width: 70%;
-  }
+  &-footer {
+    display: flex;
+    justify-content: space-between;
 
-  .p-inputtext {
-    width: 90%;
-  }
-
-  .p-dropdown {
-    width: 90%;
+    .p-button {
+      margin: 0;
+    }
   }
 }
 </style>

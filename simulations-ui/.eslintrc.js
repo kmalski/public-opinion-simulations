@@ -8,12 +8,7 @@ module.exports = {
   parserOptions: {
     ecmaVersion: 2021
   },
-  extends: [
-    'eslint:recommended',
-    'plugin:vue/vue3-essential',
-    '@vue/typescript/recommended',
-    '@vue/prettier'
-  ],
+  extends: ['eslint:recommended', 'plugin:vue/vue3-essential', '@vue/typescript/recommended', '@vue/prettier'],
   rules: {
     'prettier/prettier': [
       'warn',
