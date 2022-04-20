@@ -33,6 +33,7 @@ lerna-debug.log*
 webstorm.config.js
 
 # IDE - VSCode
+.vscode
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
@@ -41,3 +42,4 @@ webstorm.config.js
 
 # ESLint cache
 .eslintcache
+*.exe

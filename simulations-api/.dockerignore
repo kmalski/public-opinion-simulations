@@ -1,1 +1,5 @@
 node_modules
+./runner/runner.exe
+./runner/main.exe
+./runner/runner
+./runner/main
