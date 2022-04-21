@@ -66,11 +66,11 @@ export default defineComponent({
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  align-content: center;
   width: 90%;
-  margin: 0 1rem;
+  margin: 0 auto;
 
   &-hint {
-    flex: 60%;
     text-align: left;
 
     p {
@@ -79,10 +79,10 @@ export default defineComponent({
   }
 
   &-button {
-    flex: 40%;
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0;
   }
 
   &-links {

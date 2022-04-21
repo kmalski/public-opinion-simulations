@@ -1,22 +1,5 @@
 @use 'variables';
 
-@mixin graph-generator {
-  width: 100%;
-}
-
-.p-float-label {
-  margin-top: 2rem;
-  width: 100%;
-
-  .p-inputnumber {
-    width: 100%;
-  }
-
-  .p-inputtext {
-    width: 100%;
-  }
-}
-
 .form-input {
   display: flex;
   flex-direction: column;
@@ -43,5 +26,17 @@
   .p-inputtext {
     width: 100%;
   }
+}
 
+.p-float-label {
+  margin-top: 2rem;
+  width: 100%;
+
+  .p-inputnumber {
+    width: 100%;
+  }
+
+  .p-inputtext {
+    width: 100%;
+  }
 }

@@ -74,8 +74,8 @@ export default defineComponent({
   align-content: center;
   align-items: center;
   height: 100%;
-  width: 95%;
-  padding: 0 1rem;
+  width: 90%;
+  margin: 0 auto;
   overflow: auto;
 
   &-hint {

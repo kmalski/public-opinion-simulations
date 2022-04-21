@@ -1,6 +1,6 @@
 <template>
   <div class="simulation-tab">
-    <simulation-model-dropdown></simulation-model-dropdown>
+    <simulation-model-dropdown class="simulation-tab-dropdown"></simulation-model-dropdown>
     <p v-if="!modelName" class="simulation-tab-hint">The parameters will be available after selecting model</p>
     <component v-if="modelName" :is="modelName"></component>
     <prime-button
@@ -35,33 +35,13 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use '../../../styles/tab';
+
 .simulation-tab {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  align-content: center;
-  height: 100%;
-  max-height: 100%;
+  @include tab.tab;
 
   &-hint {
-    width: 90%;
-    margin: auto;
-    text-align: left;
     height: 100%;
-  }
-
-  &-button {
-    justify-self: flex-end;
-    margin: 2rem auto 0 auto;
-    width: 90%;
-    overflow: visible;
-  }
-
-  .p-dropdown {
-    width: 90%;
-    margin: 1rem auto;
   }
 }
 </style>

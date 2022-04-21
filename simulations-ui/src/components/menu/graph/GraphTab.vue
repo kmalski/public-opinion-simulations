@@ -3,7 +3,7 @@
     <graph-upload></graph-upload>
     <divider></divider>
     <p class="graph-tab-hint">Enter the graph parameters</p>
-    <graph-generator-dropdown></graph-generator-dropdown>
+    <graph-generator-dropdown class="graph-tab-dropdown"></graph-generator-dropdown>
     <graph-generating></graph-generating>
     <prime-button
       :disabled="!generator"
@@ -39,32 +39,9 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use '../../../styles/tab';
+
 .graph-tab {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  align-content: center;
-  height: 100%;
-  max-height: 100%;
-
-  &-hint {
-    width: 90%;
-    margin: auto;
-    text-align: left;
-  }
-
-  &-button {
-    justify-self: flex-end;
-    margin: 2rem auto 0 auto;
-    width: 90%;
-    overflow: visible;
-  }
-
-  .p-dropdown {
-    width: 90%;
-    margin: 1rem auto;
-  }
+  @include tab.tab;
 }
 </style>

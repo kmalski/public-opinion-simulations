@@ -33,9 +33,10 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+@use '../../../../styles/tab';
 @use '../../../../styles/forms';
 
 .complete-generator {
-  @include forms.graph-generator;
+  @include tab.graph-generator;
 }
 </style>
