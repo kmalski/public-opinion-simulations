@@ -1,5 +1,7 @@
-import { Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, Sse, MessageEvent, Logger, Header } from '@nestjs/common';
 import { SimulationsService } from './simulations.service';
+import { SimulationDto } from './simulation.dto';
+import { Observable } from 'rxjs';
 
 @Controller('simulation')
 export class SimulationsController {
@@ -7,7 +9,7 @@ export class SimulationsController {
 
   @Get()
   findAll() {
-    return this.simulationsService.getSimulations();
+    return this.simulationsService.getAllSimulations();
   }
 
   @Get(':id')
@@ -15,8 +17,14 @@ export class SimulationsController {
     return this.simulationsService.getSimulation(id);
   }
 
+  @HttpCode(200)
   @Post()
-  start() {
-    return this.simulationsService.startSimulation();
+  start(@Body() simulation: SimulationDto) {
+    return this.simulationsService.startSimulation(simulation);
+  }
+
+  @Sse(':id/subscribe')
+  subscribe(@Param('id') id: string): Observable<MessageEvent> {
+    return this.simulationsService.subscribe(id);
   }
 }

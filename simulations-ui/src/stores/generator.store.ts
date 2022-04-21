@@ -1,30 +1,34 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { GraphGenerator } from '@/components/menu/graph/generator/GraphGenerator.vue';
+import { GraphGeneratorComponent } from '@/components/menu/graph/generator/GraphGenerator.vue';
 
 interface State {
-  generatorName: string;
+  generatorComponentName: string;
+  generatorComponent?: GraphGeneratorComponent;
   positiveProbability: number;
-  generator?: GraphGenerator;
 }
 
 function initState() {
-  return { generatorName: '', generator: undefined, positiveProbability: 0.5 };
+  return {
+    generatorComponentName: '',
+    generatorComponent: undefined,
+    positiveProbability: 0.5
+  };
 }
 
 export const useGeneratorStore = defineStore('generator', {
   state: (): State => initState(),
   actions: {
-    setGeneratorName(generatorName: string) {
-      this.generatorName = generatorName;
+    setGeneratorComponentName(generatorComponentName: string) {
+      this.generatorComponentName = generatorComponentName;
     },
-    setGenerator(generator: GraphGenerator) {
-      this.generator = generator;
+    setGeneratorComponent(generatorComponent: GraphGeneratorComponent) {
+      this.generatorComponent = generatorComponent;
     },
     setPositiveProbability(positiveProbability: number) {
       this.positiveProbability = positiveProbability;
     },
     generateGraph() {
-      if (this.generator) this.generator.generateGraph(this.positiveProbability);
+      if (this.generatorComponent) this.generatorComponent.generateGraph(this.positiveProbability);
     }
   }
 });

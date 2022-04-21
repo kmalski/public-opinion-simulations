@@ -23,11 +23,11 @@ export default defineComponent({
   },
   watch: {
     selectedModel(newModel) {
-      this.setModelName(newModel.model);
+      this.setModelComponentName(newModel.model);
     }
   },
   methods: {
-    ...mapActions(useSimulationStore, ['setModelName'])
+    ...mapActions(useSimulationStore, ['setModelComponentName'])
   }
 });
 </script>

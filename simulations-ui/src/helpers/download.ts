@@ -1,53 +1,19 @@
 import { Sigma } from 'sigma';
 import { Graph } from '@/helpers/types';
-import { Graph as Graphviz, toDot } from 'ts-graphviz';
-import { write as gexfWrite } from 'graphology-gexf';
+import { serializeDot, serializeGexf, serializeJson } from '@/helpers/parser';
 
 export function saveAsDot(graph: Graph, filename: string, withPositions = false) {
-  const graphviz = new Graphviz();
-  graph.forEachNode((node, attributes) => {
-    const attr = {
-      label: attributes.label,
-      pos: withPositions ? `${attributes.x},${attributes.y}!` : undefined
-    };
-    graphviz.createNode(node, attr);
-  });
-
-  graph.forEachEdge((edge, attributes, source, target) => {
-    graphviz.createEdge([source, target]);
-  });
-
-  const graphStr = toDot(graphviz);
+  const graphStr = serializeDot(graph, withPositions);
   saveBlob(strToBlob(graphStr), filename + '.dot');
 }
 
 export function saveAsJson(graph: Graph, filename: string, withPositions = false) {
-  const graphCopy = graph.copy();
-  graphCopy.forEachNode((node, attributes) => {
-    attributes.size = undefined;
-    attributes.color = undefined;
-    attributes.x = withPositions ? attributes.x : undefined;
-    attributes.y = withPositions ? attributes.y : undefined;
-  });
-  const graphStr = JSON.stringify(graphCopy.export());
-
+  const graphStr = serializeJson(graph, withPositions);
   saveBlob(strToBlob(graphStr), filename + '.json');
 }
 
 export function saveAsGexf(graph: Graph, filename: string, withPositions = false) {
-  const graphStr = gexfWrite(graph, {
-    pretty: true,
-    formatNode: (key, attributes) => {
-      return {
-        label: attributes.label,
-        viz: withPositions ? { x: attributes.x, y: attributes.y } : undefined
-      };
-    },
-    formatEdge: () => {
-      return {};
-    }
-  });
-
+  const graphStr = serializeGexf(graph, withPositions);
   saveBlob(strToBlob(graphStr), filename + '.gexf');
 }
 

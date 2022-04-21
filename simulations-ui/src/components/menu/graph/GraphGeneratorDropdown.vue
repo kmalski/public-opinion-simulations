@@ -34,11 +34,11 @@ export default defineComponent({
   },
   watch: {
     selectedGenerator(newGenerator) {
-      this.setGeneratorName(newGenerator.generator);
+      this.setGeneratorComponentName(newGenerator.generator);
     }
   },
   methods: {
-    ...mapActions(useGeneratorStore, ['setGeneratorName'])
+    ...mapActions(useGeneratorStore, ['setGeneratorComponentName'])
   }
 });
 </script>

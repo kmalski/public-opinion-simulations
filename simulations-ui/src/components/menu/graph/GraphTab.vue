@@ -6,7 +6,7 @@
     <graph-generator-dropdown class="graph-tab-dropdown"></graph-generator-dropdown>
     <graph-generating></graph-generating>
     <prime-button
-      :disabled="!generator"
+      :disabled="!generatorComponent"
       class="graph-tab-button"
       label="Generate"
       @click="generateGraph"
@@ -30,7 +30,7 @@ export default defineComponent({
     GraphGenerating
   },
   computed: {
-    ...mapState(useGeneratorStore, ['generator'])
+    ...mapState(useGeneratorStore, ['generatorComponent'])
   },
   methods: {
     ...mapActions(useGeneratorStore, ['generateGraph'])

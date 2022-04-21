@@ -1,10 +1,10 @@
 <template>
   <div class="simulation-tab">
     <simulation-model-dropdown class="simulation-tab-dropdown"></simulation-model-dropdown>
-    <p v-if="!modelName" class="simulation-tab-hint">The parameters will be available after selecting model</p>
-    <component v-if="modelName" :is="modelName"></component>
+    <p v-if="!modelComponentName" class="simulation-tab-hint">The parameters will be available after selecting model</p>
+    <component v-if="modelComponentName" :is="modelComponentName"></component>
     <prime-button
-      :disabled="!model"
+      :disabled="!modelComponent || isRunning"
       class="simulation-tab-button"
       label="Run Simulation"
       @click="runSimulation"
@@ -26,7 +26,7 @@ export default defineComponent({
     LocalMajorityRuleModel
   },
   computed: {
-    ...mapState(useSimulationStore, ['model', 'modelName'])
+    ...mapState(useSimulationStore, ['modelComponent', 'modelComponentName', 'isRunning'])
   },
   methods: {
     ...mapActions(useSimulationStore, ['runSimulation'])

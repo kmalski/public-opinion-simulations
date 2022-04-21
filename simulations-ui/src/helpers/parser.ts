@@ -1,9 +1,36 @@
 import { parse as graphvizParse } from '@ts-graphviz/parser';
 import { parse as gexfParse } from 'graphology-gexf';
-import { AttributesValue, EdgeTarget, EdgeTargetTuple } from 'ts-graphviz';
+import { AttributesValue, EdgeTarget, EdgeTargetTuple, Graph as Graphviz, toDot } from 'ts-graphviz';
 import { SIZE } from '@/helpers/defaults';
 import { BinaryOpinion, Graph } from '@/helpers/types';
 import { opinionToColor } from '@/helpers/graph';
+import { write as gexfWrite } from 'graphology-gexf/node';
+
+export function serializeJson(graph: Graph, withPositions: boolean): string {
+  const graphCopy = graph.copy();
+  graphCopy.forEachNode((node, attributes) => {
+    attributes.size = undefined;
+    attributes.color = undefined;
+    attributes.x = withPositions ? attributes.x : undefined;
+    attributes.y = withPositions ? attributes.y : undefined;
+  });
+  return JSON.stringify(graphCopy.export());
+}
+
+export function serializeGexf(graph: Graph, withPositions: boolean): string {
+  return gexfWrite(graph, {
+    pretty: true,
+    formatNode: (key, attributes) => {
+      return {
+        label: attributes.label,
+        viz: withPositions ? { x: attributes.x, y: attributes.y } : undefined
+      };
+    },
+    formatEdge: () => {
+      return {};
+    }
+  });
+}
 
 export function parseGexf(fileText: string): Graph {
   const graph = gexfParse(Graph, fileText);
@@ -13,6 +40,23 @@ export function parseGexf(fileText: string): Graph {
     attributes.size = SIZE;
   });
   return graph;
+}
+
+export function serializeDot(graph: Graph, withPositions: boolean): string {
+  const graphviz = new Graphviz();
+  graph.forEachNode((node, attributes) => {
+    const attr = {
+      label: attributes.label,
+      pos: withPositions ? `${attributes.x},${attributes.y}!` : undefined
+    };
+    graphviz.createNode(node, attr);
+  });
+
+  graph.forEachEdge((edge, attributes, source, target) => {
+    graphviz.createEdge([source, target]);
+  });
+
+  return toDot(graphviz);
 }
 
 export function parseDot(fileText: string): Graph {

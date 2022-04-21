@@ -1,6 +1,6 @@
 <template>
   <div class="graph-generating">
-    <span v-if="generatorName" class="p-float-label">
+    <span v-if="generatorComponentName" class="p-float-label">
       <input-number
         id="positiveProbability"
         v-model="positiveProbability"
@@ -9,10 +9,10 @@
       ></input-number>
       <label for="positiveProbability">Probability of positive opinion</label>
     </span>
-    <p v-if="!generatorName" class="graph-generating-hint">
+    <p v-if="!generatorComponentName" class="graph-generating-hint">
       The parameters will be available after selecting generator
     </p>
-    <component v-if="generatorName" :is="generatorName"></component>
+    <component v-if="generatorComponentName" :is="generatorComponentName"></component>
   </div>
 </template>
 
@@ -56,7 +56,7 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(useGeneratorStore, ['generatorName'])
+    ...mapState(useGeneratorStore, ['generatorComponentName'])
   },
   methods: {
     ...mapActions(useGeneratorStore, ['setPositiveProbability'])

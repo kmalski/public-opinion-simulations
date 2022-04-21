@@ -10,8 +10,8 @@ export default defineComponent({
   name: 'LocalMajorityRuleModel',
   extends: OpinionModel,
   methods: {
-    runSimulation() {
-      console.log('Run LocalMajorityRuleModel');
+    pushModelToStore() {
+      this.setModel({});
     }
   }
 });

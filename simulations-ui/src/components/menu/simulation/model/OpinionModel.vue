@@ -3,18 +3,19 @@ import { defineComponent } from 'vue';
 import { mapActions } from 'pinia';
 import { useSimulationStore } from '@/stores/simulation.store';
 
-export interface OpinionModel {
-  runSimulation(): void;
-  setModel(model: OpinionModel): void;
+export interface OpinionModelComponent {
+  pushModelToStore(): void;
+  setModelComponent(modelComponent: OpinionModelComponent): void;
+  setModel(model: any): void;
 }
 
 export default defineComponent({
   name: 'OpinionModel',
   mounted() {
-    this.setModel(this);
+    this.setModelComponent(this as unknown as OpinionModelComponent);
   },
   methods: {
-    ...mapActions(useSimulationStore, ['setModel'])
+    ...mapActions(useSimulationStore, ['setModelComponent', 'setModel'])
   }
 });
 </script>
