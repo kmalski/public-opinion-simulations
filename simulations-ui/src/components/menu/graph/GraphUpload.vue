@@ -9,6 +9,7 @@
     </div>
     <div class="graph-upload-button">
       <file-upload
+        :disabled="isRunning"
         name="graph"
         url="/"
         mode="basic"
@@ -23,14 +24,19 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { parseDot, parseGexf } from '@/helpers/parser';
-import { mapActions } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import { useGraphStore } from '@/stores/graph.store';
-import { ToastSeverity } from 'primevue/api';
+import { useToastStore } from '@/stores/toast.store';
+import { useSimulationStore } from '@/stores/simulation.store';
 
 export default defineComponent({
   name: 'GraphUpload',
+  computed: {
+    ...mapState(useSimulationStore, ['isRunning'])
+  },
   methods: {
     ...mapActions(useGraphStore, ['setGraph']),
+    ...mapActions(useToastStore, ['setError']),
     async readFile(event: { files: File | File[] }) {
       const file = Array.isArray(event.files) ? event.files[0] : event.files;
       const extension = file.name.split('.').pop();
@@ -46,11 +52,9 @@ export default defineComponent({
             break;
         }
       } catch (error) {
-        this.$toast.add({
-          severity: ToastSeverity.ERROR,
+        this.setError({
           summary: 'Error while reading graph',
-          detail: error instanceof Error ? error.message : 'Unknown error',
-          life: 10000
+          detail: error instanceof Error ? error.message : 'Unknown error'
         });
       }
     }

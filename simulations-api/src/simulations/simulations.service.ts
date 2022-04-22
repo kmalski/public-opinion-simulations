@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 interface Simulation {
   id: string;
   runner: ChildProcess;
+  inputDotGraph: string;
 }
 
 @Injectable()
@@ -25,7 +26,7 @@ export class SimulationsService {
 
     const runner = execFile(resolve(__dirname, `../../runner/${SimulationsService.EXE_NAME}`));
     const id = uuid();
-    this.idToSimulationMap.set(id, { id, runner });
+    this.idToSimulationMap.set(id, { id, runner, inputDotGraph: simulation.dotGraph });
 
     this.logger.log(`Starting simulation ${id}`);
 
@@ -69,10 +70,12 @@ export class SimulationsService {
         }
       });
 
-      runner.prependListener('exit', () => {
+      runner.prependListener('exit', (code) => {
         subscriber.next({
           data: {
-            status: 'CLOSED'
+            status: 'CLOSED',
+            resultStatus: code ? 'FAILURE' : 'SUCCESS',
+            dotGraph: simulation.inputDotGraph
           }
         });
         subscriber.complete();

@@ -1,6 +1,6 @@
 <template>
   <div class="app">
-    <toast class="toast" position="bottom-right"></toast>
+    <toast-listener></toast-listener>
     <graph-card class="graph-card"></graph-card>
     <menu-card class="menu-card"></menu-card>
   </div>
@@ -10,9 +10,10 @@
 import { defineComponent } from 'vue';
 import GraphCard from '@/components/graph/GraphCard.vue';
 import MenuCard from '@/components/menu/MenuCard.vue';
+import ToastListener from '@/components/primevue/ToastListener.vue';
 
 export default defineComponent({
-  components: { MenuCard, GraphCard }
+  components: { ToastListener, MenuCard, GraphCard }
 });
 </script>
 
@@ -25,10 +26,6 @@ export default defineComponent({
   place-items: stretch;
   width: 100%;
   height: 100%;
-
-  .toast {
-    position: absolute;
-  }
 
   .graph-card {
     grid-column: 1;

@@ -9,32 +9,34 @@ import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
 import 'primeicons/primeicons.css';
 
-import PrimeButton from 'primevue/button';
 import Card from 'primevue/card';
-import TabView from 'primevue/tabview';
-import TabPanel from 'primevue/tabpanel';
-import FileUpload from 'primevue/fileupload';
 import Divider from 'primevue/divider';
-import Toast from 'primevue/toast';
 import Dropdown from 'primevue/dropdown';
-import InputText from 'primevue/inputtext';
+import FileUpload from 'primevue/fileupload';
 import InputNumber from 'primevue/inputnumber';
 import InputSwitch from 'primevue/inputswitch';
+import InputText from 'primevue/inputtext';
+import PrimeButton from 'primevue/button';
+import TabPanel from 'primevue/tabpanel';
+import TabView from 'primevue/tabview';
+import Toast from 'primevue/toast';
+import ProgressBar from 'primevue/progressbar';
 
 createApp(App)
   .use(createPinia())
   .use(PrimeVue)
   .use(ToastService)
   .use(VueFullscreen)
-  .component('PrimeButton', PrimeButton)
   .component('Card', Card)
-  .component('TabView', TabView)
-  .component('TabPanel', TabPanel)
-  .component('FileUpload', FileUpload)
   .component('Divider', Divider)
-  .component('Toast', Toast)
   .component('Dropdown', Dropdown)
+  .component('FileUpload', FileUpload)
   .component('InputNumber', InputNumber)
-  .component('InputText', InputText)
   .component('InputSwitch', InputSwitch)
+  .component('InputText', InputText)
+  .component('PrimeButton', PrimeButton)
+  .component('ProgressBar', ProgressBar)
+  .component('TabPanel', TabPanel)
+  .component('TabView', TabView)
+  .component('Toast', Toast)
   .mount('#app');

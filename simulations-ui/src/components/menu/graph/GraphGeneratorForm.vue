@@ -1,5 +1,5 @@
 <template>
-  <div class="graph-generating">
+  <div class="graph-generator-form">
     <span v-if="generatorComponentName" class="p-float-label">
       <input-number
         id="positiveProbability"
@@ -9,7 +9,7 @@
       ></input-number>
       <label for="positiveProbability">Probability of positive opinion</label>
     </span>
-    <p v-if="!generatorComponentName" class="graph-generating-hint">
+    <p v-if="!generatorComponentName" class="graph-generator-form-hint">
       The parameters will be available after selecting generator
     </p>
     <component v-if="generatorComponentName" :is="generatorComponentName"></component>
@@ -32,7 +32,7 @@ import ErdosRenyiGenerator from '@/components/menu/graph/generator/ErdosRenyiGen
 import GirvanNewmanGenerator from '@/components/menu/graph/generator/GirvanNewmanGenerator.vue';
 
 export default defineComponent({
-  name: 'GraphGenerating',
+  name: 'GraphGeneratorForm',
   components: {
     CompleteGenerator,
     EmptyGenerator,
@@ -67,7 +67,7 @@ export default defineComponent({
 <style scoped lang="scss">
 @use '../../../styles/forms';
 
-.graph-generating {
+.graph-generator-form {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

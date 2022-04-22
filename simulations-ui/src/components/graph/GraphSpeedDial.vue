@@ -22,6 +22,7 @@ import { saveAsPng } from '@/helpers/download';
 import { Sigma } from 'sigma';
 import SpeedDial from '@/components/primevue/SpeedDial.vue';
 import GraphDownload from '@/components/graph/GraphDownload.vue';
+import { useToastStore } from '@/stores/toast.store';
 
 export default defineComponent({
   name: 'GraphSpeedDial',
@@ -81,6 +82,7 @@ export default defineComponent({
   },
   methods: {
     ...mapActions(useGraphStore, ['startLayout', 'stopLayout', 'randomLayout', 'centerLayout']),
+    ...mapActions(useToastStore, ['setError']),
     toggleFullscreen(fullscreen: boolean) {
       const item = this.items[this.items.length - 1];
       item.label = fullscreen ? 'Minimize' : 'Maximize';
@@ -89,11 +91,9 @@ export default defineComponent({
     downloadImage() {
       if (this.sigma) saveAsPng(this.sigma as Sigma);
       else
-        this.$toast.add({
-          severity: ToastSeverity.ERROR,
+        this.setError({
           summary: 'Download error',
-          detail: 'Can not save graph as image, because it is not initialized',
-          life: 10000
+          detail: 'Can not save graph as image, because it is not initialized'
         });
     },
     downloadGraph() {

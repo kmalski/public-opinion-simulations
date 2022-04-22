@@ -4,9 +4,9 @@
     <divider></divider>
     <p class="graph-tab-hint">Enter the graph parameters</p>
     <graph-generator-dropdown class="graph-tab-dropdown"></graph-generator-dropdown>
-    <graph-generating></graph-generating>
+    <graph-generator-form></graph-generator-form>
     <prime-button
-      :disabled="!generatorComponent"
+      :disabled="!generatorComponent || isRunning"
       class="graph-tab-button"
       label="Generate"
       @click="generateGraph"
@@ -20,17 +20,19 @@ import { mapActions, mapState } from 'pinia';
 import { useGeneratorStore } from '@/stores/generator.store';
 import GraphUpload from '@/components/menu/graph/GraphUpload.vue';
 import GraphGeneratorDropdown from '@/components/menu/graph/GraphGeneratorDropdown.vue';
-import GraphGenerating from '@/components/menu/graph/GraphGenerating.vue';
+import GraphGeneratorForm from '@/components/menu/graph/GraphGeneratorForm.vue';
+import { useSimulationStore } from '@/stores/simulation.store';
 
 export default defineComponent({
   name: 'GraphTab',
   components: {
     GraphUpload,
     GraphGeneratorDropdown,
-    GraphGenerating
+    GraphGeneratorForm
   },
   computed: {
-    ...mapState(useGeneratorStore, ['generatorComponent'])
+    ...mapState(useGeneratorStore, ['generatorComponent']),
+    ...mapState(useSimulationStore, ['isRunning'])
   },
   methods: {
     ...mapActions(useGeneratorStore, ['generateGraph'])
