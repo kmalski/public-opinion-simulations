@@ -66,6 +66,7 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @use '../../../styles/forms';
+@use '../../../styles/variables';
 
 .graph-generator-form {
   display: flex;
@@ -79,9 +80,7 @@ export default defineComponent({
   overflow: auto;
 
   &-hint {
-    width: 100%;
-    margin: 0;
-    text-align: left;
+    @include forms.hint;
   }
 }
 </style>

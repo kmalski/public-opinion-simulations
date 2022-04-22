@@ -56,9 +56,7 @@ export default defineComponent({
   overflow: auto;
 
   &-hint {
-    width: 100%;
-    margin: 0;
-    text-align: left;
+    @include forms.hint;
   }
 }
 </style>

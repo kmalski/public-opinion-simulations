@@ -1,3 +1,6 @@
+@use 'variables';
+@use 'forms';
+
 @mixin graph-generator {
   width: 100%;
 }
@@ -17,10 +20,14 @@
     margin: 1rem auto;
   }
 
-  &-hint {
+  &-text {
     width: 90%;
     margin: auto;
     text-align: left;
+  }
+
+  &-hint {
+    @include forms.hint;
   }
 
   &-button {

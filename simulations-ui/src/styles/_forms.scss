@@ -1,5 +1,13 @@
 @use 'variables';
 
+@mixin hint {
+  width: 100%;
+  margin: 0;
+  text-align: left;
+  font-size: 13px;
+  color: variables.$text-color;
+}
+
 .form-input {
   display: flex;
   flex-direction: column;

@@ -2,7 +2,7 @@
   <div class="graph-tab">
     <graph-upload></graph-upload>
     <divider></divider>
-    <p class="graph-tab-hint">Enter the graph parameters</p>
+    <p class="graph-tab-text">Enter the graph parameters</p>
     <graph-generator-dropdown class="graph-tab-dropdown"></graph-generator-dropdown>
     <graph-generator-form></graph-generator-form>
     <p v-if="isRunning" class="graph-tab-hint translate-y">
@@ -45,12 +45,15 @@ export default defineComponent({
 
 <style scoped lang="scss">
 @use '../../../styles/tab';
+@use '../../../styles/variables';
 
 .graph-tab {
   @include tab.tab;
 
   .translate-y {
     transform: translateY(1rem);
+    width: 90%;
+    margin: auto;
   }
 }
 </style>
