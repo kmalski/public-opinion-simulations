@@ -5,6 +5,9 @@
     <p class="graph-tab-hint">Enter the graph parameters</p>
     <graph-generator-dropdown class="graph-tab-dropdown"></graph-generator-dropdown>
     <graph-generator-form></graph-generator-form>
+    <p v-if="isRunning" class="graph-tab-hint translate-y">
+      Before a new graph can be generated, the simulation must end
+    </p>
     <prime-button
       :disabled="!generatorComponent || isRunning"
       class="graph-tab-button"
@@ -45,5 +48,9 @@ export default defineComponent({
 
 .graph-tab {
   @include tab.tab;
+
+  .translate-y {
+    transform: translateY(1rem);
+  }
 }
 </style>

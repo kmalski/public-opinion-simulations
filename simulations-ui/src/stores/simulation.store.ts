@@ -57,7 +57,7 @@ export const useSimulationStore = defineStore('simulation', {
         },
         body: JSON.stringify({
           model: {},
-          dotGraph: serializeDot(graphStore.graph, false)
+          dotGraph: serializeDot(graphStore.graph, true)
         })
       });
 

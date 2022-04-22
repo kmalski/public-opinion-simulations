@@ -1,8 +1,8 @@
 <template>
   <div class="simulation-form">
     <span v-if="modelComponentName" class="p-float-label">
-      <input-number id="iterations" v-model="iterations" mode="decimal"></input-number>
-      <label for="iterations">Probability of positive opinion</label>
+      <input-number :disabled="true" id="iterations" v-model="iterations" mode="decimal"></input-number>
+      <label for="iterations">Number of simulation iterations</label>
     </span>
     <p v-if="!modelComponentName" class="simulation-form-hint">
       The parameters will be available after selecting model
@@ -33,7 +33,7 @@ export default defineComponent({
     }
   },
   computed: {
-    ...mapState(useSimulationStore, ['modelComponentName'])
+    ...mapState(useSimulationStore, ['modelComponentName', 'isRunning'])
   },
   methods: {
     ...mapActions(useSimulationStore, ['setIterations'])

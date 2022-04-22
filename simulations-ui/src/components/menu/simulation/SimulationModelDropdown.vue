@@ -1,5 +1,6 @@
 <template>
   <dropdown
+    :disabled="isRunning"
     class="simulation-model-dropdown"
     v-model="selectedModel"
     :options="options"
@@ -10,7 +11,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { mapActions } from 'pinia';
+import { mapActions, mapState } from 'pinia';
 import { useSimulationStore } from '@/stores/simulation.store';
 
 export default defineComponent({
@@ -25,6 +26,9 @@ export default defineComponent({
     selectedModel(newModel) {
       this.setModelComponentName(newModel.model);
     }
+  },
+  computed: {
+    ...mapState(useSimulationStore, ['isRunning'])
   },
   methods: {
     ...mapActions(useSimulationStore, ['setModelComponentName'])
