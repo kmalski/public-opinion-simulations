@@ -1,6 +1,6 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 
-interface ErrorMessage {
+export interface ErrorMessage {
   summary: string;
   detail: string;
 }

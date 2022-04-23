@@ -2,18 +2,14 @@
   <div class="local-majority-rule-model"></div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import OpinionModel from '@/components/menu/simulation/model/OpinionModel.vue';
+<script setup lang="ts">
+import { useSimulationStore } from '@/stores/simulation.store';
+import { onMounted } from 'vue';
 
-export default defineComponent({
-  name: 'LocalMajorityRuleModel',
-  extends: OpinionModel,
-  methods: {
-    pushModelToStore() {
-      this.setModel({});
-    }
-  }
+const simulationStore = useSimulationStore();
+
+onMounted(() => {
+  simulationStore.model = {};
 });
 </script>
 

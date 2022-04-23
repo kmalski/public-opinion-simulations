@@ -1,13 +1,11 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { OpinionModelComponent } from '@/components/menu/simulation/model/OpinionModel.vue';
 import { parseDot, serializeDot } from '@/helpers/parser';
 import { useGraphStore } from '@/stores/graph.store';
 import { useToastStore } from '@/stores/toast.store';
 
 interface State {
-  modelComponentName: string;
-  modelComponent?: OpinionModelComponent;
-  model: any;
+  modelComponentName?: string;
+  model?: any;
   iterations?: number;
   isRunning: boolean;
   step?: number;
@@ -16,9 +14,8 @@ interface State {
 
 function initState(): State {
   return {
-    modelComponentName: '',
-    modelComponent: undefined,
-    model: {},
+    modelComponentName: undefined,
+    model: undefined,
     iterations: 100,
     isRunning: false,
     step: undefined,
@@ -29,21 +26,8 @@ function initState(): State {
 export const useSimulationStore = defineStore('simulation', {
   state: (): State => initState(),
   actions: {
-    setModelComponentName(modelComponentName: string) {
-      this.modelComponentName = modelComponentName;
-    },
-    setModelComponent(modelComponent: OpinionModelComponent) {
-      this.modelComponent = modelComponent;
-    },
-    setModel(model: any) {
-      this.model = model;
-    },
-    setIterations(iterations: number) {
-      this.iterations = iterations;
-    },
     async runSimulation() {
-      if (!this.modelComponent) return;
-      this.modelComponent.pushModelToStore();
+      if (!this.model) return;
       this.step = 0;
 
       const graphStore = useGraphStore();

@@ -2,28 +2,25 @@
   <toast class="toast" position="bottom-right"></toast>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapState } from 'pinia';
-import { useToastStore } from '@/stores/toast.store';
+<script setup lang="ts">
+import { Ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
+import { ErrorMessage, useToastStore } from '@/stores/toast.store';
 import { ToastSeverity } from 'primevue/api';
+import { useToast } from 'primevue/usetoast';
 
-export default defineComponent({
-  name: 'ToastListener',
-  computed: {
-    ...mapState(useToastStore, ['error'])
-  },
-  watch: {
-    error(newError) {
-      if (newError) {
-        this.$toast.add({
-          severity: ToastSeverity.ERROR,
-          summary: newError.summary,
-          detail: newError.detail,
-          life: 10000
-        });
-      }
-    }
+const toastService = useToast();
+const toastStore = useToastStore();
+const { error } = storeToRefs(toastStore) as { error: Ref<ErrorMessage | undefined> };
+
+watch(error, (newError) => {
+  if (newError) {
+    toastService.add({
+      severity: ToastSeverity.ERROR,
+      summary: newError.summary,
+      detail: newError.detail,
+      life: 10000
+    });
   }
 });
 </script>

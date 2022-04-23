@@ -3,7 +3,8 @@ module.exports = {
   env: {
     browser: true,
     es2021: true,
-    node: true
+    node: true,
+    'vue/setup-compiler-macros': true
   },
   parserOptions: {
     ecmaVersion: 2021

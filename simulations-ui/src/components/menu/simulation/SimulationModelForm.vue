@@ -11,34 +11,12 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions, mapState } from 'pinia';
+<script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { useSimulationStore } from '@/stores/simulation.store';
-import LocalMajorityRuleModel from '@/components/menu/simulation/model/LocalMajorityRuleModel.vue';
 
-export default defineComponent({
-  name: 'SimulationModelForm',
-  components: {
-    LocalMajorityRuleModel
-  },
-  data() {
-    return {
-      iterations: 100
-    };
-  },
-  watch: {
-    iterations(newIterations) {
-      this.setIterations(newIterations);
-    }
-  },
-  computed: {
-    ...mapState(useSimulationStore, ['modelComponentName', 'isRunning'])
-  },
-  methods: {
-    ...mapActions(useSimulationStore, ['setIterations'])
-  }
-});
+const simulationStore = useSimulationStore();
+const { iterations, modelComponentName } = storeToRefs(simulationStore);
 </script>
 
 <style scoped lang="scss">

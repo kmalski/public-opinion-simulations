@@ -16,38 +16,29 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import { PrimeIcons } from 'primevue/api';
 import GraphTab from '@/components/menu/graph/GraphTab.vue';
 import ChartsTab from '@/components/menu/charts/ChartsTab.vue';
 import SimulationTab from '@/components/menu/simulation/SimulationTab.vue';
 
-export default defineComponent({
-  name: 'MenuCard',
-  components: { ChartsTab, GraphTab, SimulationTab },
-  data() {
-    return {
-      tabs: [
-        {
-          title: 'Simulation',
-          icon: PrimeIcons.PLAY,
-          item: 'simulation-tab'
-        },
-        {
-          title: 'Graph',
-          icon: PrimeIcons.SITEMAP,
-          item: 'graph-tab'
-        },
-        {
-          title: 'Charts',
-          icon: PrimeIcons.CHART_LINE,
-          item: 'charts-tab'
-        }
-      ]
-    };
+const tabs = [
+  {
+    title: 'Simulation',
+    icon: PrimeIcons.PLAY,
+    item: SimulationTab
+  },
+  {
+    title: 'Graph',
+    icon: PrimeIcons.SITEMAP,
+    item: GraphTab
+  },
+  {
+    title: 'Charts',
+    icon: PrimeIcons.CHART_LINE,
+    item: ChartsTab
   }
-});
+];
 </script>
 
 <style scoped lang="scss">

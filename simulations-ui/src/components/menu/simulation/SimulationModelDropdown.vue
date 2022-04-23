@@ -9,30 +9,23 @@
   ></dropdown>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions, mapState } from 'pinia';
+<script setup lang="ts">
+import { shallowRef, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useSimulationStore } from '@/stores/simulation.store';
 
-export default defineComponent({
-  name: 'SimulationModelDropdown',
-  data() {
-    return {
-      options: [{ name: 'Local Majority Rule', model: 'local-majority-rule-model' }],
-      selectedModel: null
-    };
-  },
-  watch: {
-    selectedModel(newModel) {
-      this.setModelComponentName(newModel.model);
-    }
-  },
-  computed: {
-    ...mapState(useSimulationStore, ['isRunning'])
-  },
-  methods: {
-    ...mapActions(useSimulationStore, ['setModelComponentName'])
-  }
+interface Option {
+  name: string;
+  modelComponentName: string;
+}
+
+const simulationStore = useSimulationStore();
+const { isRunning } = storeToRefs(simulationStore);
+const selectedModel = shallowRef<Option | undefined>(undefined);
+const options = [{ name: 'Local Majority Rule', modelComponentName: 'local-majority-rule-model' }];
+
+watch(selectedModel, (newModel) => {
+  simulationStore.modelComponentName = newModel?.modelComponentName;
 });
 </script>
 

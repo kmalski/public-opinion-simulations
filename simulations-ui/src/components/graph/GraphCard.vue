@@ -9,15 +9,9 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import GraphContainer from '@/components/graph/GraphContainer.vue';
 import GraphSpeedDial from '@/components/graph/GraphSpeedDial.vue';
-
-export default defineComponent({
-  name: 'GraphCard',
-  components: { GraphSpeedDial, GraphContainer }
-});
 </script>
 
 <style scoped lang="scss">

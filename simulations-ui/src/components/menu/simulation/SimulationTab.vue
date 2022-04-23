@@ -4,38 +4,28 @@
     <simulation-model-form></simulation-model-form>
     <progress-bar v-if="isRunning" :value="simulationPercentage"></progress-bar>
     <prime-button
-      :disabled="!modelComponent || isRunning"
+      :disabled="!modelComponentName || isRunning"
       class="simulation-tab-button"
       label="Run Simulation"
-      @click="runSimulation"
+      @click="simulationStore.runSimulation"
     ></prime-button>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions, mapState } from 'pinia';
+<script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { useSimulationStore } from '@/stores/simulation.store';
 import SimulationModelDropdown from '@/components/menu/simulation/SimulationModelDropdown.vue';
 import SimulationModelForm from '@/components/menu/simulation/SimulationModelForm.vue';
+import { computed } from 'vue';
 
-export default defineComponent({
-  name: 'SimulationTab',
-  components: {
-    SimulationModelForm,
-    SimulationModelDropdown
-  },
-  computed: {
-    ...mapState(useSimulationStore, ['modelComponent', 'isRunning', 'iterations', 'step']),
-    simulationPercentage() {
-      if (this.step && this.iterations) {
-        return Math.trunc((this.step / this.iterations) * 100);
-      } else return 0;
-    }
-  },
-  methods: {
-    ...mapActions(useSimulationStore, ['runSimulation'])
-  }
+const simulationStore = useSimulationStore();
+const { modelComponentName, isRunning, iterations, step } = storeToRefs(simulationStore);
+
+const simulationPercentage = computed(() => {
+  if (step?.value && iterations?.value) {
+    return Math.trunc((step.value / iterations.value) * 100);
+  } else return 0;
 });
 </script>
 

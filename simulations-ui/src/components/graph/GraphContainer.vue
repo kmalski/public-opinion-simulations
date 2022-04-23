@@ -1,29 +1,27 @@
 <template>
-  <div class="graph-container" ref="graph-container"></div>
+  <div class="graph-container" ref="graphContainer"></div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { onMounted, ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useGraphStore } from '@/stores/graph.store';
-import { mapActions, mapState } from 'pinia';
 
-export default defineComponent({
-  name: 'GraphContainer',
-  computed: {
-    ...mapState(useGraphStore, ['graph', 'isHoveringEnabled'])
-  },
-  watch: {
-    graph() {
-      this.setSigma(this.$refs['graph-container'] as HTMLDivElement);
-      if (this.isHoveringEnabled) this.enableHovering();
-    }
-  },
-  mounted() {
-    this.setSigma(this.$refs['graph-container'] as HTMLDivElement);
-  },
-  methods: {
-    ...mapActions(useGraphStore, ['setSigma', 'enableHovering'])
-  }
+const graphStore = useGraphStore();
+const { graph, isHoveringEnabled } = storeToRefs(graphStore);
+const graphContainer = ref<HTMLDivElement | null>(null);
+
+const refreshRenderer = () => {
+  if (graphContainer.value) graphStore.setSigma(graphContainer.value);
+};
+
+watch(graph, () => {
+  refreshRenderer();
+  if (isHoveringEnabled) graphStore.enableHovering();
+});
+
+onMounted(() => {
+  if (graphContainer.value) graphStore.setSigma(graphContainer.value);
 });
 </script>
 

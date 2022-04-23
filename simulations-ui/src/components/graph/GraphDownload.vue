@@ -2,7 +2,7 @@
   <prime-dialog
     class="graph-download"
     header="Download"
-    v-model:visible="visible"
+    v-model:visible="state.visible"
     :modal="true"
     @hide="onHide"
     @show="onShow"
@@ -12,17 +12,17 @@
 
       <span class="form-input">
         <label class="form-input-label" for="filename">File name</label>
-        <input-text id="filename" v-model="filename"></input-text>
+        <input-text id="filename" v-model="state.filename"></input-text>
       </span>
 
       <span class="form-input">
         <label class="form-input-label" for="format">File format</label>
-        <dropdown id="format" v-model="format" :options="formats" placeholder="Select Format"></dropdown>
+        <dropdown id="format" v-model="state.format" :options="formats" placeholder="Select Format"></dropdown>
       </span>
 
       <span class="form-input">
         <label class="form-input-label" for="withPositions">Export positions</label>
-        <input-switch id="withPositions" v-model="withPositions"></input-switch>
+        <input-switch id="withPositions" v-model="state.withPositions"></input-switch>
       </span>
     </div>
 
@@ -35,67 +35,65 @@
   </prime-dialog>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { saveAsDot, saveAsGexf, saveAsJson } from '@/helpers/download';
-import { mapState } from 'pinia';
-import { useGraphStore } from '@/stores/graph.store';
+<script setup lang="ts">
+import { reactive, watch, toRefs } from 'vue';
 import PrimeDialog from 'primevue/dialog';
+import { useGraphStore } from '@/stores/graph.store';
+import { saveAsDot, saveAsGexf, saveAsJson } from '@/helpers/download';
 
-export default defineComponent({
-  name: 'GraphDownload',
-  components: { PrimeDialog },
-  props: {
-    modelValue: {
-      type: Boolean,
-      required: true
-    }
-  },
-  emits: ['update:modelValue'],
-  data() {
-    return {
-      visible: false,
-      format: 'dot',
-      filename: 'graph',
-      withPositions: false,
-      formats: ['dot', 'json', 'gexf']
-    };
-  },
-  computed: {
-    ...mapState(useGraphStore, ['graph'])
-  },
-  watch: {
-    modelValue(newValue) {
-      this.visible = newValue;
-    }
-  },
-  methods: {
-    onOk() {
-      if (!this.graph) return;
-      switch (this.format) {
-        case 'dot':
-          saveAsDot(this.graph, this.filename, this.withPositions);
-          break;
-        case 'json':
-          saveAsJson(this.graph, this.filename, this.withPositions);
-          break;
-        case 'gexf':
-          saveAsGexf(this.graph, this.filename, this.withPositions);
-          break;
-      }
-      this.visible = false;
-    },
-    onCancel() {
-      this.visible = false;
-    },
-    onShow() {
-      this.$emit('update:modelValue', true);
-    },
-    onHide() {
-      this.$emit('update:modelValue', false);
-    }
-  }
+interface Props {
+  modelValue: boolean;
+}
+
+interface Emits {
+  (e: 'update:modelValue', modelValue: boolean): void;
+}
+
+const graphStore = useGraphStore();
+const props = defineProps<Props>();
+const { modelValue } = toRefs(props);
+const emit = defineEmits<Emits>();
+
+const formats = ['dot', 'json', 'gexf'];
+const state = reactive({
+  visible: false,
+  format: 'dot',
+  filename: 'graph',
+  withPositions: false
 });
+
+watch(modelValue, (newModelValue) => {
+  console.log(newModelValue);
+  state.visible = newModelValue;
+});
+
+function onOk() {
+  if (!graphStore.graph) return;
+  switch (state.format) {
+    case 'dot':
+      saveAsDot(graphStore.graph, state.filename, state.withPositions);
+      break;
+    case 'json':
+      saveAsJson(graphStore.graph, state.filename, state.withPositions);
+      break;
+    case 'gexf':
+      saveAsGexf(graphStore.graph, state.filename, state.withPositions);
+      break;
+  }
+  state.visible = false;
+}
+
+function onCancel() {
+  state.visible = false;
+}
+
+function onShow() {
+  emit('update:modelValue', true);
+}
+
+function onHide() {
+  emit('update:modelValue', false);
+}
 </script>
 
 <style scoped lang="scss">
