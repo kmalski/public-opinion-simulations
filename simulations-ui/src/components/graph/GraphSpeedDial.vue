@@ -15,14 +15,14 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { PrimeIcons, ToastSeverity } from 'primevue/api';
 import { mapActions, mapState } from 'pinia';
 import { useGraphStore } from '@/stores/graph.store';
+import { useToastStore } from '@/stores/toast.store';
 import { saveAsPng } from '@/helpers/download';
 import { Sigma } from 'sigma';
+import { PrimeIcons } from 'primevue/api';
 import SpeedDial from '@/components/primevue/SpeedDial.vue';
 import GraphDownload from '@/components/graph/GraphDownload.vue';
-import { useToastStore } from '@/stores/toast.store';
 
 export default defineComponent({
   name: 'GraphSpeedDial',
@@ -45,6 +45,11 @@ export default defineComponent({
           label: 'Center',
           icon: PrimeIcons.CIRCLE_FILL,
           command: () => this.centerLayout()
+        },
+        {
+          label: 'Enable highlighting',
+          icon: PrimeIcons.FILTER,
+          command: () => this.enableHovering()
         },
         {
           label: 'Download as image',
@@ -70,18 +75,31 @@ export default defineComponent({
     };
   },
   computed: {
-    ...mapState(useGraphStore, ['isLayoutRunning', 'sigma', 'graph'])
+    ...mapState(useGraphStore, ['isLayoutRunning', 'isHoveringEnabled', 'sigma'])
   },
   watch: {
     isLayoutRunning(newIsLayoutRunning) {
       const item = this.items[0];
-      item.label = newIsLayoutRunning ? 'Stop layout' : 'Start layout';
+      item.label = newIsLayoutRunning ? 'Stop' : 'Start' + ' layout';
       item.icon = newIsLayoutRunning ? PrimeIcons.STOP : PrimeIcons.PLAY;
       item.command = newIsLayoutRunning ? this.stopLayout : this.startLayout;
+    },
+    isHoveringEnabled(newIsHoveringEnabled) {
+      const item = this.items[3];
+      item.label = newIsHoveringEnabled ? 'Disable' : 'Enable' + ' highlighting';
+      item.icon = newIsHoveringEnabled ? PrimeIcons.FILTER_SLASH : PrimeIcons.FILTER;
+      item.command = newIsHoveringEnabled ? this.disableHovering : this.enableHovering;
     }
   },
   methods: {
-    ...mapActions(useGraphStore, ['startLayout', 'stopLayout', 'randomLayout', 'centerLayout']),
+    ...mapActions(useGraphStore, [
+      'startLayout',
+      'stopLayout',
+      'randomLayout',
+      'centerLayout',
+      'enableHovering',
+      'disableHovering'
+    ]),
     ...mapActions(useToastStore, ['setError']),
     toggleFullscreen(fullscreen: boolean) {
       const item = this.items[this.items.length - 1];

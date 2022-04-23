@@ -10,18 +10,19 @@ import { mapActions, mapState } from 'pinia';
 export default defineComponent({
   name: 'GraphContainer',
   computed: {
-    ...mapState(useGraphStore, ['graph'])
+    ...mapState(useGraphStore, ['graph', 'isHoveringEnabled'])
   },
   watch: {
     graph() {
       this.setSigma(this.$refs['graph-container'] as HTMLDivElement);
+      if (this.isHoveringEnabled) this.enableHovering();
     }
   },
   mounted() {
     this.setSigma(this.$refs['graph-container'] as HTMLDivElement);
   },
   methods: {
-    ...mapActions(useGraphStore, ['setSigma'])
+    ...mapActions(useGraphStore, ['setSigma', 'enableHovering'])
   }
 });
 </script>

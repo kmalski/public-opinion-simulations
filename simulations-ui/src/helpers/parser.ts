@@ -1,7 +1,7 @@
 import { parse as graphvizParse } from '@ts-graphviz/parser';
 import { parse as gexfParse } from 'graphology-gexf';
 import { AttributesValue, EdgeTarget, EdgeTargetTuple, Graph as Graphviz, toDot } from 'ts-graphviz';
-import { SIZE } from '@/helpers/defaults';
+import { NODE_SIZE } from '@/helpers/defaults';
 import { BinaryOpinion, Graph } from '@/helpers/types';
 import { opinionToColor } from '@/helpers/graph';
 import { write as gexfWrite } from 'graphology-gexf/node';
@@ -37,7 +37,7 @@ export function parseGexf(fileText: string): Graph {
   graph.forEachNode((node, attributes) => {
     const opinion = parseLabel(attributes['label']);
     attributes.color = opinionToColor(opinion);
-    attributes.size = SIZE;
+    attributes.size = NODE_SIZE;
   });
   return graph;
 }
@@ -68,7 +68,7 @@ export function parseDot(fileText: string): Graph {
     const pos = parseDotPos(node.attributes.get('pos'));
     const color = opinionToColor(opinion);
     graph.addNode(node.id, {
-      size: SIZE,
+      size: NODE_SIZE,
       color: color,
       label: opinion,
       x: pos[0],

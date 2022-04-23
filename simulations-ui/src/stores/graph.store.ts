@@ -6,13 +6,16 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 import { Sigma } from 'sigma';
 import { animateNodes } from 'sigma/utils/animate';
 import { validatePositions } from '@/helpers/graph';
+import { bindHoverEvents, Hovering, setHoveredNode, unbindHoverEvents } from '@/helpers/hovering';
 
 interface State {
-  sigma?: Sigma;
   graph: Graph;
+  sigma?: Sigma;
   fa2Layout?: FA2LayoutSupervisor;
-  isLayoutRunning: boolean;
   cancelCurrentAnimation?: () => void;
+  isLayoutRunning: boolean;
+  hovering: Hovering;
+  isHoveringEnabled: boolean;
 }
 
 function initState() {
@@ -26,7 +29,7 @@ function initState() {
   graph.addEdge('n4', 'n3');
   graph.addEdge('n3', 'n1');
 
-  return { graph, isLayoutRunning: false };
+  return { graph, isLayoutRunning: false, hovering: {}, isHoveringEnabled: false };
 }
 
 export const useGraphStore = defineStore('graph', {
@@ -81,6 +84,24 @@ export const useGraphStore = defineStore('graph', {
       if (this.sigma) {
         this.sigma.getCamera().animatedReset();
       }
+    },
+    enableHovering() {
+      if (this.sigma) {
+        bindHoverEvents(this.hovering, this.graph, this.sigma as Sigma, this.onEnterNode, this.onLeaveNode);
+        this.isHoveringEnabled = true;
+      }
+    },
+    disableHovering() {
+      if (this.sigma) {
+        unbindHoverEvents(this.sigma as Sigma, this.onEnterNode, this.onLeaveNode);
+        this.isHoveringEnabled = false;
+      }
+    },
+    onEnterNode({ node }: { node: string }) {
+      setHoveredNode(this.hovering, this.graph, this.sigma as Sigma, node);
+    },
+    onLeaveNode() {
+      setHoveredNode(this.hovering, this.graph, this.sigma as Sigma, undefined);
     }
   }
 });

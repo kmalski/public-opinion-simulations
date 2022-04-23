@@ -1,5 +1,5 @@
 import { BinaryOpinion, Graph } from '@/helpers/types';
-import { COLOR_DOWN, COLOR_UP, SIZE } from '@/helpers/defaults';
+import { NODE_COLOR_DOWN, NODE_COLOR_UP, NODE_SIZE } from '@/helpers/defaults';
 import { random } from 'graphology-layout';
 
 export function assignOpinion(graph: Graph, positiveProbability: number) {
@@ -7,7 +7,7 @@ export function assignOpinion(graph: Graph, positiveProbability: number) {
     const opinion = randomOpinion(positiveProbability);
     attributes.label = opinion;
     attributes.color = opinionToColor(opinion);
-    attributes.size = SIZE;
+    attributes.size = NODE_SIZE;
   });
 }
 
@@ -26,5 +26,5 @@ export function randomOpinion(positiveProbability: number): BinaryOpinion {
 }
 
 export function opinionToColor(opinion: BinaryOpinion): string {
-  return opinion === '1' ? COLOR_UP : COLOR_DOWN;
+  return opinion === '1' ? NODE_COLOR_UP : NODE_COLOR_DOWN;
 }
