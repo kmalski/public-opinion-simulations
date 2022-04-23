@@ -64,8 +64,11 @@ export const useSimulationStore = defineStore('simulation', {
       if (response.ok) {
         const body = await response.json();
         this.eventSrc = new EventSource(`${url}/simulation/${body.id}/subscribe`);
-        this.isRunning = true;
         // localStorage.setItem('simulationId', body.id);
+
+        this.eventSrc.onopen = () => {
+          this.isRunning = true;
+        };
 
         this.eventSrc.onmessage = ({ data }) => {
           const message = JSON.parse(data);
@@ -93,6 +96,10 @@ export const useSimulationStore = defineStore('simulation', {
               detail: message.message
             });
           }
+        };
+
+        this.eventSrc.onerror = () => {
+          this.isRunning = false;
         };
       } else {
         this.isRunning = false;
