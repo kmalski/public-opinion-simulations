@@ -13,11 +13,11 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSimulationStore } from '@/stores/simulation.store';
 import SimulationModelDropdown from '@/components/menu/simulation/SimulationModelDropdown.vue';
 import SimulationModelForm from '@/components/menu/simulation/SimulationModelForm.vue';
-import { computed } from 'vue';
 
 const simulationStore = useSimulationStore();
 const { modelComponentName, isRunning, iterations, step } = storeToRefs(simulationStore);

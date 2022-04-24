@@ -63,7 +63,6 @@ const state = reactive({
 });
 
 watch(modelValue, (newModelValue) => {
-  console.log(newModelValue);
   state.visible = newModelValue;
 });
 

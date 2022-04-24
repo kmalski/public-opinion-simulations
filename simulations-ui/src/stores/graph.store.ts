@@ -1,43 +1,49 @@
 import forceAtlas2 from 'graphology-layout-forceatlas2';
 import FA2LayoutSupervisor from 'graphology-layout-forceatlas2/worker';
 import { random } from 'graphology-layout';
-import { Graph } from '@/helpers/types';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { Sigma } from 'sigma';
 import { animateNodes } from 'sigma/utils/animate';
+import { Graph, Optional } from '@/helpers/types';
 import { validatePositions } from '@/helpers/graph';
 import { bindHoverEvents, Hovering, setHoveredNode, unbindHoverEvents } from '@/helpers/hovering';
 
 interface State {
   graph: Graph;
-  sigma?: Sigma;
-  fa2Layout?: FA2LayoutSupervisor;
-  cancelCurrentAnimation?: () => void;
   isLayoutRunning: boolean;
   hovering: Hovering;
   isHoveringEnabled: boolean;
-}
-
-function initState() {
-  const graph = new Graph();
-  graph.addNode('n1', { x: 0, y: 0, size: 10, label: '-1', color: '#f51b00' });
-  graph.addNode('n2', { x: -5, y: 5, size: 10, label: '1', color: '#009dff' });
-  graph.addNode('n3', { x: 5, y: 5, size: 10, label: '1', color: '#009dff' });
-  graph.addNode('n4', { x: 0, y: 10, size: 10, label: '-1', color: '#f51b00' });
-  graph.addEdge('n1', 'n2');
-  graph.addEdge('n2', 'n4');
-  graph.addEdge('n4', 'n3');
-  graph.addEdge('n3', 'n1');
-
-  return { graph, isLayoutRunning: false, hovering: {}, isHoveringEnabled: false };
+  renderer: Optional<Sigma>;
+  fa2Layout: Optional<FA2LayoutSupervisor>;
+  cancelCurrentAnimation: Optional<() => void>;
 }
 
 export const useGraphStore = defineStore('graph', {
-  state: (): State => initState(),
+  state: (): State => {
+    const graph = new Graph();
+    graph.addNode('n1', { x: 0, y: 0, size: 10, label: '-1', color: '#f51b00' });
+    graph.addNode('n2', { x: -5, y: 5, size: 10, label: '1', color: '#009dff' });
+    graph.addNode('n3', { x: 5, y: 5, size: 10, label: '1', color: '#009dff' });
+    graph.addNode('n4', { x: 0, y: 10, size: 10, label: '-1', color: '#f51b00' });
+    graph.addEdge('n1', 'n2');
+    graph.addEdge('n2', 'n4');
+    graph.addEdge('n4', 'n3');
+    graph.addEdge('n3', 'n1');
+
+    return {
+      graph,
+      isLayoutRunning: false,
+      hovering: {},
+      isHoveringEnabled: false,
+      renderer: undefined,
+      fa2Layout: undefined,
+      cancelCurrentAnimation: undefined
+    };
+  },
   actions: {
-    setSigma(container: HTMLElement) {
-      if (this.sigma) this.sigma.kill();
-      this.sigma = new Sigma(this.graph, container);
+    setRenderer(container: HTMLElement) {
+      if (this.renderer) this.renderer.kill();
+      this.renderer = new Sigma(this.graph, container);
     },
     setGraph(graph: Graph) {
       validatePositions(graph);
@@ -81,27 +87,27 @@ export const useGraphStore = defineStore('graph', {
       );
     },
     centerLayout() {
-      if (this.sigma) {
-        this.sigma.getCamera().animatedReset();
+      if (this.renderer) {
+        this.renderer.getCamera().animatedReset();
       }
     },
     enableHovering() {
-      if (this.sigma) {
-        bindHoverEvents(this.hovering, this.graph, this.sigma as Sigma, this.onEnterNode, this.onLeaveNode);
+      if (this.renderer) {
+        bindHoverEvents(this.hovering, this.graph, this.renderer as Sigma, this.onEnterNode, this.onLeaveNode);
         this.isHoveringEnabled = true;
       }
     },
     disableHovering() {
-      if (this.sigma) {
-        unbindHoverEvents(this.sigma as Sigma, this.onEnterNode, this.onLeaveNode);
+      if (this.renderer) {
+        unbindHoverEvents(this.renderer as Sigma, this.onEnterNode, this.onLeaveNode);
         this.isHoveringEnabled = false;
       }
     },
     onEnterNode({ node }: { node: string }) {
-      setHoveredNode(this.hovering, this.graph, this.sigma as Sigma, node);
+      setHoveredNode(this.hovering, this.graph, this.renderer as Sigma, node);
     },
     onLeaveNode() {
-      setHoveredNode(this.hovering, this.graph, this.sigma as Sigma, undefined);
+      setHoveredNode(this.hovering, this.graph, this.renderer as Sigma, undefined);
     }
   }
 });

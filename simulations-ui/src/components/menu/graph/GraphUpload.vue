@@ -21,45 +21,39 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import { parseDot, parseGexf } from '@/helpers/parser';
-import { mapActions, mapState } from 'pinia';
+import { storeToRefs } from 'pinia';
 import { useGraphStore } from '@/stores/graph.store';
 import { useToastStore } from '@/stores/toast.store';
 import { useSimulationStore } from '@/stores/simulation.store';
 
-export default defineComponent({
-  name: 'GraphUpload',
-  computed: {
-    ...mapState(useSimulationStore, ['isRunning'])
-  },
-  methods: {
-    ...mapActions(useGraphStore, ['setGraph']),
-    ...mapActions(useToastStore, ['setError']),
-    async readFile(event: { files: File | File[] }) {
-      const file = Array.isArray(event.files) ? event.files[0] : event.files;
-      const extension = file.name.split('.').pop();
-      const text = await file.text();
+const graphStore = useGraphStore();
+const toastStore = useToastStore();
+const simulationStore = useSimulationStore();
+const { isRunning } = storeToRefs(simulationStore);
 
-      try {
-        switch (extension) {
-          case 'gexf':
-            this.setGraph(parseGexf(text));
-            break;
-          case 'dot':
-            this.setGraph(parseDot(text));
-            break;
-        }
-      } catch (error) {
-        this.setError({
-          summary: 'Error while reading graph',
-          detail: error instanceof Error ? error.message : 'Unknown error'
-        });
-      }
+async function readFile(event: { files: File | File[] }) {
+  const file = Array.isArray(event.files) ? event.files[0] : event.files;
+  const extension = file.name.split('.').pop();
+  const text = await file.text();
+
+  try {
+    switch (extension) {
+      case 'gexf':
+        graphStore.setGraph(parseGexf(text));
+        break;
+      case 'dot':
+        graphStore.setGraph(parseDot(text));
+        break;
     }
+  } catch (error) {
+    toastStore.error = {
+      summary: 'Error while reading graph',
+      detail: error instanceof Error ? error.message : 'Unknown error'
+    };
   }
-});
+}
 </script>
 
 <style scoped lang="scss">

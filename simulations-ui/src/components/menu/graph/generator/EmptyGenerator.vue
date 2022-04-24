@@ -1,35 +1,27 @@
 <template>
   <div class="empty-generator">
     <span class="p-float-label">
-      <input-number id="nodesNumber" v-model="nodesNumber"></input-number>
+      <input-number id="nodesNumber" v-model="state.nodesNumber"></input-number>
       <label for="nodesNumber">Number of nodes</label>
     </span>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { reactive } from 'vue';
 import empty from 'graphology-generators/classic/empty';
 import { Graph } from '@/helpers/types';
-import { assignOpinion } from '@/helpers/graph';
-import GraphGenerator from '@/components/menu/graph/generator/GraphGenerator.vue';
+import { useGenerator } from '@/components/menu/graph/generator/useGenerator.';
 
-export default defineComponent({
-  name: 'EmptyGenerator',
-  extends: GraphGenerator,
-  data() {
-    return {
-      nodesNumber: 10
-    };
-  },
-  methods: {
-    generateGraph(positiveProbability: number) {
-      const graph = empty(Graph, this.nodesNumber);
-      assignOpinion(graph, positiveProbability);
-      this.setGraph(graph);
-    }
-  }
+const state = reactive({
+  nodesNumber: 10
 });
+
+function generateGraph() {
+  return empty(Graph, state.nodesNumber);
+}
+
+useGenerator(generateGraph);
 </script>
 
 <style scoped lang="scss">

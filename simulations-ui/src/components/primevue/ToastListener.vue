@@ -3,15 +3,15 @@
 </template>
 
 <script setup lang="ts">
-import { Ref, watch } from 'vue';
+import { watch } from 'vue';
 import { storeToRefs } from 'pinia';
-import { ErrorMessage, useToastStore } from '@/stores/toast.store';
+import { useToastStore } from '@/stores/toast.store';
 import { ToastSeverity } from 'primevue/api';
 import { useToast } from 'primevue/usetoast';
 
 const toastService = useToast();
 const toastStore = useToastStore();
-const { error } = storeToRefs(toastStore) as { error: Ref<ErrorMessage | undefined> };
+const { error } = storeToRefs(toastStore);
 
 watch(error, (newError) => {
   if (newError) {

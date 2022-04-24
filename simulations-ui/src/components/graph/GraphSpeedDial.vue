@@ -77,14 +77,14 @@ const state = reactive({
 
 watch(isLayoutRunning, (newIsLayoutRunning) => {
   const item = state.items[0];
-  item.label = newIsLayoutRunning ? 'Stop' : 'Start' + ' layout';
+  item.label = (newIsLayoutRunning ? 'Stop' : 'Start') + ' layout';
   item.icon = newIsLayoutRunning ? PrimeIcons.STOP : PrimeIcons.PLAY;
   item.command = newIsLayoutRunning ? graphStore.stopLayout : graphStore.startLayout;
 });
 
 watch(isHoveringEnabled, (newIsHoveringEnabled) => {
   const item = state.items[3];
-  item.label = newIsHoveringEnabled ? 'Disable' : 'Enable' + ' highlighting';
+  item.label = (newIsHoveringEnabled ? 'Disable' : 'Enable') + ' highlighting';
   item.icon = newIsHoveringEnabled ? PrimeIcons.FILTER_SLASH : PrimeIcons.FILTER;
   item.command = newIsHoveringEnabled ? graphStore.disableHovering : graphStore.enableHovering;
 });
@@ -96,12 +96,12 @@ function toggleFullscreen(fullscreen: boolean) {
 }
 
 function downloadImage() {
-  if (graphStore.sigma) saveAsPng(graphStore.sigma as Sigma);
+  if (graphStore.renderer) saveAsPng(graphStore.renderer as Sigma);
   else
-    toastStore.setError({
+    toastStore.error = {
       summary: 'Download error',
       detail: 'Can not save graph as image, because it is not initialized'
-    });
+    };
 }
 
 function downloadGraph() {

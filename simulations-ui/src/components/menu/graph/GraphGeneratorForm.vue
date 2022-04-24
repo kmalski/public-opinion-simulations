@@ -12,13 +12,13 @@
     <p v-if="!generatorComponentName" class="graph-generator-form-hint">
       The parameters will be available after selecting generator
     </p>
-    <component v-if="generatorComponentName" :is="generatorComponentName"></component>
+    <component v-if="generatorComponentName" :is="generator"></component>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions, mapState } from 'pinia';
+<script setup lang="ts">
+import { computed, DefineComponent } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useGeneratorStore } from '@/stores/generator.store';
 import CompleteGenerator from '@/components/menu/graph/generator/CompleteGenerator.vue';
 import EmptyGenerator from '@/components/menu/graph/generator/EmptyGenerator.vue';
@@ -31,36 +31,27 @@ import ClustersGenerator from '@/components/menu/graph/generator/ClustersGenerat
 import ErdosRenyiGenerator from '@/components/menu/graph/generator/ErdosRenyiGenerator.vue';
 import GirvanNewmanGenerator from '@/components/menu/graph/generator/GirvanNewmanGenerator.vue';
 
-export default defineComponent({
-  name: 'GraphGeneratorForm',
-  components: {
-    CompleteGenerator,
-    EmptyGenerator,
-    LadderGenerator,
-    PathGenerator,
-    RegularGenerator,
-    CavemanGenerator,
-    ConnectedCavemanGenerator,
-    ClustersGenerator,
-    ErdosRenyiGenerator,
-    GirvanNewmanGenerator
-  },
-  data() {
-    return {
-      positiveProbability: 0.5
-    };
-  },
-  watch: {
-    positiveProbability(newProbability) {
-      this.setPositiveProbability(newProbability);
-    }
-  },
-  computed: {
-    ...mapState(useGeneratorStore, ['generatorComponentName'])
-  },
-  methods: {
-    ...mapActions(useGeneratorStore, ['setPositiveProbability'])
+const nameToComponent = new Map([
+  ['complete-generator', CompleteGenerator],
+  ['empty-generator', EmptyGenerator],
+  ['ladder-generator', LadderGenerator],
+  ['path-generator', PathGenerator],
+  ['regular-generator', RegularGenerator],
+  ['caveman-generator', CavemanGenerator],
+  ['connected-caveman-generator', ConnectedCavemanGenerator],
+  ['clusters-generator', ClustersGenerator],
+  ['erdos-renyi-generator', ErdosRenyiGenerator],
+  ['girvan-newman-generator', GirvanNewmanGenerator]
+]) as Map<string, DefineComponent>;
+
+const generatorStore = useGeneratorStore();
+const { positiveProbability, generatorComponentName } = storeToRefs(generatorStore);
+
+const generator = computed(() => {
+  if (generatorComponentName?.value) {
+    return nameToComponent.get(generatorComponentName.value);
   }
+  return undefined;
 });
 </script>
 

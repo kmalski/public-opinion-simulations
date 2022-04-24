@@ -1,4 +1,5 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
+import { Optional } from '@/helpers/types';
 
 export interface ErrorMessage {
   summary: string;
@@ -6,22 +7,13 @@ export interface ErrorMessage {
 }
 
 interface State {
-  error?: ErrorMessage;
-}
-
-function initState(): State {
-  return {
-    error: undefined
-  };
+  error: Optional<ErrorMessage>;
 }
 
 export const useToastStore = defineStore('toast', {
-  state: (): State => initState(),
-  actions: {
-    setError(error: ErrorMessage) {
-      this.error = error;
-    }
-  }
+  state: (): State => ({
+    error: undefined
+  })
 });
 
 if (import.meta.hot) {

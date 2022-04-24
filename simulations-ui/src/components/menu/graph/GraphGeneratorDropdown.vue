@@ -8,38 +8,32 @@
   ></dropdown>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions } from 'pinia';
+<script setup lang="ts">
+import { ref, watch } from 'vue';
 import { useGeneratorStore } from '@/stores/generator.store';
 
-export default defineComponent({
-  name: 'GraphGeneratorDropdown',
-  data() {
-    return {
-      options: [
-        { name: 'Complete', generator: 'complete-generator' },
-        { name: 'Empty', generator: 'empty-generator' },
-        { name: 'Ladder', generator: 'ladder-generator' },
-        { name: 'Path', generator: 'path-generator' },
-        { name: 'Regular', generator: 'regular-generator' },
-        { name: 'Caveman', generator: 'caveman-generator' },
-        { name: 'Connected Caveman', generator: 'connected-caveman-generator' },
-        { name: 'Clusters', generator: 'clusters-generator' },
-        { name: 'Erdos-Renyi', generator: 'erdos-renyi-generator' },
-        { name: 'Girvan-Newman', generator: 'girvan-newman-generator' }
-      ],
-      selectedGenerator: null
-    };
-  },
-  watch: {
-    selectedGenerator(newGenerator) {
-      this.setGeneratorComponentName(newGenerator.generator);
-    }
-  },
-  methods: {
-    ...mapActions(useGeneratorStore, ['setGeneratorComponentName'])
-  }
+interface Option {
+  name: string;
+  generator: string;
+}
+
+const generatorStore = useGeneratorStore();
+const selectedGenerator = ref<Option | null>(null);
+const options = ref([
+  { name: 'Complete', generator: 'complete-generator' },
+  { name: 'Empty', generator: 'empty-generator' },
+  { name: 'Ladder', generator: 'ladder-generator' },
+  { name: 'Path', generator: 'path-generator' },
+  { name: 'Regular', generator: 'regular-generator' },
+  { name: 'Caveman', generator: 'caveman-generator' },
+  { name: 'Connected Caveman', generator: 'connected-caveman-generator' },
+  { name: 'Clusters', generator: 'clusters-generator' },
+  { name: 'Erdos-Renyi', generator: 'erdos-renyi-generator' },
+  { name: 'Girvan-Newman', generator: 'girvan-newman-generator' }
+]);
+
+watch(selectedGenerator, (newGenerator) => {
+  generatorStore.generatorComponentName = newGenerator?.generator;
 });
 </script>
 

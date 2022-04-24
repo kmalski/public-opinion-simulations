@@ -1,41 +1,33 @@
 <template>
   <div class="connected-caveman-generator">
     <span class="p-float-label">
-      <input-number id="clustersNumber" v-model="componentsNumber"></input-number>
+      <input-number id="clustersNumber" v-model="state.componentsNumber"></input-number>
       <label for="clustersNumber">Number of clusters</label>
     </span>
 
     <span class="p-float-label">
-      <input-number id="nodesNumber" v-model="nodesNumber"></input-number>
+      <input-number id="nodesNumber" v-model="state.nodesNumber"></input-number>
       <label for="nodesNumber">Number of nodes in cluster</label>
     </span>
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import connectedCaveman from 'graphology-generators/community/connected-caveman';
 import { Graph } from '@/helpers/types';
-import { defineComponent } from 'vue';
-import GraphGenerator from '@/components/menu/graph/generator/GraphGenerator.vue';
-import { assignOpinion } from '@/helpers/graph';
+import { reactive } from 'vue';
+import { useGenerator } from '@/components/menu/graph/generator/useGenerator.';
 
-export default defineComponent({
-  name: 'ConnectedCavemanGenerator',
-  extends: GraphGenerator,
-  data() {
-    return {
-      componentsNumber: 3,
-      nodesNumber: 10
-    };
-  },
-  methods: {
-    generateGraph(positiveProbability: number) {
-      const graph = connectedCaveman(Graph, this.componentsNumber, this.nodesNumber);
-      assignOpinion(graph, positiveProbability);
-      this.setGraph(graph);
-    }
-  }
+const state = reactive({
+  componentsNumber: 3,
+  nodesNumber: 10
 });
+
+function generateGraph() {
+  return connectedCaveman(Graph, state.componentsNumber, state.nodesNumber);
+}
+
+useGenerator(generateGraph);
 </script>
 
 <style scoped lang="scss">

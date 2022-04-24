@@ -7,16 +7,30 @@
     <p v-if="!modelComponentName" class="simulation-form-hint">
       The parameters will be available after selecting model
     </p>
-    <component v-if="modelComponentName" :is="modelComponentName"></component>
+    <component v-if="modelComponentName" :is="model"></component>
   </div>
 </template>
 
 <script setup lang="ts">
+import { computed, DefineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSimulationStore } from '@/stores/simulation.store';
+import LocalMajorityRuleModel from '@/components/menu/simulation/model/LocalMajorityRuleModel.vue';
 
 const simulationStore = useSimulationStore();
 const { iterations, modelComponentName } = storeToRefs(simulationStore);
+
+const nameToComponent = new Map([['local-majority-rule-model', LocalMajorityRuleModel]]) as Map<
+  string,
+  DefineComponent
+>;
+
+const model = computed(() => {
+  if (modelComponentName?.value) {
+    return nameToComponent.get(modelComponentName.value);
+  }
+  return undefined;
+});
 </script>
 
 <style scoped lang="scss">

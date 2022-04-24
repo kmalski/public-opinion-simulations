@@ -9,38 +9,26 @@
       Before a new graph can be generated, the simulation must end
     </p>
     <prime-button
-      :disabled="!generatorComponent || isRunning"
+      :disabled="!generatorComponentName || isRunning"
       class="graph-tab-button"
       label="Generate"
-      @click="generateGraph"
+      @click="generate"
     ></prime-button>
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import { mapActions, mapState } from 'pinia';
+<script setup lang="ts">
+import { storeToRefs } from 'pinia';
 import { useGeneratorStore } from '@/stores/generator.store';
+import { useSimulationStore } from '@/stores/simulation.store';
 import GraphUpload from '@/components/menu/graph/GraphUpload.vue';
 import GraphGeneratorDropdown from '@/components/menu/graph/GraphGeneratorDropdown.vue';
 import GraphGeneratorForm from '@/components/menu/graph/GraphGeneratorForm.vue';
-import { useSimulationStore } from '@/stores/simulation.store';
 
-export default defineComponent({
-  name: 'GraphTab',
-  components: {
-    GraphUpload,
-    GraphGeneratorDropdown,
-    GraphGeneratorForm
-  },
-  computed: {
-    ...mapState(useGeneratorStore, ['generatorComponent']),
-    ...mapState(useSimulationStore, ['isRunning'])
-  },
-  methods: {
-    ...mapActions(useGeneratorStore, ['generateGraph'])
-  }
-});
+const generatorStore = useGeneratorStore();
+const simulationStore = useSimulationStore();
+const { generatorComponentName, generate } = storeToRefs(generatorStore);
+const { isRunning } = storeToRefs(simulationStore);
 </script>
 
 <style scoped lang="scss">

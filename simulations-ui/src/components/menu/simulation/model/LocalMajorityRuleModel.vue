@@ -1,21 +1,28 @@
 <template>
-  <div class="local-majority-rule-model"></div>
+  <div class="local-majority-rule-model">
+    <span class="p-float-label">
+      <input-number id="groupSize" v-model="state.groupSize"></input-number>
+      <label for="groupSize">Size of local group</label>
+    </span>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { useSimulationStore } from '@/stores/simulation.store';
-import { onMounted } from 'vue';
+import { reactive } from 'vue';
+import { useModel } from '@/components/menu/simulation/model/useModel';
 
-const simulationStore = useSimulationStore();
-
-onMounted(() => {
-  simulationStore.model = {};
+const state = reactive({
+  groupSize: 5
 });
+
+useModel(state);
 </script>
 
 <style scoped lang="scss">
+@use '../../../../styles/tab';
+@use '../../../../styles/forms';
+
 .local-majority-rule-model {
-  width: 90%;
-  height: 100%;
+  @include tab.opinion-model;
 }
 </style>

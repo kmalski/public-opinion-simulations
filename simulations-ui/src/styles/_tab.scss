@@ -5,6 +5,10 @@
   width: 100%;
 }
 
+@mixin opinion-model {
+  width: 100%
+}
+
 @mixin tab {
   position: relative;
   display: flex;

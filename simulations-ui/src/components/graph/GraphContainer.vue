@@ -12,16 +12,16 @@ const { graph, isHoveringEnabled } = storeToRefs(graphStore);
 const graphContainer = ref<HTMLDivElement | null>(null);
 
 const refreshRenderer = () => {
-  if (graphContainer.value) graphStore.setSigma(graphContainer.value);
+  if (graphContainer.value) graphStore.setRenderer(graphContainer.value);
 };
 
 watch(graph, () => {
   refreshRenderer();
-  if (isHoveringEnabled) graphStore.enableHovering();
+  if (isHoveringEnabled?.value) graphStore.enableHovering();
 });
 
 onMounted(() => {
-  if (graphContainer.value) graphStore.setSigma(graphContainer.value);
+  if (graphContainer.value) graphStore.setRenderer(graphContainer.value);
 });
 </script>
 

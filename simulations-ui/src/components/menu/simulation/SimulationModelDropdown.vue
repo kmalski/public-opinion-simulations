@@ -10,22 +10,22 @@
 </template>
 
 <script setup lang="ts">
-import { shallowRef, watch } from 'vue';
+import { ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useSimulationStore } from '@/stores/simulation.store';
 
 interface Option {
   name: string;
-  modelComponentName: string;
+  model: string;
 }
 
 const simulationStore = useSimulationStore();
 const { isRunning } = storeToRefs(simulationStore);
-const selectedModel = shallowRef<Option | undefined>(undefined);
-const options = [{ name: 'Local Majority Rule', modelComponentName: 'local-majority-rule-model' }];
+const selectedModel = ref<Option | null>(null);
+const options = [{ name: 'Local Majority Rule', model: 'local-majority-rule-model' }];
 
 watch(selectedModel, (newModel) => {
-  simulationStore.modelComponentName = newModel?.modelComponentName;
+  simulationStore.modelComponentName = newModel?.model;
 });
 </script>
 

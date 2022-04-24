@@ -2,29 +2,24 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 import { parseDot, serializeDot } from '@/helpers/parser';
 import { useGraphStore } from '@/stores/graph.store';
 import { useToastStore } from '@/stores/toast.store';
+import { Optional } from '@/helpers/types';
 
 interface State {
-  modelComponentName?: string;
-  model?: any;
-  iterations?: number;
   isRunning: boolean;
-  step?: number;
-  eventSrc?: EventSource;
-}
-
-function initState(): State {
-  return {
-    modelComponentName: undefined,
-    model: undefined,
-    iterations: 100,
-    isRunning: false,
-    step: undefined,
-    eventSrc: undefined
-  };
+  modelComponentName: Optional<string>;
+  model: Optional<object>;
+  iterations: Optional<number>;
+  step: Optional<number>;
 }
 
 export const useSimulationStore = defineStore('simulation', {
-  state: (): State => initState(),
+  state: (): State => ({
+    isRunning: false,
+    modelComponentName: undefined,
+    model: undefined,
+    iterations: 100,
+    step: undefined
+  }),
   actions: {
     async runSimulation() {
       if (!this.model) return;
@@ -40,58 +35,57 @@ export const useSimulationStore = defineStore('simulation', {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          model: {},
+          model: this.model,
+          iterations: this.iterations,
           dotGraph: serializeDot(graphStore.graph, true)
         })
       });
 
       if (response.ok) {
         const body = await response.json();
-        this.eventSrc = new EventSource(`${url}/simulation/${body.id}/subscribe`);
-        // localStorage.setItem('simulationId', body.id);
+        const eventSrc = new EventSource(`${url}/simulation/${body.id}/subscribe`);
 
-        this.eventSrc.onopen = () => {
+        eventSrc.onopen = () => {
           this.isRunning = true;
         };
 
-        this.eventSrc.onmessage = ({ data }) => {
+        eventSrc.onmessage = ({ data }) => {
           const message = JSON.parse(data);
           if (message.status === 'OK') {
             this.step = +message.step;
           }
 
-          if (message.status === 'CLOSED' && this.eventSrc) {
+          if (message.status === 'CLOSED') {
             if (message.resultStatus === 'SUCCESS') {
               graphStore.setGraph(parseDot(message.dotGraph));
             } else {
-              toastStore.setError({
+              toastStore.error = {
                 summary: 'Simulation error',
                 detail: 'Could not finish simulation due to unknown error'
-              });
+              };
             }
-            // localStorage.removeItem('simulationId');
-            this.eventSrc.close();
+            eventSrc.close();
             this.isRunning = false;
           }
 
           if (message.status === 'ERROR') {
-            toastStore.setError({
+            toastStore.error = {
               summary: 'Error during simulation',
               detail: message.message
-            });
+            };
           }
         };
 
-        this.eventSrc.onerror = () => {
+        eventSrc.onerror = () => {
           this.isRunning = false;
         };
       } else {
         this.isRunning = false;
         const error = await response.json();
-        toastStore.setError({
+        toastStore.error = {
           summary: 'Can not run simulation',
           detail: error.message
-        });
+        };
       }
     }
   }

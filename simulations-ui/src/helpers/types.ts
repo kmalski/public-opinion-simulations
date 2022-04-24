@@ -1,6 +1,9 @@
 import { MultiUndirectedGraph } from 'graphology';
 import { Attributes } from 'graphology-types';
 
+// better typing for stores with usage of storeToRefs
+export type Optional<T> = T | undefined;
+
 export interface GraphAttributes extends Attributes {
   predefinedPositions: boolean;
 }

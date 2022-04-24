@@ -1,58 +1,55 @@
 <template>
   <div class="clusters-generator">
     <span class="p-float-label">
-      <input-number id="nodesNumber" v-model="nodesNumber"></input-number>
+      <input-number id="nodesNumber" v-model="state.nodesNumber"></input-number>
       <label for="nodesNumber">Number of nodes</label>
     </span>
 
     <span class="p-float-label">
-      <input-number id="edgesNumber" v-model="edgesNumber"></input-number>
+      <input-number id="edgesNumber" v-model="state.edgesNumber"></input-number>
       <label for="edgesNumber">Number of edges</label>
     </span>
 
     <span class="p-float-label">
-      <input-number id="clustersNumber" v-model="clustersNumber"></input-number>
+      <input-number id="clustersNumber" v-model="state.clustersNumber"></input-number>
       <label for="clustersNumber">Number of clusters</label>
     </span>
 
     <span class="p-float-label">
-      <input-number id="clusterDensity" v-model="clusterDensity" mode="decimal" :max-fraction-digits="2"></input-number>
+      <input-number
+        id="clusterDensity"
+        v-model="state.clusterDensity"
+        mode="decimal"
+        :max-fraction-digits="2"
+      ></input-number>
       <label for="clusterDensity">Cluster density</label>
     </span>
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { reactive } from 'vue';
 import clusters from 'graphology-generators/random/clusters';
 import { Graph } from '@/helpers/types';
-import { defineComponent } from 'vue';
-import GraphGenerator from '@/components/menu/graph/generator/GraphGenerator.vue';
-import { assignOpinion } from '@/helpers/graph';
+import { useGenerator } from '@/components/menu/graph/generator/useGenerator.';
 
-export default defineComponent({
-  name: 'ClustersGenerator',
-  extends: GraphGenerator,
-  data() {
-    return {
-      nodesNumber: 10,
-      edgesNumber: 20,
-      clustersNumber: 2,
-      clusterDensity: 0.5
-    };
-  },
-  methods: {
-    generateGraph(positiveProbability: number) {
-      const graph = clusters(Graph, {
-        order: this.nodesNumber,
-        size: this.edgesNumber,
-        clusters: this.clustersNumber,
-        clusterDensity: this.clusterDensity
-      });
-      assignOpinion(graph, positiveProbability);
-      this.setGraph(graph);
-    }
-  }
+const state = reactive({
+  nodesNumber: 10,
+  edgesNumber: 20,
+  clustersNumber: 2,
+  clusterDensity: 0.5
 });
+
+function generateGraph() {
+  return clusters(Graph, {
+    order: state.nodesNumber,
+    size: state.edgesNumber,
+    clusters: state.clustersNumber,
+    clusterDensity: state.clusterDensity
+  });
+}
+
+useGenerator(generateGraph);
 </script>
 
 <style scoped lang="scss">
