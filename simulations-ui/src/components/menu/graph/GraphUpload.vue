@@ -5,6 +5,7 @@
       <div class="graph-upload-links">
         <a class="graph-upload-link" :href="'/files/graph.dot'" download="graph.dot">*.dot</a>
         <a class="graph-upload-link" :href="'/files/graph.gexf'" download="graph.gexf">*.gexf</a>
+        <a class="graph-upload-link" :href="'/files/graph.json'" download="graph.json">*.json</a>
       </div>
     </div>
     <div class="graph-upload-button">
@@ -15,14 +16,14 @@
         mode="basic"
         :custom-upload="true"
         @uploader="readFile"
-        accept=".gexf,.dot"
+        accept=".gexf,.dot,.json"
       ></file-upload>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { parseDot, parseGexf } from '@/helpers/parser';
+import { parseDot, parseGexf, parseJson } from '@/helpers/parser';
 import { storeToRefs } from 'pinia';
 import { useGraphStore } from '@/stores/graph.store';
 import { useToastStore } from '@/stores/toast.store';
@@ -45,6 +46,9 @@ async function readFile(event: { files: File | File[] }) {
         break;
       case 'dot':
         graphStore.setGraph(parseDot(text));
+        break;
+      case 'json':
+        graphStore.setGraph(parseJson(text));
         break;
     }
   } catch (error) {

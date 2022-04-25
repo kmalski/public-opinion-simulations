@@ -8,7 +8,7 @@ import { storeToRefs } from 'pinia';
 import { useGraphStore } from '@/stores/graph.store';
 
 const graphStore = useGraphStore();
-const { graph, isHoveringEnabled } = storeToRefs(graphStore);
+const { graph } = storeToRefs(graphStore);
 const graphContainer = ref<HTMLDivElement | null>(null);
 
 const refreshRenderer = () => {
@@ -17,11 +17,10 @@ const refreshRenderer = () => {
 
 watch(graph, () => {
   refreshRenderer();
-  if (isHoveringEnabled?.value) graphStore.enableHovering();
 });
 
 onMounted(() => {
-  if (graphContainer.value) graphStore.setRenderer(graphContainer.value);
+  refreshRenderer();
 });
 </script>
 

@@ -1,4 +1,4 @@
-import { MultiUndirectedGraph } from 'graphology';
+import { UndirectedGraph } from 'graphology';
 import { Attributes } from 'graphology-types';
 
 // better typing for stores with usage of storeToRefs
@@ -16,7 +16,7 @@ export interface NodeAttributes extends Attributes {
   y?: number;
 }
 
-export class Graph<EdgeAttributes extends Attributes = Attributes> extends MultiUndirectedGraph<
+export class Graph<EdgeAttributes extends Attributes = Attributes> extends UndirectedGraph<
   NodeAttributes,
   EdgeAttributes,
   GraphAttributes

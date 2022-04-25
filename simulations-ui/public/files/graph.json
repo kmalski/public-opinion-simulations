@@ -1,0 +1,58 @@
+{
+  "nodes": [
+    {
+      "key": "a",
+      "attributes": {
+        "x": -5,
+        "y": 5,
+        "label": "1"
+      }
+    },
+    {
+      "key": "b",
+      "attributes": {
+        "x": 0,
+        "y": 0,
+        "label": "-1"
+      }
+    },
+    {
+      "key": "c",
+      "attributes": {
+        "x": 0,
+        "y": 10,
+        "label": "-1"
+      }
+    },
+    {
+      "key": "d",
+      "attributes": {
+        "x": 5,
+        "y": 5,
+        "label": "1"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "a",
+      "target": "b"
+    },
+    {
+      "source": "a",
+      "target": "c"
+    },
+    {
+      "source": "b",
+      "target": "d"
+    },
+    {
+      "source": "c",
+      "target": "d"
+    },
+    {
+      "source": "a",
+      "target": "d"
+    }
+  ]
+}

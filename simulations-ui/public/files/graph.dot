@@ -1,9 +1,9 @@
 graph G {
 
-  a [label="1"]
-  b [label="-1"]
-  c [label="-1"]
-  d [label="1"]
+  a [label="1",  pos="-5,5!"]
+  b [label="-1", pos="0,0!"]
+  c [label="-1", pos="0,10!"]
+  d [label="1",  pos="5,5!"]
 
   a -- {b, c} -- d;
   a -- d

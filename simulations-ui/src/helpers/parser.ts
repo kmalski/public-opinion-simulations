@@ -7,14 +7,44 @@ import { opinionToColor } from '@/helpers/graph';
 import { write as gexfWrite } from 'graphology-gexf/node';
 
 export function serializeJson(graph: Graph, withPositions: boolean): string {
-  const graphCopy = graph.copy();
-  graphCopy.forEachNode((node, attributes) => {
-    attributes.size = undefined;
-    attributes.color = undefined;
-    attributes.x = withPositions ? attributes.x : undefined;
-    attributes.y = withPositions ? attributes.y : undefined;
+  const serializedGraph = graph.export();
+  // @ts-ignore
+  serializedGraph.options = undefined;
+  // @ts-ignore
+  serializedGraph.attributes = undefined;
+
+  serializedGraph.nodes.forEach((node) => {
+    const attr = node.attributes;
+    node.attributes = {
+      label: attr?.label ?? '',
+      x: withPositions ? attr?.x : undefined,
+      y: withPositions ? attr?.y : undefined
+    };
   });
-  return JSON.stringify(graphCopy.export());
+  serializedGraph.edges.forEach((edge) => {
+    edge.key = undefined;
+    edge.undirected = undefined;
+    edge.attributes = undefined;
+  });
+  return JSON.stringify(serializedGraph);
+}
+
+export function parseJson(fileText: string): Graph {
+  const graphJson = JSON.parse(fileText);
+
+  if (Array.isArray(graphJson?.edges))
+    graphJson.edges.forEach((edge: any) => {
+      if (edge) edge.undirected = true;
+    });
+
+  const graph = new Graph({ allowSelfLoops: false });
+  graph.import(graphJson);
+  graph.forEachNode((node, attributes) => {
+    const opinion = parseLabel(attributes.label);
+    attributes.color = opinionToColor(opinion);
+    attributes.size = NODE_SIZE;
+  });
+  return graph;
 }
 
 export function serializeGexf(graph: Graph, withPositions: boolean): string {

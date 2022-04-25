@@ -44,6 +44,7 @@ export const useGraphStore = defineStore('graph', {
     setRenderer(container: HTMLElement) {
       if (this.renderer) this.renderer.kill();
       this.renderer = new Sigma(this.graph, container);
+      if (this.isHoveringEnabled) this.enableHovering();
     },
     setGraph(graph: Graph) {
       validatePositions(graph);

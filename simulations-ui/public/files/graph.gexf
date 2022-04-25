@@ -2,17 +2,25 @@
 <gexf xmlns="http://www.gephi.org/gexf">
     <graph type="static" defaultedgetype="undirected">
         <nodes>
-            <node id="a" label="1"/>
-            <node id="b" label="-1"/>
-            <node id="c" label="-1"/>
-            <node id="d" label="1"/>
+            <node id="a" label="1">
+                <viz:position x="-5" y="5"/>
+            </node>
+            <node id="b" label="-1">
+                <viz:position x="0" y="0"/>
+            </node>
+            <node id="c" label="-1">
+                <viz:position x="0" y="10"/>
+            </node>
+            <node id="d" label="1">
+                <viz:position x="5" y="5"/>
+            </node>
         </nodes>
         <edges>
-            <edge id="0" source="a" target="b"/>
-            <edge id="1" source="a" target="c"/>
-            <edge id="2" source="b" target="d"/>
-            <edge id="3" source="c" target="d"/>
-            <edge id="4" source="a" target="d"/>
+            <edge source="a" target="b"/>
+            <edge source="a" target="c"/>
+            <edge source="b" target="d"/>
+            <edge source="c" target="d"/>
+            <edge source="a" target="d"/>
         </edges>
     </graph>
 </gexf>
