@@ -30,6 +30,9 @@ import ConnectedCavemanGenerator from '@/components/menu/graph/generator/Connect
 import ClustersGenerator from '@/components/menu/graph/generator/ClustersGenerator.vue';
 import ErdosRenyiGenerator from '@/components/menu/graph/generator/ErdosRenyiGenerator.vue';
 import GirvanNewmanGenerator from '@/components/menu/graph/generator/GirvanNewmanGenerator.vue';
+import KrackhardtKiteGenerator from '@/components/menu/graph/generator/KrackhardtKiteGenerator.vue';
+import FlorentineFamiliesGenerator from '@/components/menu/graph/generator/FlorentineFamiliesGenerator.vue';
+import KarateClubGenerator from '@/components/menu/graph/generator/KarateClubGenerator.vue';
 
 const nameToComponent = new Map([
   ['complete-generator', CompleteGenerator],
@@ -41,7 +44,10 @@ const nameToComponent = new Map([
   ['connected-caveman-generator', ConnectedCavemanGenerator],
   ['clusters-generator', ClustersGenerator],
   ['erdos-renyi-generator', ErdosRenyiGenerator],
-  ['girvan-newman-generator', GirvanNewmanGenerator]
+  ['girvan-newman-generator', GirvanNewmanGenerator],
+  ['krackhardt-kite-generator', KrackhardtKiteGenerator],
+  ['florentine-families-generator', FlorentineFamiliesGenerator],
+  ['karate-club-generator', KarateClubGenerator]
 ]) as Map<string, DefineComponent>;
 
 const generatorStore = useGeneratorStore();

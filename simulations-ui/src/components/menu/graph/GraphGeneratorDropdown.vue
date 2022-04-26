@@ -29,7 +29,10 @@ const options = ref([
   { name: 'Connected Caveman', generator: 'connected-caveman-generator' },
   { name: 'Clusters', generator: 'clusters-generator' },
   { name: 'Erdos-Renyi', generator: 'erdos-renyi-generator' },
-  { name: 'Girvan-Newman', generator: 'girvan-newman-generator' }
+  { name: 'Girvan-Newman', generator: 'girvan-newman-generator' },
+  { name: 'Krackhardt kite', generator: 'krackhardt-kite-generator' },
+  { name: 'Florentine families’', generator: 'florentine-families-generator' },
+  { name: 'Zachary’s karate club', generator: 'karate-club-generator' }
 ]);
 
 watch(selectedGenerator, (newGenerator) => {

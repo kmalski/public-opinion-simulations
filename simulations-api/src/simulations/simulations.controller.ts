@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Param, Post, Sse, MessageEvent, Logger, Header } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Param, Post, Sse, MessageEvent } from '@nestjs/common';
 import { SimulationsService } from './simulations.service';
 import { SimulationDto } from './simulation.dto';
 import { Observable } from 'rxjs';
