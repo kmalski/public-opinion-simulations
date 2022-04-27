@@ -6,7 +6,12 @@
     </span>
 
     <span class="p-float-label">
-      <input-number id="edgeProbability" v-model="state.edgeProbability"></input-number>
+      <input-number
+        id="edgeProbability"
+        v-model="state.edgeProbability"
+        mode="decimal"
+        :max-fraction-digits="2"
+      ></input-number>
       <label for="edgeProbability">Probability for edge creation</label>
     </span>
   </div>
