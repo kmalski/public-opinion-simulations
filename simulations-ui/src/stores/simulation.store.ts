@@ -1,3 +1,4 @@
+import { collectLayoutAsFlatArray, assignLayoutAsFlatArray } from 'graphology-layout/utils';
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { parseDot, serializeDot } from '@/helpers/parser';
 import { useGraphStore } from '@/stores/graph.store';
@@ -29,6 +30,8 @@ export const useSimulationStore = defineStore('simulation', {
       const toastStore = useToastStore();
       const url = import.meta.env.VITE_SERVER_URL;
 
+      const layout = collectLayoutAsFlatArray(graphStore.graph);
+
       const response = await fetch(`${url}/simulation`, {
         method: 'POST',
         headers: {
@@ -37,7 +40,7 @@ export const useSimulationStore = defineStore('simulation', {
         body: JSON.stringify({
           model: this.model,
           iterations: this.iterations,
-          dotGraph: serializeDot(graphStore.graph, true)
+          dotGraph: serializeDot(graphStore.graph, false)
         })
       });
 
@@ -57,7 +60,9 @@ export const useSimulationStore = defineStore('simulation', {
 
           if (message.status === 'CLOSED') {
             if (message.resultStatus === 'SUCCESS') {
-              graphStore.setGraph(parseDot(message.dotGraph));
+              const graph = parseDot(message.dotGraph);
+              assignLayoutAsFlatArray(graph, layout);
+              graphStore.setGraph(graph);
             } else {
               toastStore.error = {
                 summary: 'Simulation error',
