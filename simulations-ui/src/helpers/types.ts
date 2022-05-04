@@ -1,11 +1,11 @@
 import { UndirectedGraph } from 'graphology';
-import { Attributes } from 'graphology-types';
+import { Attributes, SerializedGraph } from 'graphology-types';
 
 // better typing for stores with usage of storeToRefs
 export type Optional<T> = T | undefined;
 
 export interface GraphAttributes extends Attributes {
-  predefinedPositions: boolean;
+  predefinedPositions?: boolean;
 }
 
 export interface NodeAttributes extends Attributes {
@@ -16,10 +16,18 @@ export interface NodeAttributes extends Attributes {
   y?: number;
 }
 
-export class Graph<EdgeAttributes extends Attributes = Attributes> extends UndirectedGraph<
-  NodeAttributes,
-  EdgeAttributes,
-  GraphAttributes
-> {}
+export type EdgeAttributes = Attributes;
+
+export class Graph extends UndirectedGraph<NodeAttributes, EdgeAttributes, GraphAttributes> {
+  constructor() {
+    super({ allowSelfLoops: false, multi: false, type: 'undirected' });
+  }
+
+  static create(data: SerializedGraph<NodeAttributes, EdgeAttributes, GraphAttributes>): Graph {
+    const graph = new Graph();
+    graph.import(data, false);
+    return graph;
+  }
+}
 
 export type BinaryOpinion = '-1' | '1';

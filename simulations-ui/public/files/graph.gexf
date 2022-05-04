@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<gexf xmlns="http://www.gephi.org/gexf">
-    <graph type="static" defaultedgetype="undirected">
+<gexf version="1.2" xmlns="http://www.gexf.net/1.2draft" xmlns:viz="http:///www.gexf.net/1.1draft/viz">
+    <graph>
         <nodes>
             <node id="a" label="1">
                 <viz:position x="-5" y="5"/>

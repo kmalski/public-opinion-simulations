@@ -32,13 +32,19 @@ export function serializeJson(graph: Graph, withPositions: boolean): string {
 export function parseJson(fileText: string): Graph {
   const graphJson = JSON.parse(fileText);
 
+  if (graphJson?.options?.multi) throw new Error('Parallel edges are not allowed');
+  if (graphJson?.options?.allowSelfLoops) throw new Error('Self loops are not allowed');
+  if (graphJson?.options?.type && graphJson.options.type !== 'undirected')
+    throw new Error('Graph has to be undirected');
+
   if (Array.isArray(graphJson?.edges))
     graphJson.edges.forEach((edge: any) => {
+      if (typeof edge.undirected !== 'undefined' && edge.undirected === false)
+        throw new Error('Directed edges are not allowed');
       if (edge) edge.undirected = true;
     });
 
-  const graph = new Graph({ allowSelfLoops: false });
-  graph.import(graphJson);
+  const graph = Graph.create(graphJson);
   graph.forEachNode((node, attributes) => {
     const opinion = parseLabel(attributes.label);
     attributes.color = opinionToColor(opinion);
@@ -64,6 +70,9 @@ export function serializeGexf(graph: Graph, withPositions: boolean): string {
 
 export function parseGexf(fileText: string): Graph {
   const graph = gexfParse(Graph, fileText);
+
+  if (graph.type !== 'undirected') throw new Error('Graph has to be undirected');
+
   graph.forEachNode((node, attributes) => {
     const opinion = parseLabel(attributes['label']);
     attributes.color = opinionToColor(opinion);
