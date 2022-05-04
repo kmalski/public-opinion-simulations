@@ -5,7 +5,7 @@
       direction="right"
       showIcon="pi pi-bars"
       hideIcon="pi pi-times"
-      buttonClass="p-button-outlined"
+      buttonClass="p-button"
       :tooltipOptions="{ position: 'top', event: 'hover' }"
       :hideOnClickOutside="false"
     />
@@ -27,7 +27,7 @@ import GraphDownload from '@/components/graph/GraphDownload.vue';
 
 const toastStore = useToastStore();
 const graphStore = useGraphStore();
-const { isLayoutRunning, isHoveringEnabled } = storeToRefs(graphStore);
+const { isLayoutRunning, isHoveringEnabled, isDragAndDropEnabled } = storeToRefs(graphStore);
 
 const state = reactive({
   downloadVisible: false,
@@ -35,22 +35,30 @@ const state = reactive({
     {
       label: 'Start layout',
       icon: PrimeIcons.PLAY,
+      disabled: isDragAndDropEnabled,
       command: () => graphStore.startLayout()
     },
     {
       label: 'Random layout',
       icon: PrimeIcons.REPLAY,
+      disabled: isDragAndDropEnabled,
       command: () => graphStore.randomLayout()
     },
     {
       label: 'Center',
       icon: PrimeIcons.CIRCLE_FILL,
+      disabled: isDragAndDropEnabled,
       command: () => graphStore.centerLayout()
     },
     {
       label: 'Enable highlighting',
       icon: PrimeIcons.FILTER,
       command: () => graphStore.enableHovering()
+    },
+    {
+      label: 'Unlock positions',
+      icon: PrimeIcons.LOCK_OPEN,
+      command: () => graphStore.enableDragAndDrop()
     },
     {
       label: 'Download as image',
@@ -87,6 +95,13 @@ watch(isHoveringEnabled, (newIsHoveringEnabled) => {
   item.label = (newIsHoveringEnabled ? 'Disable' : 'Enable') + ' highlighting';
   item.icon = newIsHoveringEnabled ? PrimeIcons.FILTER_SLASH : PrimeIcons.FILTER;
   item.command = newIsHoveringEnabled ? graphStore.disableHovering : graphStore.enableHovering;
+});
+
+watch(isDragAndDropEnabled, (newIsDragAndDropEnabled) => {
+  const item = state.items[4];
+  item.label = (newIsDragAndDropEnabled ? 'Lock' : 'Unlock') + ' positions';
+  item.icon = newIsDragAndDropEnabled ? PrimeIcons.LOCK : PrimeIcons.LOCK_OPEN;
+  item.command = newIsDragAndDropEnabled ? graphStore.disableDragAndDrop : graphStore.enableDragAndDrop;
 });
 
 function toggleFullscreen(fullscreen: boolean) {

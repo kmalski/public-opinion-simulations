@@ -7,12 +7,25 @@ import { animateNodes } from 'sigma/utils/animate';
 import { Graph, Optional } from '@/helpers/types';
 import { validatePositions } from '@/helpers/graph';
 import { bindHoverEvents, Hovering, setHoveredNode, unbindHoverEvents } from '@/helpers/hovering';
+import {
+  bindDragAndDropEvents,
+  DragAndDrop,
+  onDownNodeImpl,
+  onMouseDownImpl,
+  onMouseMoveBodyImpl,
+  onMouseUpImpl,
+  unbindDragAndDropEvents
+} from '@/helpers/drag-and-drop';
+import { SigmaNodeEventPayload } from 'sigma/sigma';
+import { MouseCoords } from 'sigma/types';
 
 interface State {
   graph: Graph;
   isLayoutRunning: boolean;
   hovering: Hovering;
   isHoveringEnabled: boolean;
+  dragAndDrop: DragAndDrop;
+  isDragAndDropEnabled: boolean;
   renderer: Optional<Sigma>;
   fa2Layout: Optional<FA2LayoutSupervisor>;
   cancelCurrentAnimation: Optional<() => void>;
@@ -35,6 +48,8 @@ export const useGraphStore = defineStore('graph', {
       isLayoutRunning: false,
       hovering: {},
       isHoveringEnabled: false,
+      dragAndDrop: { isDragging: false },
+      isDragAndDropEnabled: false,
       renderer: undefined,
       fa2Layout: undefined,
       cancelCurrentAnimation: undefined
@@ -45,6 +60,7 @@ export const useGraphStore = defineStore('graph', {
       if (this.renderer) this.renderer.kill();
       this.renderer = new Sigma(this.graph, container);
       if (this.isHoveringEnabled) this.enableHovering();
+      if (this.isDragAndDropEnabled) this.enableDragAndDrop();
     },
     setGraph(graph: Graph) {
       validatePositions(graph);
@@ -104,11 +120,52 @@ export const useGraphStore = defineStore('graph', {
         this.isHoveringEnabled = false;
       }
     },
+    enableDragAndDrop() {
+      if (this.renderer) {
+        if (this.isLayoutRunning) this.stopLayout();
+        if (this.cancelCurrentAnimation) this.cancelCurrentAnimation();
+
+        bindDragAndDropEvents(
+          this.dragAndDrop,
+          this.graph,
+          this.renderer as Sigma,
+          this.onDownNode,
+          this.onMouseMoveBody,
+          this.onMouseUp,
+          this.onMouseDown
+        );
+        this.isDragAndDropEnabled = true;
+      }
+    },
+    disableDragAndDrop() {
+      if (this.renderer) {
+        unbindDragAndDropEvents(
+          this.renderer as Sigma,
+          this.onDownNode,
+          this.onMouseMoveBody,
+          this.onMouseUp,
+          this.onMouseDown
+        );
+        this.isDragAndDropEnabled = false;
+      }
+    },
     onEnterNode({ node }: { node: string }) {
       setHoveredNode(this.hovering, this.graph, this.renderer as Sigma, node);
     },
     onLeaveNode() {
       setHoveredNode(this.hovering, this.graph, this.renderer as Sigma, undefined);
+    },
+    onDownNode(event: SigmaNodeEventPayload) {
+      onDownNodeImpl(event, this.dragAndDrop, this.graph);
+    },
+    onMouseMoveBody(event: MouseCoords) {
+      onMouseMoveBodyImpl(event, this.dragAndDrop, this.graph, this.renderer as Sigma);
+    },
+    onMouseUp() {
+      onMouseUpImpl(this.dragAndDrop, this.graph);
+    },
+    onMouseDown() {
+      onMouseDownImpl(this.renderer as Sigma);
     }
   }
 });

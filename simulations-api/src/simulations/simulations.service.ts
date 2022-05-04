@@ -15,7 +15,7 @@ interface Simulation {
 export class SimulationsService {
   private static readonly MAX_PROCESS_COUNT = 3;
   private static readonly EXE_NAME = process.platform === 'win32' ? 'main.exe' : 'main';
-  private static readonly STEP_REGEX = /\[STEP] (?<step>[0-9]*)/;
+  private static readonly STEP_REGEX = /\[STEP] (?<step>\d*)/;
 
   private readonly idToSimulationMap: Map<string, Simulation> = new Map();
   private readonly logger = new Logger(SimulationsService.name);
