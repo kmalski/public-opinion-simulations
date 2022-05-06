@@ -1,5 +1,5 @@
 <template>
-  <div class="graph-generator regular-square-generator">
+  <div class="graph-generator regular-triangular-generator">
     <span class="p-float-label">
       <input-number id="nodesDegree" v-model="state.height"></input-number>
       <label for="nodesDegree">Height of square mesh</label>
@@ -45,8 +45,12 @@ function generateGraph() {
       if (height > 1) {
         const targetY1 = (i + width) % order;
         if (targetY1 > i || periodicBoundary) graph.mergeEdge(i, targetY1);
+
+        const notFarRight = x !== width - 1;
+        const targetY2 = notFarRight ? (i + width + 1) % order : (i + 1) % order;
+        if ((targetY2 > i && notFarRight) || periodicBoundary) graph.mergeEdge(i, targetY2);
       }
-      graph.replaceNodeAttributes(i, { x, y });
+      graph.replaceNodeAttributes(i, { x: x - y / 3, y });
     }
   }
   return graph;
@@ -59,7 +63,7 @@ useGenerator(generateGraph);
 @use '../../../../styles/tab';
 @use '../../../../styles/forms';
 
-.regular-square-generator {
+.regular-triangular-generator {
   @include tab.graph-generator;
 }
 </style>
