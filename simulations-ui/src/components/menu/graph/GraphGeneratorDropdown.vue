@@ -24,7 +24,7 @@ const options = ref([
   { name: 'Empty', generator: 'empty-generator' },
   { name: 'Ladder', generator: 'ladder-generator' },
   { name: 'Path', generator: 'path-generator' },
-  { name: 'Regular', generator: 'regular-generator' },
+  { name: 'Regular Square', generator: 'regular-square-generator' },
   { name: 'Caveman', generator: 'caveman-generator' },
   { name: 'Connected Caveman', generator: 'connected-caveman-generator' },
   { name: 'Clusters', generator: 'clusters-generator' },

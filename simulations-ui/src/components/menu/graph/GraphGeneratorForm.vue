@@ -24,7 +24,7 @@ import CompleteGenerator from '@/components/menu/graph/generator/CompleteGenerat
 import EmptyGenerator from '@/components/menu/graph/generator/EmptyGenerator.vue';
 import LadderGenerator from '@/components/menu/graph/generator/LadderGenerator.vue';
 import PathGenerator from '@/components/menu/graph/generator/PathGenerator.vue';
-import RegularGenerator from '@/components/menu/graph/generator/RegularGenerator.vue';
+import RegularSquareGenerator from '@/components/menu/graph/generator/RegularSquareGenerator.vue';
 import CavemanGenerator from '@/components/menu/graph/generator/CavemanGenerator.vue';
 import ConnectedCavemanGenerator from '@/components/menu/graph/generator/ConnectedCavemanGenerator.vue';
 import ClustersGenerator from '@/components/menu/graph/generator/ClustersGenerator.vue';
@@ -39,7 +39,7 @@ const nameToComponent = new Map([
   ['empty-generator', EmptyGenerator],
   ['ladder-generator', LadderGenerator],
   ['path-generator', PathGenerator],
-  ['regular-generator', RegularGenerator],
+  ['regular-square-generator', RegularSquareGenerator],
   ['caveman-generator', CavemanGenerator],
   ['connected-caveman-generator', ConnectedCavemanGenerator],
   ['clusters-generator', ClustersGenerator],
