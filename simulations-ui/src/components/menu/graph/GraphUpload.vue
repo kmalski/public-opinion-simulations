@@ -7,6 +7,7 @@
         <a class="graph-upload-link" :href="'/files/graph.gexf'" download="graph.gexf">*.gexf</a>
         <a class="graph-upload-link" :href="'/files/graph.json'" download="graph.json">*.json</a>
         <a class="graph-upload-link" :href="'/files/graph.net'" download="graph.net">*.net</a>
+        <a class="graph-upload-link" :href="'/files/graph.gam'" download="graph.gam">*.gam</a>
       </div>
     </div>
     <div class="graph-upload-button">
@@ -17,19 +18,19 @@
         mode="basic"
         :custom-upload="true"
         @uploader="readFile"
-        accept=".gexf,.dot,.json,.net"
+        accept=".gexf,.dot,.json,.net,.gam"
       ></file-upload>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { parseDot, parseGexf, parseJson, parseNet } from '@/helpers/parsers';
 import { storeToRefs } from 'pinia';
 import { useGraphStore } from '@/stores/graph.store';
 import { useToastStore } from '@/stores/toast.store';
 import { useSimulationStore } from '@/stores/simulation.store';
 import { assignMissingOpinions } from '@/helpers/graph';
+import { parseDot, parseGexf, parseJson, parseNet, parseGam } from '@/helpers/parsers';
 
 const graphStore = useGraphStore();
 const toastStore = useToastStore();
@@ -55,6 +56,9 @@ async function readFile(event: { files: File | File[] }) {
         break;
       case 'net':
         graph = parseNet(text);
+        break;
+      case 'gam':
+        graph = parseGam(text);
         break;
     }
   } catch (error) {
@@ -84,7 +88,7 @@ async function readFile(event: { files: File | File[] }) {
 
   &-hint {
     text-align: left;
-
+    padding-right: 2rem;
     p {
       margin: 0;
     }
@@ -101,7 +105,7 @@ async function readFile(event: { files: File | File[] }) {
     display: flex;
     flex-flow: row wrap;
     text-align: left;
-    column-gap: 0.5rem;
+    column-gap: 0.7rem;
   }
 
   &-link {

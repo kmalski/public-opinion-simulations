@@ -3,15 +3,19 @@ import { parse as graphvizParse } from '@ts-graphviz/parser';
 import { opinionToColor } from '@/helpers/graph';
 import { NODE_SIZE } from '@/helpers/defaults';
 import { AttributesValue, EdgeTarget, EdgeTargetTuple, Graph as Graphviz, toDot } from 'ts-graphviz';
-import { parseLabel } from '@/helpers/parsers/common';
+import { parseLabel, serializePos } from '@/helpers/parsers/common';
 
 export function serializeDot(graph: Graph, withPositions: boolean): string {
   const graphviz = new Graphviz();
   graph.forEachNode((node, attributes) => {
-    const attr = {
-      label: attributes.label,
-      pos: withPositions ? `${attributes.x},${attributes.y}!` : undefined
+    const attr: { label?: string; pos?: string } = {
+      label: attributes.label
     };
+    if (withPositions) {
+      const x = serializePos(attributes.x);
+      const y = serializePos(attributes.y);
+      attr.pos = `${x},${y}!`;
+    }
     graphviz.createNode(node, attr);
   });
 

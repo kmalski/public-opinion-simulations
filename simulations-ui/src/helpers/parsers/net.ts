@@ -1,7 +1,5 @@
-import { BinaryOpinion, Graph, NodeAttributes } from '@/helpers/types';
-import { parseLabel } from '@/helpers/parsers/common';
-import { NODE_SIZE } from '@/helpers/defaults';
-import { opinionToColor } from '@/helpers/graph';
+import { Graph } from '@/helpers/types';
+import { addNodes, addNodesCount, newlineSeparator, serializePos, whitespaceSeparator } from '@/helpers/parsers/common';
 
 export function serializeNet(graph: Graph, withPositions: boolean): string {
   let result = `*Vertices ${graph.order}\n`;
@@ -24,7 +22,7 @@ export function serializeNet(graph: Graph, withPositions: boolean): string {
     if (withPositions) {
       const x = normalize(attributes.x as number);
       const y = normalize(attributes.y as number);
-      result += ` ${x.toPrecision(4)} ${y.toPrecision(4)}`;
+      result += ` ${serializePos(x)} ${serializePos(y)}`;
     }
     result += '\n';
     attributes.num = i++;
@@ -40,7 +38,7 @@ export function serializeNet(graph: Graph, withPositions: boolean): string {
 export function parseNet(fileText: string): Graph {
   const graph = new Graph();
 
-  const lines = fileText.split(/\r?\n/);
+  const lines = fileText.split(newlineSeparator);
   if (lines.length === 0) return graph;
 
   const remainingLines = parseVertices(graph, lines);
@@ -52,7 +50,7 @@ export function parseNet(fileText: string): Graph {
 function parseVertices(graph: Graph, lines: string[]): string[] | undefined {
   const marker = '*vertices';
 
-  const verticesLine = lines[0].split(/ +/);
+  const verticesLine = lines[0].split(whitespaceSeparator);
   if (verticesLine.length !== 2) throw new Error(`Invalid vertices marker: ${lines[0]}`);
   if (verticesLine[0].toLowerCase() !== marker) throw new Error(`File must start with ${marker} marker`);
   const order = +verticesLine[1];
@@ -68,47 +66,10 @@ function parseVertices(graph: Graph, lines: string[]): string[] | undefined {
   }
 }
 
-function addNodesCount(graph: Graph, count: number) {
-  for (let i = 1; i < count + 1; i++)
-    graph.addNode(i, {
-      size: NODE_SIZE
-    });
-}
-
-function addNodes(graph: Graph, lines: string[]) {
-  for (const line of lines) {
-    if (line.startsWith('*')) throw new Error('Invalid marker before declared vertices count');
-
-    const nodeLine = line.split(/ +/);
-    if (nodeLine.length === 0) throw new Error('Vertex line can not be empty');
-
-    const attributes: NodeAttributes = {
-      size: NODE_SIZE
-    };
-    if (nodeLine.length >= 2) {
-      const opinion = parseNetLabel(nodeLine[1]);
-      attributes.label = opinion;
-      attributes.color = opinionToColor(opinion);
-    }
-    if (nodeLine.length >= 4) {
-      attributes.x = +nodeLine[2];
-      attributes.y = +nodeLine[3];
-    }
-    graph.addNode(nodeLine[0], attributes);
-  }
-}
-
-function parseNetLabel(label: string): BinaryOpinion {
-  if (label.charAt(0) === '"' && label.charAt(label.length - 1) === '"') {
-    return parseLabel(label.substring(1, label.length - 1));
-  }
-  return parseLabel(label);
-}
-
 function parseEdges(graph: Graph, lines: string[]) {
   const markers = ['*edges', '*arcs'];
 
-  const edgesLine = lines[0].split(/ +/);
+  const edgesLine = lines[0].split(whitespaceSeparator);
   if (edgesLine.length !== 1) throw new Error(`Invalid edges marker: ${lines[0]}`);
   if (!markers.includes(edgesLine[0].toLowerCase())) throw new Error(`File must start with one of ${markers} markers`);
 
@@ -119,7 +80,7 @@ function addEdges(graph: Graph, lines: string[]) {
   for (const line of lines) {
     if (line.startsWith('*')) throw new Error('Invalid marker before end of edges section');
 
-    const edgeLine = line.split(/ +/);
+    const edgeLine = line.split(whitespaceSeparator);
     if (edgeLine.length !== 2) break;
 
     graph.addEdge(edgeLine[0], edgeLine[1]);

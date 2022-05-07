@@ -1,12 +1,13 @@
 import { parse as gexfParse } from 'graphology-gexf';
 import { NODE_SIZE } from '@/helpers/defaults';
-import { Graph } from '@/helpers/types';
+import { Graph, NodeAttributes } from '@/helpers/types';
 import { opinionToColor } from '@/helpers/graph';
 import { write as gexfWrite } from 'graphology-gexf/node';
-import { parseLabel } from '@/helpers/parsers/common';
+import { parseLabel, serializePos } from '@/helpers/parsers/common';
 
 export { parseNet, serializeNet } from '@/helpers/parsers/net';
 export { parseDot, serializeDot } from '@/helpers/parsers/dot';
+export { parseGam, serializeGam } from '@/helpers/parsers/gam';
 
 export function serializeJson(graph: Graph, withPositions: boolean): string {
   const serializedGraph = graph.export();
@@ -16,11 +17,11 @@ export function serializeJson(graph: Graph, withPositions: boolean): string {
   serializedGraph.attributes = undefined;
 
   serializedGraph.nodes.forEach((node) => {
-    const attr = node.attributes;
+    const attr = node.attributes as NodeAttributes;
     node.attributes = {
       label: attr?.label ?? '',
-      x: withPositions ? attr?.x : undefined,
-      y: withPositions ? attr?.y : undefined
+      x: withPositions ? Number(serializePos(attr.x)) : undefined,
+      y: withPositions ? Number(serializePos(attr.y)) : undefined
     };
   });
   serializedGraph.edges.forEach((edge) => {
@@ -63,7 +64,9 @@ export function serializeGexf(graph: Graph, withPositions: boolean): string {
     formatNode: (key, attributes) => {
       return {
         label: attributes.label,
-        viz: withPositions ? { x: attributes.x, y: attributes.y } : undefined
+        viz: withPositions
+          ? { x: Number(serializePos(attributes.x)), y: Number(serializePos(attributes.y)) }
+          : undefined
       };
     },
     formatEdge: () => {
