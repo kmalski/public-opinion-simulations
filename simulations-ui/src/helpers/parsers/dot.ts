@@ -1,4 +1,4 @@
-import { Graph } from '@/helpers/types';
+import { Graph, NodeAttributes } from '@/helpers/types';
 import { parse as graphvizParse } from '@ts-graphviz/parser';
 import { opinionToColor } from '@/helpers/graph';
 import { NODE_SIZE } from '@/helpers/defaults';
@@ -27,20 +27,28 @@ export function parseDot(fileText: string): Graph {
   const graph = new Graph();
 
   graphDot.nodes.forEach((node) => {
-    const opinion = parseLabel(node.attributes.get('label'));
     const pos = parsePos(node.attributes.get('pos'));
-    const color = opinionToColor(opinion);
-    graph.addNode(node.id, {
+    const attributes: NodeAttributes = {
       size: NODE_SIZE,
-      color: color,
-      label: opinion,
       x: pos[0],
       y: pos[1]
-    });
+    };
+
+    const label = node.attributes.get('label');
+    if (label) {
+      const opinion = parseLabel(label);
+      attributes.label = opinion;
+      attributes.color = opinionToColor(opinion);
+    }
+
+    graph.addNode(node.id, attributes);
   });
 
-  // Note: assumes that every node was already defined
   graphDot.edges.forEach((edge) => addTargets(graph, edge.targets));
+
+  graph.forEachNode((node, attributes) => {
+    if (!attributes.size) attributes.size = NODE_SIZE;
+  });
 
   return graph;
 }
@@ -69,15 +77,15 @@ function addEdges(graph: Graph, from: EdgeTarget, to: EdgeTarget): void {
   if (fromIsArray) {
     if (toIsArray) {
       from.forEach((fromNode) => {
-        to.forEach((toNode) => graph.addEdge(fromNode.id, toNode.id));
+        to.forEach((toNode) => graph.mergeEdge(fromNode.id, toNode.id));
       });
     } else {
-      from.forEach((fromNode) => graph.addEdge(fromNode.id, to.id));
+      from.forEach((fromNode) => graph.mergeEdge(fromNode.id, to.id));
     }
   } else if (toIsArray) {
-    to.forEach((toNode) => graph.addEdge(from.id, toNode.id));
+    to.forEach((toNode) => graph.mergeEdge(from.id, toNode.id));
   } else {
-    graph.addEdge(from.id, to.id);
+    graph.mergeEdge(from.id, to.id);
   }
 }
 

@@ -48,9 +48,11 @@ export function parseJson(fileText: string): Graph {
 
   const graph = Graph.create(graphJson);
   graph.forEachNode((node, attributes) => {
-    const opinion = parseLabel(attributes.label);
-    attributes.color = opinionToColor(opinion);
     attributes.size = NODE_SIZE;
+    if (attributes.label) {
+      const opinion = parseLabel(attributes.label);
+      attributes.color = opinionToColor(opinion);
+    }
   });
   return graph;
 }
@@ -76,9 +78,11 @@ export function parseGexf(fileText: string): Graph {
   if (graph.type !== 'undirected') throw new Error('Graph has to be undirected');
 
   graph.forEachNode((node, attributes) => {
-    const opinion = parseLabel(attributes['label']);
-    attributes.color = opinionToColor(opinion);
     attributes.size = NODE_SIZE;
+    if (attributes.label) {
+      const opinion = parseLabel(attributes.label);
+      attributes.color = opinionToColor(opinion);
+    }
   });
   return graph;
 }
