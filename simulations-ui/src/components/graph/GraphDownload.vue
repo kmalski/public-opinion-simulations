@@ -39,7 +39,7 @@
 import { reactive, watch, toRefs } from 'vue';
 import PrimeDialog from 'primevue/dialog';
 import { useGraphStore } from '@/stores/graph.store';
-import { saveAsDot, saveAsGexf, saveAsJson } from '@/helpers/download';
+import { saveAsDot, saveAsGexf, saveAsJson, saveAsNet } from '@/helpers/download';
 
 interface Props {
   modelValue: boolean;
@@ -54,7 +54,7 @@ const props = defineProps<Props>();
 const { modelValue } = toRefs(props);
 const emit = defineEmits<Emits>();
 
-const formats = ['dot', 'json', 'gexf'];
+const formats = ['dot', 'json', 'gexf', 'net'];
 const state = reactive({
   visible: false,
   format: 'dot',
@@ -77,6 +77,9 @@ function onOk() {
       break;
     case 'gexf':
       saveAsGexf(graphStore.graph, state.filename, state.withPositions);
+      break;
+    case 'net':
+      saveAsNet(graphStore.graph, state.filename, state.withPositions);
       break;
   }
   state.visible = false;

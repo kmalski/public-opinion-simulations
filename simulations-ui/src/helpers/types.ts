@@ -14,6 +14,7 @@ export interface NodeAttributes extends Attributes {
   label?: string;
   x?: number;
   y?: number;
+  num?: number;
 }
 
 export type EdgeAttributes = Attributes;

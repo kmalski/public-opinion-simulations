@@ -1,6 +1,6 @@
 import { collectLayoutAsFlatArray, assignLayoutAsFlatArray } from 'graphology-layout/utils';
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { parseDot, serializeDot } from '@/helpers/parser';
+import { parseDot, serializeDot } from '@/helpers/parsers';
 import { useGraphStore } from '@/stores/graph.store';
 import { useToastStore } from '@/stores/toast.store';
 import { Optional } from '@/helpers/types';

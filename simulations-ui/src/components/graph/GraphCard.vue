@@ -3,7 +3,8 @@
     <card>
       <template #content>
         <graph-container></graph-container>
-        <graph-speed-dial></graph-speed-dial>
+        <graph-manipulation-speed-dial></graph-manipulation-speed-dial>
+        <graph-utils-speed-dial></graph-utils-speed-dial>
       </template>
     </card>
   </div>
@@ -11,7 +12,8 @@
 
 <script setup lang="ts">
 import GraphContainer from '@/components/graph/GraphContainer.vue';
-import GraphSpeedDial from '@/components/graph/GraphSpeedDial.vue';
+import GraphManipulationSpeedDial from '@/components/graph/GraphManipulationSpeedDial.vue';
+import GraphUtilsSpeedDial from '@/components/graph/GraphUtilsSpeedDial.vue';
 </script>
 
 <style scoped lang="scss">

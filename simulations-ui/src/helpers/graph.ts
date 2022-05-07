@@ -20,6 +20,16 @@ export function validatePositions(graph: Graph) {
   }
 }
 
+export function assignMissingOpinions(graph: Graph) {
+  graph.forEachNode((node, attributes) => {
+    if (!attributes.label) {
+      const opinion = randomOpinion(0.5);
+      attributes.label = opinion;
+      attributes.color = opinionToColor(opinion);
+    }
+  });
+}
+
 export function randomOpinion(positiveProbability: number): BinaryOpinion {
   if (Math.random() < positiveProbability) return '1';
   return '-1';

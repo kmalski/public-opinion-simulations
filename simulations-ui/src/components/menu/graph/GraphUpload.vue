@@ -6,6 +6,7 @@
         <a class="graph-upload-link" :href="'/files/graph.dot'" download="graph.dot">*.dot</a>
         <a class="graph-upload-link" :href="'/files/graph.gexf'" download="graph.gexf">*.gexf</a>
         <a class="graph-upload-link" :href="'/files/graph.json'" download="graph.json">*.json</a>
+        <a class="graph-upload-link" :href="'/files/graph.net'" download="graph.net">*.net</a>
       </div>
     </div>
     <div class="graph-upload-button">
@@ -16,18 +17,19 @@
         mode="basic"
         :custom-upload="true"
         @uploader="readFile"
-        accept=".gexf,.dot,.json"
+        accept=".gexf,.dot,.json,.net"
       ></file-upload>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { parseDot, parseGexf, parseJson } from '@/helpers/parser';
+import { parseDot, parseGexf, parseJson, parseNet } from '@/helpers/parsers';
 import { storeToRefs } from 'pinia';
 import { useGraphStore } from '@/stores/graph.store';
 import { useToastStore } from '@/stores/toast.store';
 import { useSimulationStore } from '@/stores/simulation.store';
+import { assignMissingOpinions } from '@/helpers/graph';
 
 const graphStore = useGraphStore();
 const toastStore = useToastStore();
@@ -51,6 +53,9 @@ async function readFile(event: { files: File | File[] }) {
       case 'json':
         graph = parseJson(text);
         break;
+      case 'net':
+        graph = parseNet(text);
+        break;
     }
   } catch (error) {
     toastStore.error = {
@@ -59,12 +64,8 @@ async function readFile(event: { files: File | File[] }) {
     };
   }
   if (graph) {
+    assignMissingOpinions(graph);
     graphStore.setGraph(graph);
-  } else {
-    toastStore.error = {
-      summary: 'Error while reading graph',
-      detail: 'The loaded graph is empty'
-    };
   }
 }
 </script>
@@ -97,14 +98,13 @@ async function readFile(event: { files: File | File[] }) {
   }
 
   &-links {
+    display: flex;
+    flex-flow: row wrap;
     text-align: left;
-    > :first-child {
-      margin-left: 0;
-    }
+    column-gap: 0.5rem;
   }
 
   &-link {
-    margin: auto 0.5rem;
     color: variables.$saga-blue;
   }
 }

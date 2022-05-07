@@ -1,15 +1,14 @@
 <template>
-  <div class="graph-speeddial">
+  <div class="graph-manipulation-speeddial">
     <speed-dial
       :model="state.items"
-      direction="right"
+      direction="up"
       showIcon="pi pi-bars"
       hideIcon="pi pi-times"
       buttonClass="p-button"
-      :tooltipOptions="{ position: 'top', event: 'hover' }"
+      :tooltipOptions="{ position: 'right', event: 'hover' }"
       :hideOnClickOutside="false"
     />
-    <graph-download v-model="state.downloadVisible"></graph-download>
   </div>
 </template>
 
@@ -17,15 +16,10 @@
 import { reactive, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useGraphStore } from '@/stores/graph.store';
-import { useToastStore } from '@/stores/toast.store';
-import { saveAsPng } from '@/helpers/download';
-import { Sigma } from 'sigma';
 import { PrimeIcons } from 'primevue/api';
 import { api as fullscreen } from 'vue-fullscreen';
 import SpeedDial from '@/components/primevue/SpeedDial.vue';
-import GraphDownload from '@/components/graph/GraphDownload.vue';
 
-const toastStore = useToastStore();
 const graphStore = useGraphStore();
 const { isLayoutRunning, isHoveringEnabled, isDragAndDropEnabled, isOpinionChangeEnabled } = storeToRefs(graphStore);
 
@@ -63,29 +57,9 @@ const state = reactive({
       command: () => graphStore.enableOpinionChange()
     },
     {
-      label: 'Save graph backup',
-      icon: PrimeIcons.BOOKMARK,
-      command: () => graphStore.backupGraph()
-    },
-    {
-      label: 'Restore graph backup',
-      icon: PrimeIcons.HISTORY,
-      command: () => graphStore.restoreToBackup()
-    },
-    {
       label: 'Enable highlighting',
       icon: PrimeIcons.FILTER,
       command: () => graphStore.enableHovering()
-    },
-    {
-      label: 'Download as image',
-      icon: PrimeIcons.IMAGE,
-      command: () => downloadImage()
-    },
-    {
-      label: 'Download graph',
-      icon: PrimeIcons.DOWNLOAD,
-      command: () => downloadGraph()
     },
     {
       label: 'Maximize',
@@ -122,24 +96,11 @@ watch(isOpinionChangeEnabled, (newIsOpinionChangeEnabled) => {
 });
 
 watch(isHoveringEnabled, (newIsHoveringEnabled) => {
-  const item = state.items[7];
+  const item = state.items[5];
   item.label = (newIsHoveringEnabled ? 'Disable' : 'Enable') + ' highlighting';
   item.icon = newIsHoveringEnabled ? PrimeIcons.FILTER_SLASH : PrimeIcons.FILTER;
   item.command = newIsHoveringEnabled ? graphStore.disableHovering : graphStore.enableHovering;
 });
-
-function downloadImage() {
-  if (graphStore.renderer) saveAsPng(graphStore.renderer as Sigma);
-  else
-    toastStore.error = {
-      summary: 'Download error',
-      detail: 'Can not save graph as image, because it is not initialized'
-    };
-}
-
-function downloadGraph() {
-  state.downloadVisible = true;
-}
 
 function toggleFullscreen(fullscreen: boolean) {
   const item = state.items[state.items.length - 1];
@@ -149,7 +110,7 @@ function toggleFullscreen(fullscreen: boolean) {
 </script>
 
 <style scoped lang="scss">
-.graph-speeddial {
+.graph-manipulation-speeddial {
   :deep(.p-speeddial) {
     left: 10px;
     bottom: 10px;
