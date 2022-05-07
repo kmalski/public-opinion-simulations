@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import krackhardtKite from 'graphology-generators/small/krackhardt-kite';
 import { Graph } from '@/helpers/types';
-import { useGenerator } from '@/components/menu/graph/generator/useGenerator.';
+import { useGenerator } from '@/composables/useGenerator';
 
 function generateGraph() {
   return krackhardtKite(Graph);

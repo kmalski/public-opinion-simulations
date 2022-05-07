@@ -6,7 +6,7 @@
 import karateClub from 'graphology-generators/social/karate-club';
 import circular from 'graphology-layout/circular';
 import { Graph } from '@/helpers/types';
-import { useGenerator } from '@/components/menu/graph/generator/useGenerator.';
+import { useGenerator } from '@/composables/useGenerator';
 
 function generateGraph() {
   const graph = karateClub(Graph);

@@ -1,6 +1,6 @@
+import { onMounted } from 'vue';
 import { useGraphStore } from '@/stores/graph.store';
 import { useGeneratorStore } from '@/stores/generator.store';
-import { onMounted } from 'vue';
 import { Graph } from '@/helpers/types';
 import { assignOpinion } from '@/helpers/graph';
 

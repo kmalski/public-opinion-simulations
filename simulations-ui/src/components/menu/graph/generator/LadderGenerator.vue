@@ -11,7 +11,7 @@
 import { reactive } from 'vue';
 import ladder from 'graphology-generators/classic/ladder';
 import { Graph } from '@/helpers/types';
-import { useGenerator } from '@/components/menu/graph/generator/useGenerator.';
+import { useGenerator } from '@/composables/useGenerator';
 
 const state = reactive({
   ladderLength: 10

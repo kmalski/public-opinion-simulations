@@ -21,7 +21,7 @@
 import { reactive } from 'vue';
 import erdosRenyi from 'graphology-generators/random/erdos-renyi';
 import { Graph } from '@/helpers/types';
-import { useGenerator } from '@/components/menu/graph/generator/useGenerator.';
+import { useGenerator } from '@/composables/useGenerator';
 
 const state = reactive({
   nodesNumber: 10,

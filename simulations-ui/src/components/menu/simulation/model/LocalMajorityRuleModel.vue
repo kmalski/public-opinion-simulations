@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue';
-import { useModel } from '@/components/menu/simulation/model/useModel';
+import { useModel } from '@/composables/useModel';
 
 const state = reactive({
   groupSize: 5

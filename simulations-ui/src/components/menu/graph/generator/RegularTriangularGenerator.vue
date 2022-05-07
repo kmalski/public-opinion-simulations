@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import { reactive } from 'vue';
 import { Graph } from '@/helpers/types';
-import { useGenerator } from '@/components/menu/graph/generator/useGenerator.';
+import { useGenerator } from '@/composables/useGenerator';
 
 const state = reactive({
   height: 5,

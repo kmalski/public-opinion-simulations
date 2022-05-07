@@ -43,14 +43,19 @@ body {
     min-width: 20rem;
     font-size: 0.8rem;
 
-    .p-toast-message {
-      margin: 0.5rem 0 0 0;
+    &-top-left {
+      top: 1.2rem;
+      left: 1.2rem;
     }
 
-    &-bottom-right {
-      bottom: 1.4rem;
-      right: 1.4rem;
-    }
+    //.p-toast-message {
+    //  margin: 0.5rem 0 0 0;
+    //}
+    //
+    //&-bottom-right {
+    //  bottom: 1.4rem;
+    //  right: 1.4rem;
+    //}
   }
 }
 

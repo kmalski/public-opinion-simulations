@@ -18,14 +18,18 @@ import {
 } from '@/helpers/drag-and-drop';
 import { SigmaNodeEventPayload } from 'sigma/sigma';
 import { MouseCoords } from 'sigma/types';
+import { bindOpinionChangeEvents, onClickNodeImpl, unbindOpinionChangeEvents } from '@/helpers/opinion-change';
+import { useToastStore } from '@/stores/toast.store';
 
 interface State {
   graph: Graph;
+  graphBackup: Graph;
   isLayoutRunning: boolean;
   hovering: Hovering;
   isHoveringEnabled: boolean;
   dragAndDrop: DragAndDrop;
   isDragAndDropEnabled: boolean;
+  isOpinionChangeEnabled: boolean;
   renderer: Optional<Sigma>;
   fa2Layout: Optional<FA2LayoutSupervisor>;
   cancelCurrentAnimation: Optional<() => void>;
@@ -45,11 +49,13 @@ export const useGraphStore = defineStore('graph', {
 
     return {
       graph,
+      graphBackup: graph.copy(),
       isLayoutRunning: false,
       hovering: {},
       isHoveringEnabled: false,
       dragAndDrop: { isDragging: false },
       isDragAndDropEnabled: false,
+      isOpinionChangeEnabled: false,
       renderer: undefined,
       fa2Layout: undefined,
       cancelCurrentAnimation: undefined
@@ -69,6 +75,16 @@ export const useGraphStore = defineStore('graph', {
         this.startLayout();
         setTimeout(() => this.stopLayout(), 2000);
       }
+    },
+    backupGraph() {
+      this.graphBackup = this.graph.copy();
+      useToastStore().success = {
+        summary: 'Graph backup created',
+        detail: 'Graph backup was successfully created'
+      };
+    },
+    restoreToBackup() {
+      this.graph = this.graphBackup.copy();
     },
     startLayout() {
       if (this.cancelCurrentAnimation) this.cancelCurrentAnimation();
@@ -149,6 +165,18 @@ export const useGraphStore = defineStore('graph', {
         this.isDragAndDropEnabled = false;
       }
     },
+    enableOpinionChange() {
+      if (this.renderer) {
+        bindOpinionChangeEvents(this.renderer as Sigma, this.onClickNode);
+        this.isOpinionChangeEnabled = true;
+      }
+    },
+    disableOpinionChange() {
+      if (this.renderer) {
+        unbindOpinionChangeEvents(this.renderer as Sigma, this.onClickNode);
+        this.isOpinionChangeEnabled = false;
+      }
+    },
     onEnterNode({ node }: { node: string }) {
       setHoveredNode(this.hovering, this.graph, this.renderer as Sigma, node);
     },
@@ -166,6 +194,9 @@ export const useGraphStore = defineStore('graph', {
     },
     onMouseDown() {
       onMouseDownImpl(this.renderer as Sigma);
+    },
+    onClickNode(event: SigmaNodeEventPayload) {
+      onClickNodeImpl(event, this.graph);
     }
   }
 });

@@ -16,7 +16,7 @@
 import { reactive } from 'vue';
 import caveman from 'graphology-generators/community/caveman';
 import { Graph } from '@/helpers/types';
-import { useGenerator } from '@/components/menu/graph/generator/useGenerator.';
+import { useGenerator } from '@/composables/useGenerator';
 
 const state = reactive({
   componentsNumber: 3,

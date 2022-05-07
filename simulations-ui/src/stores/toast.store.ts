@@ -1,18 +1,20 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { Optional } from '@/helpers/types';
 
-export interface ErrorMessage {
+export interface Message {
   summary: string;
   detail: string;
 }
 
 interface State {
-  error: Optional<ErrorMessage>;
+  error: Optional<Message>;
+  success: Optional<Message>;
 }
 
 export const useToastStore = defineStore('toast', {
   state: (): State => ({
-    error: undefined
+    error: undefined,
+    success: undefined
   })
 });
 

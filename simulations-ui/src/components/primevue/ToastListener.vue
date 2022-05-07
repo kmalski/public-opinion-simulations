@@ -1,5 +1,5 @@
 <template>
-  <toast class="toast" position="bottom-right"></toast>
+  <toast class="toast" position="top-left"></toast>
 </template>
 
 <script setup lang="ts">
@@ -11,7 +11,7 @@ import { useToast } from 'primevue/usetoast';
 
 const toastService = useToast();
 const toastStore = useToastStore();
-const { error } = storeToRefs(toastStore);
+const { error, success } = storeToRefs(toastStore);
 
 watch(error, (newError) => {
   if (newError) {
@@ -20,6 +20,17 @@ watch(error, (newError) => {
       summary: newError.summary,
       detail: newError.detail,
       life: 10000
+    });
+  }
+});
+
+watch(success, (newSuccess) => {
+  if (newSuccess) {
+    toastService.add({
+      severity: ToastSeverity.SUCCESS,
+      summary: newSuccess.summary,
+      detail: newSuccess.detail,
+      life: 3000
     });
   }
 });

@@ -11,7 +11,7 @@
 import { reactive } from 'vue';
 import path from 'graphology-generators/classic/path';
 import { Graph } from '@/helpers/types';
-import { useGenerator } from '@/components/menu/graph/generator/useGenerator.';
+import { useGenerator } from '@/composables/useGenerator';
 
 const state = reactive({
   nodesNumber: 10

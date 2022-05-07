@@ -16,7 +16,7 @@
 import connectedCaveman from 'graphology-generators/community/connected-caveman';
 import { Graph } from '@/helpers/types';
 import { reactive } from 'vue';
-import { useGenerator } from '@/components/menu/graph/generator/useGenerator.';
+import { useGenerator } from '@/composables/useGenerator';
 
 const state = reactive({
   componentsNumber: 3,

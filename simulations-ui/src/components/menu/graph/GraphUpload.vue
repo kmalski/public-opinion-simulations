@@ -39,22 +39,31 @@ async function readFile(event: { files: File | File[] }) {
   const extension = file.name.split('.').pop();
   const text = await file.text();
 
+  let graph;
   try {
     switch (extension) {
       case 'gexf':
-        graphStore.setGraph(parseGexf(text));
+        graph = parseGexf(text);
         break;
       case 'dot':
-        graphStore.setGraph(parseDot(text));
+        graph = parseDot(text);
         break;
       case 'json':
-        graphStore.setGraph(parseJson(text));
+        graph = parseJson(text);
         break;
     }
   } catch (error) {
     toastStore.error = {
       summary: 'Error while reading graph',
       detail: error instanceof Error ? error.message : 'Unknown error'
+    };
+  }
+  if (graph) {
+    graphStore.setGraph(graph);
+  } else {
+    toastStore.error = {
+      summary: 'Error while reading graph',
+      detail: 'The loaded graph is empty'
     };
   }
 }

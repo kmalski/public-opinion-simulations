@@ -5,7 +5,7 @@
 <script setup lang="ts">
 import florentineFamilies from 'graphology-generators/social/florentine-families';
 import { Graph } from '@/helpers/types';
-import { useGenerator } from '@/components/menu/graph/generator/useGenerator.';
+import { useGenerator } from '@/composables/useGenerator';
 
 function generateGraph() {
   return florentineFamilies(Graph);

@@ -11,7 +11,7 @@
 import { reactive } from 'vue';
 import girvanNewman from 'graphology-generators/random/girvan-newman';
 import { Graph } from '@/helpers/types';
-import { useGenerator } from '@/components/menu/graph/generator/useGenerator.';
+import { useGenerator } from '@/composables/useGenerator';
 
 const state = reactive({
   zOut: 4

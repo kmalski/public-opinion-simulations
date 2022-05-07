@@ -27,7 +27,7 @@ import GraphDownload from '@/components/graph/GraphDownload.vue';
 
 const toastStore = useToastStore();
 const graphStore = useGraphStore();
-const { isLayoutRunning, isHoveringEnabled, isDragAndDropEnabled } = storeToRefs(graphStore);
+const { isLayoutRunning, isHoveringEnabled, isDragAndDropEnabled, isOpinionChangeEnabled } = storeToRefs(graphStore);
 
 const state = reactive({
   downloadVisible: false,
@@ -51,14 +51,31 @@ const state = reactive({
       command: () => graphStore.centerLayout()
     },
     {
+      label: 'Unlock positions',
+      icon: PrimeIcons.UNLOCK,
+      disabled: isOpinionChangeEnabled,
+      command: () => graphStore.enableDragAndDrop()
+    },
+    {
+      label: 'Enable opinion change',
+      icon: PrimeIcons.USER_EDIT,
+      disabled: isDragAndDropEnabled,
+      command: () => graphStore.enableOpinionChange()
+    },
+    {
+      label: 'Save graph backup',
+      icon: PrimeIcons.BOOKMARK,
+      command: () => graphStore.backupGraph()
+    },
+    {
+      label: 'Restore graph backup',
+      icon: PrimeIcons.HISTORY,
+      command: () => graphStore.restoreToBackup()
+    },
+    {
       label: 'Enable highlighting',
       icon: PrimeIcons.FILTER,
       command: () => graphStore.enableHovering()
-    },
-    {
-      label: 'Unlock positions',
-      icon: PrimeIcons.LOCK_OPEN,
-      command: () => graphStore.enableDragAndDrop()
     },
     {
       label: 'Download as image',
@@ -90,25 +107,26 @@ watch(isLayoutRunning, (newIsLayoutRunning) => {
   item.command = newIsLayoutRunning ? graphStore.stopLayout : graphStore.startLayout;
 });
 
-watch(isHoveringEnabled, (newIsHoveringEnabled) => {
+watch(isDragAndDropEnabled, (newIsDragAndDropEnabled) => {
   const item = state.items[3];
+  item.label = (newIsDragAndDropEnabled ? 'Lock' : 'Unlock') + ' positions';
+  item.icon = newIsDragAndDropEnabled ? PrimeIcons.LOCK : PrimeIcons.UNLOCK;
+  item.command = newIsDragAndDropEnabled ? graphStore.disableDragAndDrop : graphStore.enableDragAndDrop;
+});
+
+watch(isOpinionChangeEnabled, (newIsOpinionChangeEnabled) => {
+  const item = state.items[4];
+  item.label = (newIsOpinionChangeEnabled ? 'Disable' : 'Enable') + ' opinion change';
+  item.icon = newIsOpinionChangeEnabled ? PrimeIcons.USER : PrimeIcons.USER_EDIT;
+  item.command = newIsOpinionChangeEnabled ? graphStore.disableOpinionChange : graphStore.enableOpinionChange;
+});
+
+watch(isHoveringEnabled, (newIsHoveringEnabled) => {
+  const item = state.items[7];
   item.label = (newIsHoveringEnabled ? 'Disable' : 'Enable') + ' highlighting';
   item.icon = newIsHoveringEnabled ? PrimeIcons.FILTER_SLASH : PrimeIcons.FILTER;
   item.command = newIsHoveringEnabled ? graphStore.disableHovering : graphStore.enableHovering;
 });
-
-watch(isDragAndDropEnabled, (newIsDragAndDropEnabled) => {
-  const item = state.items[4];
-  item.label = (newIsDragAndDropEnabled ? 'Lock' : 'Unlock') + ' positions';
-  item.icon = newIsDragAndDropEnabled ? PrimeIcons.LOCK : PrimeIcons.LOCK_OPEN;
-  item.command = newIsDragAndDropEnabled ? graphStore.disableDragAndDrop : graphStore.enableDragAndDrop;
-});
-
-function toggleFullscreen(fullscreen: boolean) {
-  const item = state.items[state.items.length - 1];
-  item.label = fullscreen ? 'Minimize' : 'Maximize';
-  item.icon = fullscreen ? PrimeIcons.WINDOW_MINIMIZE : PrimeIcons.WINDOW_MAXIMIZE;
-}
 
 function downloadImage() {
   if (graphStore.renderer) saveAsPng(graphStore.renderer as Sigma);
@@ -121,6 +139,12 @@ function downloadImage() {
 
 function downloadGraph() {
   state.downloadVisible = true;
+}
+
+function toggleFullscreen(fullscreen: boolean) {
+  const item = state.items[state.items.length - 1];
+  item.label = fullscreen ? 'Minimize' : 'Maximize';
+  item.icon = fullscreen ? PrimeIcons.WINDOW_MINIMIZE : PrimeIcons.WINDOW_MAXIMIZE;
 }
 </script>
 
