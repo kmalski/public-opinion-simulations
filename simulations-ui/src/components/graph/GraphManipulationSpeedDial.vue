@@ -23,14 +23,10 @@ import SpeedDial from '@/components/primevue/SpeedDial.vue';
 const graphStore = useGraphStore();
 const simulationStore = useSimulationStore();
 const { isLayoutRunning, isHoveringEnabled, isDragAndDropEnabled, isOpinionChangeEnabled } = storeToRefs(graphStore);
-const { isOpen } = storeToRefs(simulationStore);
+const { isRunning } = storeToRefs(simulationStore);
 
-const isDragAndDropEnabledOrIsOpen = computed(() => {
-  return isDragAndDropEnabled.value || isOpen.value;
-});
-
-const isOpinionChangeEnabledOrIsOpen = computed(() => {
-  return isOpinionChangeEnabled.value || isOpen.value;
+const isDragAndDropEnabledOrIsRunning = computed(() => {
+  return isDragAndDropEnabled.value || isRunning.value;
 });
 
 const state = reactive({
@@ -39,25 +35,25 @@ const state = reactive({
     {
       label: 'Start layout',
       icon: PrimeIcons.PLAY,
-      disabled: isDragAndDropEnabledOrIsOpen,
+      disabled: isDragAndDropEnabled,
       command: () => graphStore.startLayout()
     },
     {
       label: 'Random layout',
       icon: PrimeIcons.REPLAY,
-      disabled: isDragAndDropEnabledOrIsOpen,
+      disabled: isDragAndDropEnabled,
       command: () => graphStore.randomLayout()
     },
     {
       label: 'Unlock positions',
       icon: PrimeIcons.UNLOCK,
-      disabled: isOpinionChangeEnabledOrIsOpen,
+      disabled: isOpinionChangeEnabled,
       command: () => graphStore.enableDragAndDrop()
     },
     {
       label: 'Enable opinion change',
       icon: PrimeIcons.USER_EDIT,
-      disabled: isDragAndDropEnabledOrIsOpen,
+      disabled: isDragAndDropEnabledOrIsRunning,
       command: () => graphStore.enableOpinionChange()
     },
     {

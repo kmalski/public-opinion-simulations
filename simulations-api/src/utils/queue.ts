@@ -17,4 +17,8 @@ export class Queue<T> {
   size(): number {
     return this.storage.length;
   }
+
+  clear(): void {
+    this.storage = [];
+  }
 }

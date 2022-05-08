@@ -17,6 +17,7 @@ import InputNumber from 'primevue/inputnumber';
 import InputSwitch from 'primevue/inputswitch';
 import InputText from 'primevue/inputtext';
 import PrimeButton from 'primevue/button';
+import SelectButton from 'primevue/selectbutton';
 import TabPanel from 'primevue/tabpanel';
 import TabView from 'primevue/tabview';
 import Toast from 'primevue/toast';
@@ -36,6 +37,7 @@ createApp(App)
   .component('InputText', InputText)
   .component('PrimeButton', PrimeButton)
   .component('ProgressBar', ProgressBar)
+  .component('SelectButton', SelectButton)
   .component('TabPanel', TabPanel)
   .component('TabView', TabView)
   .component('Toast', Toast)

@@ -1,7 +1,7 @@
 <template>
   <div class="local-majority-rule-model">
     <span class="p-float-label">
-      <input-number id="groupSize" v-model="state.groupSize"></input-number>
+      <input-number :disabled="isRunning" id="groupSize" v-model="state.groupSize"></input-number>
       <label for="groupSize">Size of local group</label>
     </span>
   </div>
@@ -15,7 +15,7 @@ const state = reactive({
   groupSize: 5
 });
 
-useModel(state);
+const { isRunning } = useModel(state);
 </script>
 
 <style scoped lang="scss">

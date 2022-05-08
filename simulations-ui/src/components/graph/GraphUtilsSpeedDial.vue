@@ -15,6 +15,8 @@
 
 <script setup lang="ts">
 import { reactive } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useSimulationStore } from '@/stores/simulation.store';
 import { useGraphStore } from '@/stores/graph.store';
 import { useToastStore } from '@/stores/toast.store';
 import { saveAsPng } from '@/helpers/download';
@@ -26,6 +28,8 @@ import GraphDownload from '@/components/graph/GraphDownload.vue';
 
 const toastStore = useToastStore();
 const graphStore = useGraphStore();
+const simulationStore = useSimulationStore();
+const { isRunning } = storeToRefs(simulationStore);
 
 const state = reactive({
   downloadVisible: false,
@@ -33,11 +37,13 @@ const state = reactive({
     {
       label: 'Save graph backup',
       icon: PrimeIcons.CLONE,
+      disabled: isRunning,
       command: () => graphStore.backupGraph()
     },
     {
       label: 'Restore graph backup',
       icon: PrimeIcons.HISTORY,
+      disabled: isRunning,
       command: () => graphStore.restoreToBackup()
     },
     {
@@ -48,6 +54,7 @@ const state = reactive({
     {
       label: 'Download graph',
       icon: PrimeIcons.DOWNLOAD,
+      disabled: isRunning,
       command: () => downloadGraph()
     },
     {

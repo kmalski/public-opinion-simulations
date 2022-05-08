@@ -3,17 +3,12 @@
     <model-dropdown class="model-tab-dropdown"></model-dropdown>
     <model-form></model-form>
     <prime-button
-      :disabled="!modelComponentName || isRunning"
+      :disabled="!modelComponentName || isOpen"
       class="model-tab-button"
-      label="Run Simulation"
-      @click="simulationStore.runSimulation"
+      label="Open simulation panel"
+      @click="openSimulationModal"
     ></prime-button>
-    <prime-button
-      :disabled="!isRunning"
-      class="model-tab-button"
-      label="Stop Simulation"
-      @click="simulationStore.stopSimulation"
-    ></prime-button>
+    <simulation-dialog v-model="isOpen"></simulation-dialog>
   </div>
 </template>
 
@@ -23,11 +18,16 @@ import { useModelStore } from '@/stores/model.store';
 import { useSimulationStore } from '@/stores/simulation.store';
 import ModelDropdown from '@/components/menu/model/ModelDropdown.vue';
 import ModelForm from '@/components/menu/model/ModelForm.vue';
+import SimulationDialog from '@/components/simulation/SimulationDialog.vue';
 
 const modelStore = useModelStore();
 const simulationStore = useSimulationStore();
 const { modelComponentName } = storeToRefs(modelStore);
-const { isRunning } = storeToRefs(simulationStore);
+const { isOpen } = storeToRefs(simulationStore);
+
+function openSimulationModal() {
+  isOpen.value = true;
+}
 </script>
 
 <style scoped lang="scss">

@@ -12,7 +12,7 @@
     </div>
     <div class="graph-upload-button">
       <file-upload
-        :disabled="isOpen"
+        :disabled="isRunning"
         name="graph"
         url="/"
         mode="basic"
@@ -35,7 +35,7 @@ import { parseDot, parseGexf, parseJson, parseNet, parseGam } from '@/helpers/pa
 const graphStore = useGraphStore();
 const toastStore = useToastStore();
 const simulationStore = useSimulationStore();
-const { isOpen } = storeToRefs(simulationStore);
+const { isRunning } = storeToRefs(simulationStore);
 
 async function readFile(event: { files: File | File[] }) {
   const file = Array.isArray(event.files) ? event.files[0] : event.files;

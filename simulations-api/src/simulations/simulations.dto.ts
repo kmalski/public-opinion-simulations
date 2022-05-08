@@ -1,17 +1,10 @@
-export class SimulationsDto {
+export class SimulationDto {
   iterations: number;
+  mode: 'sync' | 'async';
   model: any;
   dotGraph: string;
 }
 
 export class SimulationId {
   id: any;
-}
-
-export class SimulationStep {
-  resultStatus?: string;
-  step?: string;
-  message?: string;
-  dotGraph?: string;
-  status: string;
 }

@@ -5,11 +5,11 @@ import { useToastStore } from '@/stores/toast.store';
 import { Optional } from '@/helpers/types';
 import { useModelStore } from '@/stores/model.store';
 import { io } from 'socket.io-client';
+import { opinionToColor } from '@/helpers/graph';
 
 interface State {
   isOpen: boolean;
   isRunning: boolean;
-  iterations: Optional<number>;
   step: Optional<number>;
   id: Optional<string>;
 }
@@ -27,7 +27,6 @@ export const useSimulationStore = defineStore('simulation', {
   state: (): State => ({
     isOpen: false,
     isRunning: false,
-    iterations: 100,
     step: undefined,
     id: undefined
   }),
@@ -35,7 +34,7 @@ export const useSimulationStore = defineStore('simulation', {
     stopSimulation() {
       socket.emit('stop', { id: this.id });
     },
-    runSimulation() {
+    runSimulation(iterations: number, mode: 'sync' | 'async') {
       const modelStore = useModelStore();
 
       if (!modelStore.model) return;
@@ -44,12 +43,6 @@ export const useSimulationStore = defineStore('simulation', {
       const graphStore = useGraphStore();
       const toastStore = useToastStore();
 
-      socket.emit('start', {
-        model: modelStore.model,
-        iterations: this.iterations,
-        dotGraph: serializeDot(graphStore.graph, false)
-      });
-
       this.isRunning = true;
 
       socket.on('id', (data) => {
@@ -57,11 +50,20 @@ export const useSimulationStore = defineStore('simulation', {
       });
 
       socket.on('step', (data) => {
-        console.log('step', data);
+        const stepChanges = JSON.parse(data);
+        this.step = stepChanges.step;
+        const opinion = stepChanges.changes[0].opinion.toString();
+        const color = opinionToColor(opinion);
+        graphStore.graph.forEachNode((node, attributes) => {
+          if (attributes.label !== opinion) {
+            attributes.label = opinion;
+            attributes.color = color;
+          }
+        });
+        graphStore.renderer?.refresh();
       });
 
-      socket.on('error', (data) => {
-        console.log('error', data);
+      socket.on('exception', (data) => {
         toastStore.error = {
           summary: 'Error during simulation',
           detail: data.message
@@ -69,11 +71,21 @@ export const useSimulationStore = defineStore('simulation', {
       });
 
       socket.on('exit', (data) => {
-        console.log('exit', data);
-        socket.off('step');
-        socket.off('error');
-        socket.off('exit');
+        if (data.code) {
+          toastStore.error = {
+            summary: 'Error during simulation',
+            detail: `Simulation exited with code: ${data.code}`
+          };
+        }
+        socket.removeAllListeners();
         this.isRunning = false;
+      });
+
+      socket.emit('start', {
+        model: modelStore.model,
+        iterations: iterations,
+        mode: mode,
+        dotGraph: serializeDot(graphStore.graph, false)
       });
     }
   }

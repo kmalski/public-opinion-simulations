@@ -1,22 +1,24 @@
 import { MessageBody, SubscribeMessage, WebSocketGateway, WsResponse } from '@nestjs/websockets';
 import { SimulationsService } from './simulations.service';
-import { SimulationId, SimulationsDto } from './simulations.dto';
+import { SimulationId, SimulationDto } from './simulations.dto';
 import { Observable } from 'rxjs';
+import { CORS } from '../config';
+import { Incoming } from './simulations.events';
 
 @WebSocketGateway({
   namespace: '/simulation',
-  cors: { origin: [/localhost:\d{4}/, /127\.0\.0\.1:\d{4}/, /simulations-api:\d{4}/, /\.malski\.pl$/] },
+  cors: { origin: CORS.origin },
   maxHttpBufferSize: 1e7
 })
 export class SimulationsGateway {
   constructor(private simulationsService: SimulationsService) {}
 
-  @SubscribeMessage('start')
-  async start(@MessageBody() data: SimulationsDto): Promise<Observable<WsResponse>> {
+  @SubscribeMessage(Incoming.START)
+  async start(@MessageBody() data: SimulationDto): Promise<Observable<WsResponse>> {
     return this.simulationsService.start(data);
   }
 
-  @SubscribeMessage('stop')
+  @SubscribeMessage(Incoming.STOP)
   stop(@MessageBody() data: SimulationId) {
     this.simulationsService.stop(data.id);
   }
