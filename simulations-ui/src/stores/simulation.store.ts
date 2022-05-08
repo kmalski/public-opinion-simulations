@@ -1,97 +1,80 @@
-import { collectLayoutAsFlatArray, assignLayoutAsFlatArray } from 'graphology-layout/utils';
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { parseDot, serializeDot } from '@/helpers/parsers';
+import { serializeDot } from '@/helpers/parsers';
 import { useGraphStore } from '@/stores/graph.store';
 import { useToastStore } from '@/stores/toast.store';
 import { Optional } from '@/helpers/types';
+import { useModelStore } from '@/stores/model.store';
+import { io } from 'socket.io-client';
 
 interface State {
+  isOpen: boolean;
   isRunning: boolean;
-  modelComponentName: Optional<string>;
-  model: Optional<object>;
   iterations: Optional<number>;
   step: Optional<number>;
+  id: Optional<string>;
 }
+
+const url = import.meta.env.VITE_SERVER_URL;
+const path = import.meta.env.VITE_SERVER_PATH;
+
+const socket = io(`${url}/simulation`, {
+  transports: ['polling', 'websocket'],
+  upgrade: true,
+  path: (path ? path : '') + '/socket.io'
+});
 
 export const useSimulationStore = defineStore('simulation', {
   state: (): State => ({
+    isOpen: false,
     isRunning: false,
-    modelComponentName: undefined,
-    model: undefined,
     iterations: 100,
-    step: undefined
+    step: undefined,
+    id: undefined
   }),
   actions: {
-    async runSimulation() {
-      if (!this.model) return;
+    stopSimulation() {
+      socket.emit('stop', { id: this.id });
+    },
+    runSimulation() {
+      const modelStore = useModelStore();
+
+      if (!modelStore.model) return;
       this.step = 0;
 
       const graphStore = useGraphStore();
       const toastStore = useToastStore();
-      const url = import.meta.env.VITE_SERVER_URL;
 
-      const layout = collectLayoutAsFlatArray(graphStore.graph);
-
-      const response = await fetch(`${url}/simulation`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          model: this.model,
-          iterations: this.iterations,
-          dotGraph: serializeDot(graphStore.graph, false)
-        })
+      socket.emit('start', {
+        model: modelStore.model,
+        iterations: this.iterations,
+        dotGraph: serializeDot(graphStore.graph, false)
       });
 
-      if (response.ok) {
-        const body = await response.json();
-        const eventSrc = new EventSource(`${url}/simulation/${body.id}/subscribe`);
+      this.isRunning = true;
 
-        eventSrc.onopen = () => {
-          this.isRunning = true;
-        };
+      socket.on('id', (data) => {
+        this.id = data.id;
+      });
 
-        eventSrc.onmessage = ({ data }) => {
-          const message = JSON.parse(data);
-          if (message.status === 'OK') {
-            this.step = +message.step;
-          }
+      socket.on('step', (data) => {
+        console.log('step', data);
+      });
 
-          if (message.status === 'CLOSED') {
-            if (message.resultStatus === 'SUCCESS') {
-              const graph = parseDot(message.dotGraph);
-              assignLayoutAsFlatArray(graph, layout);
-              graphStore.setGraph(graph);
-            } else {
-              toastStore.error = {
-                summary: 'Simulation error',
-                detail: 'Could not finish simulation due to unknown error'
-              };
-            }
-            eventSrc.close();
-            this.isRunning = false;
-          }
-
-          if (message.status === 'ERROR') {
-            toastStore.error = {
-              summary: 'Error during simulation',
-              detail: message.message
-            };
-          }
-        };
-
-        eventSrc.onerror = () => {
-          this.isRunning = false;
-        };
-      } else {
-        this.isRunning = false;
-        const error = await response.json();
+      socket.on('error', (data) => {
+        console.log('error', data);
         toastStore.error = {
-          summary: 'Can not run simulation',
-          detail: error.message
+          summary: 'Error during simulation',
+          detail: data.message
         };
-      }
+      });
+
+      socket.on('exit', (data) => {
+        console.log('exit', data);
+        socket.off('step');
+        socket.off('error');
+        socket.off('exit');
+        this.isRunning = false;
+      });
     }
   }
 });

@@ -1,9 +1,5 @@
 <template>
   <div class="simulation-form">
-    <span v-if="modelComponentName" class="p-float-label">
-      <input-number :disabled="true" id="iterations" v-model="iterations" mode="decimal"></input-number>
-      <label for="iterations">Number of simulation iterations</label>
-    </span>
     <p v-if="!modelComponentName" class="simulation-form-hint">
       The parameters will be available after selecting model
     </p>
@@ -14,11 +10,11 @@
 <script setup lang="ts">
 import { computed, DefineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useSimulationStore } from '@/stores/simulation.store';
-import LocalMajorityRuleModel from '@/components/menu/simulation/model/LocalMajorityRuleModel.vue';
+import { useModelStore } from '@/stores/model.store';
+import LocalMajorityRuleModel from '@/components/menu/model/models/LocalMajorityRuleModel.vue';
 
-const simulationStore = useSimulationStore();
-const { iterations, modelComponentName } = storeToRefs(simulationStore);
+const modelStore = useModelStore();
+const { modelComponentName } = storeToRefs(modelStore);
 
 const nameToComponent = new Map([['local-majority-rule-model', LocalMajorityRuleModel]]) as Map<
   string,

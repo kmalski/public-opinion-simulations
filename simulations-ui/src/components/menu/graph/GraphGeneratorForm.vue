@@ -20,20 +20,20 @@
 import { computed, DefineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useGeneratorStore } from '@/stores/generator.store';
-import CompleteGenerator from '@/components/menu/graph/generator/CompleteGenerator.vue';
-import EmptyGenerator from '@/components/menu/graph/generator/EmptyGenerator.vue';
-import LadderGenerator from '@/components/menu/graph/generator/LadderGenerator.vue';
-import PathGenerator from '@/components/menu/graph/generator/PathGenerator.vue';
-import RegularSquareGenerator from '@/components/menu/graph/generator/RegularSquareGenerator.vue';
-import RegularTriangularGenerator from '@/components/menu/graph/generator/RegularTriangularGenerator.vue';
-import CavemanGenerator from '@/components/menu/graph/generator/CavemanGenerator.vue';
-import ConnectedCavemanGenerator from '@/components/menu/graph/generator/ConnectedCavemanGenerator.vue';
-import ClustersGenerator from '@/components/menu/graph/generator/ClustersGenerator.vue';
-import ErdosRenyiGenerator from '@/components/menu/graph/generator/ErdosRenyiGenerator.vue';
-import GirvanNewmanGenerator from '@/components/menu/graph/generator/GirvanNewmanGenerator.vue';
-import KrackhardtKiteGenerator from '@/components/menu/graph/generator/KrackhardtKiteGenerator.vue';
-import FlorentineFamiliesGenerator from '@/components/menu/graph/generator/FlorentineFamiliesGenerator.vue';
-import KarateClubGenerator from '@/components/menu/graph/generator/KarateClubGenerator.vue';
+import CompleteGenerator from '@/components/menu/graph/generators/CompleteGenerator.vue';
+import EmptyGenerator from '@/components/menu/graph/generators/EmptyGenerator.vue';
+import LadderGenerator from '@/components/menu/graph/generators/LadderGenerator.vue';
+import PathGenerator from '@/components/menu/graph/generators/PathGenerator.vue';
+import RegularSquareGenerator from '@/components/menu/graph/generators/RegularSquareGenerator.vue';
+import RegularTriangularGenerator from '@/components/menu/graph/generators/RegularTriangularGenerator.vue';
+import CavemanGenerator from '@/components/menu/graph/generators/CavemanGenerator.vue';
+import ConnectedCavemanGenerator from '@/components/menu/graph/generators/ConnectedCavemanGenerator.vue';
+import ClustersGenerator from '@/components/menu/graph/generators/ClustersGenerator.vue';
+import ErdosRenyiGenerator from '@/components/menu/graph/generators/ErdosRenyiGenerator.vue';
+import GirvanNewmanGenerator from '@/components/menu/graph/generators/GirvanNewmanGenerator.vue';
+import KrackhardtKiteGenerator from '@/components/menu/graph/generators/KrackhardtKiteGenerator.vue';
+import FlorentineFamiliesGenerator from '@/components/menu/graph/generators/FlorentineFamiliesGenerator.vue';
+import KarateClubGenerator from '@/components/menu/graph/generators/KarateClubGenerator.vue';
 
 const nameToComponent = new Map([
   ['complete-generator', CompleteGenerator],

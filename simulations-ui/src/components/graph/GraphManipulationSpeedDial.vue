@@ -13,15 +13,25 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch } from 'vue';
+import { computed, reactive, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useGraphStore } from '@/stores/graph.store';
+import { useSimulationStore } from '@/stores/simulation.store';
 import { PrimeIcons } from 'primevue/api';
-import { api as fullscreen } from 'vue-fullscreen';
 import SpeedDial from '@/components/primevue/SpeedDial.vue';
 
 const graphStore = useGraphStore();
+const simulationStore = useSimulationStore();
 const { isLayoutRunning, isHoveringEnabled, isDragAndDropEnabled, isOpinionChangeEnabled } = storeToRefs(graphStore);
+const { isOpen } = storeToRefs(simulationStore);
+
+const isDragAndDropEnabledOrIsOpen = computed(() => {
+  return isDragAndDropEnabled.value || isOpen.value;
+});
+
+const isOpinionChangeEnabledOrIsOpen = computed(() => {
+  return isOpinionChangeEnabled.value || isOpen.value;
+});
 
 const state = reactive({
   downloadVisible: false,
@@ -29,14 +39,26 @@ const state = reactive({
     {
       label: 'Start layout',
       icon: PrimeIcons.PLAY,
-      disabled: isDragAndDropEnabled,
+      disabled: isDragAndDropEnabledOrIsOpen,
       command: () => graphStore.startLayout()
     },
     {
       label: 'Random layout',
       icon: PrimeIcons.REPLAY,
-      disabled: isDragAndDropEnabled,
+      disabled: isDragAndDropEnabledOrIsOpen,
       command: () => graphStore.randomLayout()
+    },
+    {
+      label: 'Unlock positions',
+      icon: PrimeIcons.UNLOCK,
+      disabled: isOpinionChangeEnabledOrIsOpen,
+      command: () => graphStore.enableDragAndDrop()
+    },
+    {
+      label: 'Enable opinion change',
+      icon: PrimeIcons.USER_EDIT,
+      disabled: isDragAndDropEnabledOrIsOpen,
+      command: () => graphStore.enableOpinionChange()
     },
     {
       label: 'Center',
@@ -45,31 +67,9 @@ const state = reactive({
       command: () => graphStore.centerLayout()
     },
     {
-      label: 'Unlock positions',
-      icon: PrimeIcons.UNLOCK,
-      disabled: isOpinionChangeEnabled,
-      command: () => graphStore.enableDragAndDrop()
-    },
-    {
-      label: 'Enable opinion change',
-      icon: PrimeIcons.USER_EDIT,
-      disabled: isDragAndDropEnabled,
-      command: () => graphStore.enableOpinionChange()
-    },
-    {
       label: 'Enable highlighting',
       icon: PrimeIcons.FILTER,
       command: () => graphStore.enableHovering()
-    },
-    {
-      label: 'Maximize',
-      icon: PrimeIcons.WINDOW_MAXIMIZE,
-      command: async () => {
-        await fullscreen.toggle(document.querySelector('.graph-card'), {
-          teleport: true,
-          callback: (fullscreen) => toggleFullscreen(fullscreen)
-        });
-      }
     }
   ]
 });
@@ -82,14 +82,14 @@ watch(isLayoutRunning, (newIsLayoutRunning) => {
 });
 
 watch(isDragAndDropEnabled, (newIsDragAndDropEnabled) => {
-  const item = state.items[3];
+  const item = state.items[2];
   item.label = (newIsDragAndDropEnabled ? 'Lock' : 'Unlock') + ' positions';
   item.icon = newIsDragAndDropEnabled ? PrimeIcons.LOCK : PrimeIcons.UNLOCK;
   item.command = newIsDragAndDropEnabled ? graphStore.disableDragAndDrop : graphStore.enableDragAndDrop;
 });
 
 watch(isOpinionChangeEnabled, (newIsOpinionChangeEnabled) => {
-  const item = state.items[4];
+  const item = state.items[3];
   item.label = (newIsOpinionChangeEnabled ? 'Disable' : 'Enable') + ' opinion change';
   item.icon = newIsOpinionChangeEnabled ? PrimeIcons.USER : PrimeIcons.USER_EDIT;
   item.command = newIsOpinionChangeEnabled ? graphStore.disableOpinionChange : graphStore.enableOpinionChange;
@@ -101,12 +101,6 @@ watch(isHoveringEnabled, (newIsHoveringEnabled) => {
   item.icon = newIsHoveringEnabled ? PrimeIcons.FILTER_SLASH : PrimeIcons.FILTER;
   item.command = newIsHoveringEnabled ? graphStore.disableHovering : graphStore.enableHovering;
 });
-
-function toggleFullscreen(fullscreen: boolean) {
-  const item = state.items[state.items.length - 1];
-  item.label = fullscreen ? 'Minimize' : 'Maximize';
-  item.icon = fullscreen ? PrimeIcons.WINDOW_MINIMIZE : PrimeIcons.WINDOW_MAXIMIZE;
-}
 </script>
 
 <style scoped lang="scss">

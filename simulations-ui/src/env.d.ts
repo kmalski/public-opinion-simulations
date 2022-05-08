@@ -10,6 +10,7 @@ declare module '*.dot';
 
 interface ImportMetaEnv {
   readonly VITE_SERVER_URL: string;
+  readonly VITE_SERVER_PATH: string;
 }
 
 interface ImportMeta {

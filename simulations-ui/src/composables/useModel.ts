@@ -1,9 +1,9 @@
 import { onMounted, Ref, unref } from 'vue';
-import { useSimulationStore } from '@/stores/simulation.store';
+import { useModelStore } from '@/stores/model.store';
 
 export function useModel(model: Ref<object> | object) {
-  const simulationStore = useSimulationStore();
+  const modelStore = useModelStore();
   onMounted(() => {
-    simulationStore.model = unref(model);
+    modelStore.model = unref(model);
   });
 }

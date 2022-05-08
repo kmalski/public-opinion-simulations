@@ -20,13 +20,13 @@
 import { PrimeIcons } from 'primevue/api';
 import GraphTab from '@/components/menu/graph/GraphTab.vue';
 import ChartsTab from '@/components/menu/charts/ChartsTab.vue';
-import SimulationTab from '@/components/menu/simulation/SimulationTab.vue';
+import ModelTab from '@/components/menu/model/ModelTab.vue';
 
 const tabs = [
   {
-    title: 'Simulation',
-    icon: PrimeIcons.PLAY,
-    item: SimulationTab
+    title: 'Model',
+    icon: PrimeIcons.BOX,
+    item: ModelTab
   },
   {
     title: 'Graph',

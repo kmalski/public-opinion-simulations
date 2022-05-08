@@ -5,11 +5,9 @@
     <p class="graph-tab-text">Enter the graph parameters</p>
     <graph-generator-dropdown class="graph-tab-dropdown"></graph-generator-dropdown>
     <graph-generator-form></graph-generator-form>
-    <p v-if="isRunning" class="graph-tab-hint translate-y">
-      Before a new graph can be generated, the simulation must end
-    </p>
+    <p v-if="isOpen" class="graph-tab-hint translate-y">Before a new graph can be generated, the simulation must end</p>
     <prime-button
-      :disabled="!generatorComponentName || isRunning"
+      :disabled="!generatorComponentName || isOpen"
       class="graph-tab-button"
       label="Generate"
       @click="generate"
@@ -28,7 +26,7 @@ import GraphGeneratorForm from '@/components/menu/graph/GraphGeneratorForm.vue';
 const generatorStore = useGeneratorStore();
 const simulationStore = useSimulationStore();
 const { generatorComponentName, generate } = storeToRefs(generatorStore);
-const { isRunning } = storeToRefs(simulationStore);
+const { isOpen } = storeToRefs(simulationStore);
 </script>
 
 <style scoped lang="scss">

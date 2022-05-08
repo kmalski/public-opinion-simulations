@@ -18,6 +18,7 @@ import { reactive } from 'vue';
 import { useGraphStore } from '@/stores/graph.store';
 import { useToastStore } from '@/stores/toast.store';
 import { saveAsPng } from '@/helpers/download';
+import { api as fullscreen } from 'vue-fullscreen';
 import { Sigma } from 'sigma';
 import { PrimeIcons } from 'primevue/api';
 import SpeedDial from '@/components/primevue/SpeedDial.vue';
@@ -48,6 +49,16 @@ const state = reactive({
       label: 'Download graph',
       icon: PrimeIcons.DOWNLOAD,
       command: () => downloadGraph()
+    },
+    {
+      label: 'Maximize',
+      icon: PrimeIcons.WINDOW_MAXIMIZE,
+      command: async () => {
+        await fullscreen.toggle(document.querySelector('.graph-card'), {
+          teleport: true,
+          callback: (fullscreen) => toggleFullscreen(fullscreen)
+        });
+      }
     }
   ]
 });
@@ -63,6 +74,12 @@ function downloadImage() {
 
 function downloadGraph() {
   state.downloadVisible = true;
+}
+
+function toggleFullscreen(fullscreen: boolean) {
+  const item = state.items[state.items.length - 1];
+  item.label = fullscreen ? 'Minimize' : 'Maximize';
+  item.icon = fullscreen ? PrimeIcons.WINDOW_MINIMIZE : PrimeIcons.WINDOW_MAXIMIZE;
 }
 </script>
 
