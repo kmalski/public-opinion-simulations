@@ -8,6 +8,4 @@ RUN npm run build
 
 FROM nginx:1.20 as serve
 COPY --from=build /opt/ui/dist /usr/share/nginx/html
-ENV NGINX_PORT 3000
-EXPOSE 3000
 CMD ["nginx", "-g", "daemon off;"]

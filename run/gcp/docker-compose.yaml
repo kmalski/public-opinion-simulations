@@ -4,16 +4,12 @@ services:
   simulations-api:
     image: kmalski/simulations-api:latest
     container_name: simulations-api
-    ports:
-      - "4000:4000"
     networks:
       - simulations
 
   simulations-ui:
     image: kmalski/simulations-ui:latest
     container_name: simulations-ui
-    ports:
-      - "3000:3000"
     networks:
       - simulations
 
