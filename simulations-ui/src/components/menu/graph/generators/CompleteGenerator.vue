@@ -1,7 +1,7 @@
 <template>
   <div class="complete-generator">
     <span class="p-float-label">
-      <input-number id="nodesNumber" v-model="state.nodesNumber"></input-number>
+      <input-number :min="0" id="nodesNumber" v-model="state.nodesNumber"></input-number>
       <label for="nodesNumber">Number of nodes</label>
     </span>
   </div>

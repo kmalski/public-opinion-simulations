@@ -1,12 +1,12 @@
 <template>
   <div class="graph-generator regular-triangular-generator">
     <span class="p-float-label">
-      <input-number id="nodesDegree" v-model="state.height"></input-number>
+      <input-number :min="0" id="nodesDegree" v-model="state.height"></input-number>
       <label for="nodesDegree">Height of square mesh</label>
     </span>
 
     <span class="p-float-label">
-      <input-number id="nodesNumber" v-model="state.width"></input-number>
+      <input-number :min="0" id="nodesNumber" v-model="state.width"></input-number>
       <label for="nodesNumber">Width of square mesh</label>
     </span>
 
@@ -32,6 +32,8 @@ function generateGraph() {
   const graph = new Graph();
   const { width, height, periodicBoundary } = state;
   const order = width * height;
+
+  if (width === 1 && height === 1) graph.addNode(0);
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {

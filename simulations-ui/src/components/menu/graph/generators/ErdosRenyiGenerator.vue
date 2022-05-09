@@ -1,12 +1,14 @@
 <template>
   <div class="erdos-renyi-generator">
     <span class="p-float-label">
-      <input-number id="nodesNumber" v-model="state.nodesNumber"></input-number>
+      <input-number :min="1" id="nodesNumber" v-model="state.nodesNumber"></input-number>
       <label for="nodesNumber">Number of nodes</label>
     </span>
 
     <span class="p-float-label">
       <input-number
+        :min="0"
+        :max="1"
         id="edgeProbability"
         v-model="state.edgeProbability"
         mode="decimal"

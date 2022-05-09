@@ -1,7 +1,7 @@
 <template>
   <div class="girvan-newman-generator">
     <span class="p-float-label">
-      <input-number id="zOut" v-model="state.zOut" mode="decimal" :max-fraction-digits="2"></input-number>
+      <input-number :min="0" id="zOut" v-model="state.zOut" mode="decimal" :max-fraction-digits="2"></input-number>
       <label for="zOut">zOut parameter</label>
     </span>
   </div>

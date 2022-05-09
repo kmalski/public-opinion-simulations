@@ -6,6 +6,20 @@
     @show="onShow"
     :closeOnEscape="false"
   >
+    <template #header>
+      <div class="simulation-modal-header-icons">
+        <prime-button
+          v-tooltip.top="{
+            value: `Please use this panel to control the simulation. \
+          You can grab it and position it anywhere on the screen.`,
+            class: 'simulation-modal-tooltip'
+          }"
+          class="p-button-rounded p-dialog-header-icon p-link"
+          :icon="PrimeIcons.QUESTION_CIRCLE"
+        ></prime-button>
+      </div>
+    </template>
+
     <div class="simulation-modal-content">
       <span class="simulation-modal-input">
         <label for="iterations">Iterations</label>
@@ -42,7 +56,7 @@
         <prime-button
           v-tooltip.bottom="'Stop simulation'"
           class="p-button-sm"
-          :icon="PrimeIcons.PAUSE"
+          :icon="PrimeIcons.STOP"
           :disabled="!isRunning"
           @click="simulationStore.stopSimulation()"
         ></prime-button>
@@ -156,14 +170,27 @@ function onHide() {
 </style>
 
 <style lang="scss">
+.p-tooltip.p-component.simulation-modal-tooltip {
+  font-size: 12px;
+}
+
 .simulation-modal.p-dialog {
   .p-dialog-header {
     padding: 0.5rem 0.5rem 0 0;
 
-    .p-dialog-header-icons {
+    :hover {
+      cursor: pointer;
+    }
+
+    .simulation-modal-header-icons {
       display: flex;
       flex-direction: row-reverse;
       width: 100%;
+    }
+
+    .p-dialog-header-icons {
+      display: flex;
+      flex-direction: row-reverse;
     }
   }
 

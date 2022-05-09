@@ -1,22 +1,24 @@
 <template>
   <div class="clusters-generator">
     <span class="p-float-label">
-      <input-number id="nodesNumber" v-model="state.nodesNumber"></input-number>
+      <input-number :min="2" id="nodesNumber" v-model="state.nodesNumber"></input-number>
       <label for="nodesNumber">Number of nodes</label>
     </span>
 
     <span class="p-float-label">
-      <input-number id="edgesNumber" v-model="state.edgesNumber"></input-number>
+      <input-number :min="1" id="edgesNumber" v-model="state.edgesNumber"></input-number>
       <label for="edgesNumber">Number of edges</label>
     </span>
 
     <span class="p-float-label">
-      <input-number id="clustersNumber" v-model="state.clustersNumber"></input-number>
+      <input-number :min="1" id="clustersNumber" v-model="state.clustersNumber"></input-number>
       <label for="clustersNumber">Number of clusters</label>
     </span>
 
     <span class="p-float-label">
       <input-number
+        :min="0"
+        :max="1"
         id="clusterDensity"
         v-model="state.clusterDensity"
         mode="decimal"

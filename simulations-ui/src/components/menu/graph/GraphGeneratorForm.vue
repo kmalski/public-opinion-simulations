@@ -5,6 +5,8 @@
         id="positiveProbability"
         v-model="positiveProbability"
         mode="decimal"
+        :min="0"
+        :max="1"
         :max-fraction-digits="2"
       ></input-number>
       <label for="positiveProbability">Probability of positive opinion</label>

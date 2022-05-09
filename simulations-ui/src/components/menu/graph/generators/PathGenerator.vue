@@ -1,8 +1,13 @@
 <template>
   <div class="path-generator">
     <span class="p-float-label">
-      <input-number id="nodesNumber" v-model="state.nodesNumber"></input-number>
+      <input-number :min="2" id="nodesNumber" v-model="state.nodesNumber"></input-number>
       <label for="nodesNumber">Number of nodes</label>
+    </span>
+
+    <span class="form-input">
+      <label class="form-input-label" for="closed">Closed path</label>
+      <input-switch id="closed" v-model="state.closed"></input-switch>
     </span>
   </div>
 </template>
@@ -14,11 +19,17 @@ import { Graph } from '@/helpers/types';
 import { useGenerator } from '@/composables/useGenerator';
 
 const state = reactive({
-  nodesNumber: 10
+  nodesNumber: 10,
+  closed: false
 });
 
 function generateGraph() {
-  return path(Graph, state.nodesNumber);
+  const graph = path(Graph, state.nodesNumber);
+  if (state.closed && state.nodesNumber > 2) {
+    const nodes = graph.filterNodes((node) => graph.neighbors(node).length === 1);
+    graph.addEdge(nodes[0], nodes[1]);
+  }
+  return graph;
 }
 
 useGenerator(generateGraph);

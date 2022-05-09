@@ -33,6 +33,7 @@ export const useSimulationStore = defineStore('simulation', {
   actions: {
     stopSimulation() {
       socket.emit('stop', { id: this.id });
+      socket.off('step');
     },
     runSimulation(iterations: number, mode: 'sync' | 'async') {
       const modelStore = useModelStore();
@@ -77,7 +78,7 @@ export const useSimulationStore = defineStore('simulation', {
             detail: `Simulation exited with code: ${data.code}`
           };
         }
-        socket.removeAllListeners();
+        socket.off();
         this.isRunning = false;
       });
 

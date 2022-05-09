@@ -1,12 +1,12 @@
 <template>
   <div class="caveman-generator">
     <span class="p-float-label">
-      <input-number id="clustersNumber" v-model="state.componentsNumber"></input-number>
+      <input-number :min="1" id="clustersNumber" v-model="state.componentsNumber"></input-number>
       <label for="clustersNumber">Number of clusters</label>
     </span>
 
     <span class="p-float-label">
-      <input-number id="nodesNumber" v-model="state.nodesNumber"></input-number>
+      <input-number :min="1" id="nodesNumber" v-model="state.nodesNumber"></input-number>
       <label for="nodesNumber">Number of nodes in cluster</label>
     </span>
   </div>

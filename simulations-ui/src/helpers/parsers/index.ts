@@ -59,6 +59,7 @@ export function parseJson(fileText: string): Graph {
 }
 
 export function serializeGexf(graph: Graph, withPositions: boolean): string {
+  graph.removeAttribute('predefinedPositions');
   return gexfWrite(graph, {
     pretty: true,
     formatNode: (key, attributes) => {
