@@ -1,6 +1,6 @@
 <template>
   <div class="graph-generator-form">
-    <span v-if="generatorComponentName" class="p-float-label">
+    <span v-if="generatorName" class="p-float-label">
       <input-number
         id="positiveProbability"
         v-model="positiveProbability"
@@ -11,10 +11,10 @@
       ></input-number>
       <label for="positiveProbability">Probability of positive opinion</label>
     </span>
-    <p v-if="!generatorComponentName" class="graph-generator-form-hint">
+    <p v-if="!generatorName" class="graph-generator-form-hint">
       The parameters will be available after selecting generator
     </p>
-    <component v-if="generatorComponentName" :is="generator"></component>
+    <component v-if="generatorName" :is="generator"></component>
   </div>
 </template>
 
@@ -22,6 +22,7 @@
 import { computed, DefineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useGeneratorStore } from '@/stores/generator.store';
+import { GeneratorName } from '@/composables/useGenerator';
 import CompleteGenerator from '@/components/menu/graph/generators/CompleteGenerator.vue';
 import EmptyGenerator from '@/components/menu/graph/generators/EmptyGenerator.vue';
 import LadderGenerator from '@/components/menu/graph/generators/LadderGenerator.vue';
@@ -52,14 +53,14 @@ const nameToComponent = new Map([
   ['krackhardt-kite-generator', KrackhardtKiteGenerator],
   ['florentine-families-generator', FlorentineFamiliesGenerator],
   ['karate-club-generator', KarateClubGenerator]
-]) as Map<string, DefineComponent>;
+]) as Map<GeneratorName, DefineComponent>;
 
 const generatorStore = useGeneratorStore();
-const { positiveProbability, generatorComponentName } = storeToRefs(generatorStore);
+const { positiveProbability, generatorName } = storeToRefs(generatorStore);
 
 const generator = computed(() => {
-  if (generatorComponentName?.value) {
-    return nameToComponent.get(generatorComponentName.value);
+  if (generatorName?.value) {
+    return nameToComponent.get(generatorName.value);
   }
   return undefined;
 });

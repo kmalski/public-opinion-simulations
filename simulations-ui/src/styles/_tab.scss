@@ -9,6 +9,21 @@
   width: 100%
 }
 
+@mixin chart {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  border: 1px solid #c6c6c6;
+  border-radius: 10px;
+  padding: 1rem;
+
+  .p-chart {
+    width: 100%;
+  }
+}
+
 @mixin tab {
   position: relative;
   display: flex;
@@ -20,6 +35,11 @@
   max-height: 100%;
 
   &-dropdown {
+    width: 90%;
+    margin: 1rem auto;
+  }
+
+  &-multi-select {
     width: 90%;
     margin: 1rem auto;
   }

@@ -19,7 +19,7 @@ import { storeToRefs } from 'pinia';
 import { useSimulationStore } from '@/stores/simulation.store';
 import { useGraphStore } from '@/stores/graph.store';
 import { useToastStore } from '@/stores/toast.store';
-import { saveAsPng } from '@/helpers/download';
+import { saveAsJpg } from '@/helpers/download';
 import { api as fullscreen } from 'vue-fullscreen';
 import { Sigma } from 'sigma';
 import { PrimeIcons } from 'primevue/api';
@@ -71,7 +71,7 @@ const state = reactive({
 });
 
 function downloadImage() {
-  if (graphStore.renderer) saveAsPng(graphStore.renderer as Sigma);
+  if (graphStore.renderer) saveAsJpg(graphStore.renderer as Sigma);
   else
     toastStore.error = {
       summary: 'Download error',

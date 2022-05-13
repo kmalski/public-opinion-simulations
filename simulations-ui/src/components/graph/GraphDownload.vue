@@ -2,7 +2,7 @@
   <prime-dialog
     class="graph-download"
     header="Download"
-    v-model:visible="state.visible"
+    v-model:visible="visible"
     :modal="true"
     @hide="onHide"
     @show="onShow"
@@ -36,10 +36,11 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, toRefs } from 'vue';
+import { reactive, ref } from 'vue';
 import PrimeDialog from 'primevue/dialog';
 import { useGraphStore } from '@/stores/graph.store';
 import { saveAsDot, saveAsGam, saveAsGexf, saveAsJson, saveAsNet } from '@/helpers/download';
+import { useDialog } from '@/composables/useDialog';
 
 interface Props {
   modelValue: boolean;
@@ -51,19 +52,16 @@ interface Emits {
 
 const graphStore = useGraphStore();
 const props = defineProps<Props>();
-const { modelValue } = toRefs(props);
 const emit = defineEmits<Emits>();
+
+const { visible, onShow, onHide } = useDialog(props, emit);
+const visibleRef = ref(visible);
 
 const formats = ['dot', 'json', 'gexf', 'net', 'gam'];
 const state = reactive({
-  visible: false,
   format: 'dot',
   filename: 'graph',
   withPositions: false
-});
-
-watch(modelValue, (newModelValue) => {
-  state.visible = newModelValue;
 });
 
 function onOk() {
@@ -85,19 +83,11 @@ function onOk() {
       saveAsGam(graphStore.graph, state.filename, state.withPositions);
       break;
   }
-  state.visible = false;
+  visibleRef.value = false;
 }
 
 function onCancel() {
-  state.visible = false;
-}
-
-function onShow() {
-  emit('update:modelValue', true);
-}
-
-function onHide() {
-  emit('update:modelValue', false);
+  visibleRef.value = false;
 }
 </script>
 

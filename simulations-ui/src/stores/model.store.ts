@@ -1,14 +1,15 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { Optional } from '@/helpers/types';
+import { ModelName } from '@/composables/useModel';
 
 interface State {
-  modelComponentName: Optional<string>;
+  modelName: Optional<ModelName>;
   model: Optional<object>;
 }
 
 export const useModelStore = defineStore('model', {
   state: (): State => ({
-    modelComponentName: undefined,
+    modelName: undefined,
     model: undefined
   })
 });

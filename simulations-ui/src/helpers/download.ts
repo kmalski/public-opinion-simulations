@@ -27,7 +27,7 @@ export function saveAsGexf(graph: Graph, filename: string, withPositions = false
   saveBlob(strToBlob(graphStr), filename + '.gexf');
 }
 
-export async function saveAsPng(renderer: Sigma) {
+export async function saveAsJpg(renderer: Sigma) {
   const { width, height } = renderer.getDimensions();
 
   const pixelRatio = window.devicePixelRatio || 1;
@@ -72,16 +72,20 @@ export async function saveAsPng(renderer: Sigma) {
 
   // Save the canvas as a PNG image:
   canvas.toBlob((blob) => {
-    if (blob) saveBlob(blob, 'graph.png');
+    if (blob) saveBlob(blob, 'graph.jpg');
 
     tmpRenderer.kill();
     tmpRoot.remove();
-  }, 'image/png');
+  }, 'image/jpeg');
 }
 
-function saveBlob(blob: Blob, name: string) {
+export function saveBlob(blob: Blob, name: string) {
+  saveUrl(URL.createObjectURL(blob), name);
+}
+
+export function saveUrl(url: string, name: string) {
   const link = document.createElement('a') as HTMLAnchorElement;
-  link.href = URL.createObjectURL(blob);
+  link.href = url;
   link.download = name;
   link.click();
   URL.revokeObjectURL(link.href);

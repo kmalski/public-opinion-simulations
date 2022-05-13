@@ -3,7 +3,7 @@
     <model-dropdown class="model-tab-dropdown"></model-dropdown>
     <model-form></model-form>
     <prime-button
-      :disabled="!modelComponentName || isOpen"
+      :disabled="!modelName || isOpen"
       class="model-tab-button"
       label="Open simulation panel"
       @click="openSimulationModal"
@@ -22,7 +22,7 @@ import SimulationDialog from '@/components/simulation/SimulationDialog.vue';
 
 const modelStore = useModelStore();
 const simulationStore = useSimulationStore();
-const { modelComponentName } = storeToRefs(modelStore);
+const { modelName } = storeToRefs(modelStore);
 const { isOpen } = storeToRefs(simulationStore);
 
 function openSimulationModal() {

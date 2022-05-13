@@ -1,16 +1,17 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { Optional } from '@/helpers/types';
+import { GeneratorName } from '@/composables/useGenerator';
 
 interface State {
   positiveProbability: number;
-  generatorComponentName: Optional<string>;
+  generatorName: Optional<GeneratorName>;
   generate: Optional<() => void>;
 }
 
 export const useGeneratorStore = defineStore('generator', {
   state: (): State => ({
     positiveProbability: 0.5,
-    generatorComponentName: undefined,
+    generatorName: undefined,
     generate: undefined
   })
 });

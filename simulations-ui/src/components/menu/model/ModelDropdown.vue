@@ -4,20 +4,21 @@
     v-model="selectedModel"
     :options="options"
     :disabled="isRunning"
-    option-label="name"
+    option-label="label"
     placeholder="Select Model"
   ></dropdown>
 </template>
 
 <script setup lang="ts">
 import { ref, watch } from 'vue';
+import { storeToRefs } from 'pinia';
 import { useModelStore } from '@/stores/model.store';
 import { useSimulationStore } from '@/stores/simulation.store';
-import { storeToRefs } from 'pinia';
+import { ModelName } from '@/composables/useModel';
 
 interface Option {
-  name: string;
-  model: string;
+  label: string;
+  model: ModelName;
 }
 
 const modelStore = useModelStore();
@@ -25,10 +26,10 @@ const simulationStore = useSimulationStore();
 const { isRunning } = storeToRefs(simulationStore);
 
 const selectedModel = ref<Option | null>(null);
-const options = [{ name: 'Local Majority Rule', model: 'local-majority-rule-model' }];
+const options = [{ label: 'Local Majority Rule', model: 'local-majority-rule-model' }];
 
 watch(selectedModel, (newModel) => {
-  modelStore.modelComponentName = newModel?.model;
+  modelStore.modelName = newModel?.model;
 });
 </script>
 

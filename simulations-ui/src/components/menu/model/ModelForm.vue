@@ -1,9 +1,7 @@
 <template>
   <div class="simulation-form">
-    <p v-if="!modelComponentName" class="simulation-form-hint">
-      The parameters will be available after selecting model
-    </p>
-    <component v-if="modelComponentName" :is="model"></component>
+    <p v-if="!modelName" class="simulation-form-hint">The parameters will be available after selecting model</p>
+    <component v-if="modelName" :is="model"></component>
   </div>
 </template>
 
@@ -11,19 +9,20 @@
 import { computed, DefineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useModelStore } from '@/stores/model.store';
+import { ModelName } from '@/composables/useModel';
 import LocalMajorityRuleModel from '@/components/menu/model/models/LocalMajorityRuleModel.vue';
 
 const modelStore = useModelStore();
-const { modelComponentName } = storeToRefs(modelStore);
+const { modelName } = storeToRefs(modelStore);
 
 const nameToComponent = new Map([['local-majority-rule-model', LocalMajorityRuleModel]]) as Map<
-  string,
+  ModelName,
   DefineComponent
 >;
 
 const model = computed(() => {
-  if (modelComponentName?.value) {
-    return nameToComponent.get(modelComponentName.value);
+  if (modelName?.value) {
+    return nameToComponent.get(modelName.value);
   }
   return undefined;
 });

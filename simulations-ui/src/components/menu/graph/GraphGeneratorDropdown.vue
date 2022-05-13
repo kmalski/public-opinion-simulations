@@ -3,7 +3,7 @@
     class="graph-generator-dropdown"
     v-model="selectedGenerator"
     :options="options"
-    option-label="name"
+    option-label="label"
     placeholder="Select Generator"
   ></dropdown>
 </template>
@@ -11,33 +11,34 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue';
 import { useGeneratorStore } from '@/stores/generator.store';
+import { GeneratorName } from '@/composables/useGenerator';
 
 interface Option {
-  name: string;
-  generator: string;
+  label: string;
+  generator: GeneratorName;
 }
 
 const generatorStore = useGeneratorStore();
 const selectedGenerator = ref<Option | null>(null);
-const options = ref([
-  { name: 'Complete', generator: 'complete-generator' },
-  { name: 'Empty', generator: 'empty-generator' },
-  { name: 'Ladder', generator: 'ladder-generator' },
-  { name: 'Path', generator: 'path-generator' },
-  { name: 'Regular Square', generator: 'regular-square-generator' },
-  { name: 'Regular Triangular', generator: 'regular-triangular-generator' },
-  { name: 'Caveman', generator: 'caveman-generator' },
-  { name: 'Connected Caveman', generator: 'connected-caveman-generator' },
-  { name: 'Clusters', generator: 'clusters-generator' },
-  { name: 'Erdos-Renyi', generator: 'erdos-renyi-generator' },
-  { name: 'Girvan-Newman', generator: 'girvan-newman-generator' },
-  { name: 'Krackhardt kite', generator: 'krackhardt-kite-generator' },
-  { name: 'Florentine families’', generator: 'florentine-families-generator' },
-  { name: 'Zachary’s karate club', generator: 'karate-club-generator' }
+const options = ref<Option[]>([
+  { label: 'Complete', generator: 'complete-generator' },
+  { label: 'Empty', generator: 'empty-generator' },
+  { label: 'Ladder', generator: 'ladder-generator' },
+  { label: 'Path', generator: 'path-generator' },
+  { label: 'Regular Square', generator: 'regular-square-generator' },
+  { label: 'Regular Triangular', generator: 'regular-triangular-generator' },
+  { label: 'Caveman', generator: 'caveman-generator' },
+  { label: 'Connected Caveman', generator: 'connected-caveman-generator' },
+  { label: 'Clusters', generator: 'clusters-generator' },
+  { label: 'Erdos-Renyi', generator: 'erdos-renyi-generator' },
+  { label: 'Girvan-Newman', generator: 'girvan-newman-generator' },
+  { label: 'Krackhardt kite', generator: 'krackhardt-kite-generator' },
+  { label: 'Florentine families’', generator: 'florentine-families-generator' },
+  { label: 'Zachary’s karate club', generator: 'karate-club-generator' }
 ]);
 
 watch(selectedGenerator, (newGenerator) => {
-  generatorStore.generatorComponentName = newGenerator?.generator;
+  generatorStore.generatorName = newGenerator?.generator;
 });
 </script>
 

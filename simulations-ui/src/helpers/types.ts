@@ -1,6 +1,8 @@
 import { UndirectedGraph } from 'graphology';
 import { Attributes, SerializedGraph } from 'graphology-types';
 
+export type Color = `#${string}`;
+
 // better typing for stores with usage of storeToRefs
 export type Optional<T> = T | undefined;
 

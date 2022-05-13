@@ -16,6 +16,7 @@ import FileUpload from 'primevue/fileupload';
 import InputNumber from 'primevue/inputnumber';
 import InputSwitch from 'primevue/inputswitch';
 import InputText from 'primevue/inputtext';
+import MultiSelect from 'primevue/multiselect';
 import PrimeButton from 'primevue/button';
 import SelectButton from 'primevue/selectbutton';
 import TabPanel from 'primevue/tabpanel';
@@ -35,6 +36,7 @@ createApp(App)
   .component('InputNumber', InputNumber)
   .component('InputSwitch', InputSwitch)
   .component('InputText', InputText)
+  .component('MultiSelect', MultiSelect)
   .component('PrimeButton', PrimeButton)
   .component('ProgressBar', ProgressBar)
   .component('SelectButton', SelectButton)

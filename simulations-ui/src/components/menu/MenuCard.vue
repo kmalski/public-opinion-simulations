@@ -19,7 +19,7 @@
 <script setup lang="ts">
 import { PrimeIcons } from 'primevue/api';
 import GraphTab from '@/components/menu/graph/GraphTab.vue';
-import ChartsTab from '@/components/menu/charts/ChartsTab.vue';
+import ChartsTab from '@/components/menu/chart/ChartsTab.vue';
 import ModelTab from '@/components/menu/model/ModelTab.vue';
 
 const tabs = [

@@ -1,13 +1,10 @@
 <template>
-  <prime-dialog
-    class="simulation-modal"
-    v-model:visible="state.visible"
-    @hide="onHide"
-    @show="onShow"
-    :closeOnEscape="false"
-  >
+  <prime-dialog class="simulation-modal" v-model:visible="visible" @hide="onHide" @show="onShow" :closeOnEscape="false">
     <template #header>
       <div class="simulation-modal-header-icons">
+        <div>
+          <p>Step: {{ step }}</p>
+        </div>
         <prime-button
           v-tooltip.top="{
             value: `Please use this panel to control the simulation. \
@@ -28,7 +25,7 @@
           :min="1"
           :max="100"
           v-model="state.iterations"
-          :disabled="isRunning"
+          :disabled="isRunning || isPause"
         ></input-number>
       </span>
 
@@ -54,25 +51,32 @@
           @click="() => simulationStore.runSimulation(state.iterations, mode)"
         ></prime-button>
         <prime-button
-          v-tooltip.bottom="'Stop simulation'"
+          v-tooltip.bottom="'Pause simulation'"
+          class="p-button-sm"
+          :icon="PrimeIcons.PAUSE"
+          :disabled="!isRunning || isPause"
+          @click="simulationStore.pauseSimulation()"
+        ></prime-button>
+        <prime-button
+          v-tooltip.bottom="'Stop and reset simulation'"
           class="p-button-sm"
           :icon="PrimeIcons.STOP"
-          :disabled="!isRunning"
           @click="simulationStore.stopSimulation()"
         ></prime-button>
       </div>
-      <progress-bar v-if="isRunning" :value="simulationPercentage"></progress-bar>
+      <progress-bar v-if="isRunning || isPause" :value="simulationPercentage"></progress-bar>
     </div>
   </prime-dialog>
 </template>
 
 <script setup lang="ts">
-import { reactive, watch, toRefs, computed } from 'vue';
+import { reactive, computed } from 'vue';
 import PrimeDialog from 'primevue/dialog';
 import { PrimeIcons } from 'primevue/api';
 import Tooltip from 'primevue/tooltip';
 import { useSimulationStore } from '@/stores/simulation.store';
 import { storeToRefs } from 'pinia';
+import { useDialog } from '@/composables/useDialog';
 
 interface Props {
   modelValue: boolean;
@@ -83,20 +87,14 @@ interface Emits {
 }
 
 const props = defineProps<Props>();
-const { modelValue } = toRefs(props);
 const emit = defineEmits<Emits>();
 const vTooltip = Tooltip;
 const simulationStore = useSimulationStore();
-const { isRunning, step } = storeToRefs(simulationStore);
+const { isRunning, isPause, step, targetStep, targetIterations } = storeToRefs(simulationStore);
 
 const state = reactive({
   iterations: 10,
-  isAsync: false,
-  visible: false
-});
-
-watch(modelValue, (newModelValue) => {
-  state.visible = newModelValue;
+  isAsync: false
 });
 
 const mode = computed(() => {
@@ -104,18 +102,12 @@ const mode = computed(() => {
 });
 
 const simulationPercentage = computed(() => {
-  if (step?.value && state.iterations) {
-    return Math.trunc((step.value / state.iterations) * 100);
+  if (targetStep?.value && targetIterations?.value) {
+    return Math.trunc((targetStep.value / targetIterations.value) * 100);
   } else return 0;
 });
 
-function onShow() {
-  emit('update:modelValue', true);
-}
-
-function onHide() {
-  emit('update:modelValue', false);
-}
+const { visible, onShow, onHide } = useDialog(props, emit);
 </script>
 
 <style scoped lang="scss">
@@ -184,8 +176,18 @@ function onHide() {
 
     .simulation-modal-header-icons {
       display: flex;
-      flex-direction: row-reverse;
+      flex-direction: row;
+      justify-content: space-between;
+      text-align: center;
+      align-content: center;
+      align-items: center;
       width: 100%;
+      margin-left: 1rem;
+
+      p {
+        font-weight: bold;
+        margin: 0;
+      }
     }
 
     .p-dialog-header-icons {

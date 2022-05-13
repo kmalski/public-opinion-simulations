@@ -9,7 +9,7 @@
       Before a new graph can be generated, the simulation must end
     </p>
     <prime-button
-      :disabled="!generatorComponentName || isRunning"
+      :disabled="!generatorName || isRunning"
       class="graph-tab-button"
       label="Generate"
       @click="generate"
@@ -27,7 +27,7 @@ import GraphGeneratorForm from '@/components/menu/graph/GraphGeneratorForm.vue';
 
 const generatorStore = useGeneratorStore();
 const simulationStore = useSimulationStore();
-const { generatorComponentName, generate } = storeToRefs(generatorStore);
+const { generatorName, generate } = storeToRefs(generatorStore);
 const { isRunning } = storeToRefs(simulationStore);
 </script>
 
