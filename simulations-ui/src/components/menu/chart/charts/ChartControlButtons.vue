@@ -49,5 +49,10 @@ const { isMaximized } = storeToRefs(chartStore);
   align-items: flex-end;
   justify-content: flex-end;
   width: 100%;
+
+  .p-button-sm {
+    font-size: 0.5rem;
+    width: 1rem;
+  }
 }
 </style>

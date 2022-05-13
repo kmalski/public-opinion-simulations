@@ -58,7 +58,7 @@
           @click="simulationStore.pauseSimulation()"
         ></prime-button>
         <prime-button
-          v-tooltip.bottom="'Stop and reset simulation'"
+          v-tooltip.bottom="'Stop and clear simulation'"
           class="p-button-sm"
           :icon="PrimeIcons.STOP"
           @click="simulationStore.stopSimulation()"

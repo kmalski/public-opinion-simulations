@@ -53,8 +53,8 @@ const chartComponent = computed(() => {
 <style scoped lang="scss">
 .maximized-chart {
   &-content {
-    max-height: 85vh;
-    width: 80vw;
+    width: 70vw;
+    min-height: 35vw;
     padding: 1rem;
   }
 }
