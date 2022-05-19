@@ -19,6 +19,8 @@ interface Simulation {
   runner: ChildProcess;
   messageQueue: Queue<Message>;
   isIdle: boolean;
+  frameDurationMiliSec: number;
+  sendMessage?: () => void;
   exitMessage?: Message;
   updatesTimer?: ReturnType<typeof setInterval>;
 }
@@ -42,7 +44,13 @@ export class SimulationsService {
       '-g',
       `graphs/${id}.dot`
     ]);
-    const simulation = { id, runner, messageQueue: new Queue<Message>(), isIdle: true };
+    const simulation = {
+      id,
+      runner,
+      messageQueue: new Queue<Message>(),
+      isIdle: true,
+      frameDurationMiliSec: (simulationDto.frameDurationSec ?? 1) * 1000
+    };
     this.idToSimulationMap.set(id, simulation);
 
     this.logger.log(`Starting simulation ${id}`);
@@ -54,7 +62,7 @@ export class SimulationsService {
   stop(id: string) {
     const simulation = this.getIfExists(id);
     if (!simulation.exitMessage) killRunner(simulation.runner);
-    simulation.messageQueue.clear();
+    this.cleanupSimulation(simulation);
   }
 
   private subscribe(runner: ChildProcess, simulation: Simulation): Observable<WsResponse> {
@@ -70,18 +78,19 @@ export class SimulationsService {
         throw new WsException(err.message);
       });
 
-      const sendMessage = () => {
+      simulation.sendMessage = () => {
         if (simulation.messageQueue.size() > 0) {
           subscriber.next(simulation.messageQueue.dequeue());
           simulation.isIdle = false;
         } else if (simulation.exitMessage) {
           subscriber.next(simulation.exitMessage);
+          simulation.exitMessage = undefined;
           this.cleanupSimulation(simulation);
         } else {
           simulation.isIdle = true;
         }
       };
-      simulation.updatesTimer = setInterval(sendMessage, 1000);
+      this.refreshInterval(simulation);
 
       runner.stdout.addListener('data', (chunk) => {
         if (typeof chunk === 'string') {
@@ -92,9 +101,8 @@ export class SimulationsService {
             simulation.messageQueue.enqueue(message);
 
             if (simulation.isIdle) {
-              sendMessage();
-              clearInterval(simulation.updatesTimer);
-              simulation.updatesTimer = setInterval(sendMessage, 1000);
+              this.sendMessageImmediately(simulation);
+              this.refreshInterval(simulation);
             }
           }
         }
@@ -103,7 +111,10 @@ export class SimulationsService {
       runner.addListener('exit', (code, signal) => {
         const message = { event: Outgoing.EXIT, data: { code, signal } };
         if (signal) {
-          subscriber.next(message);
+          simulation.exitMessage = message;
+          this.cleanupSimulation(simulation);
+        } else if (simulation.messageQueue.size() === 0) {
+          simulation.exitMessage = message;
           this.cleanupSimulation(simulation);
         } else {
           simulation.exitMessage = message;
@@ -133,9 +144,19 @@ export class SimulationsService {
     return simulation;
   }
 
+  private sendMessageImmediately(simulation: Simulation) {
+    clearInterval(simulation.updatesTimer);
+    simulation.sendMessage();
+  }
+
+  private refreshInterval(simulation: Simulation) {
+    simulation.updatesTimer = setInterval(simulation.sendMessage, simulation.frameDurationMiliSec);
+  }
+
   private cleanupSimulation(simulation: Simulation) {
     clearInterval(simulation.updatesTimer);
     simulation.messageQueue.clear();
+    simulation.sendMessage();
     this.idToSimulationMap.delete(simulation.id);
   }
 }

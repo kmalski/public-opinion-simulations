@@ -54,7 +54,7 @@ export const useSimulationStore = defineStore('simulation', {
       this.targetStep = undefined;
       this.targetIterations = undefined;
     },
-    runSimulation(iterations: number, mode: 'sync' | 'async') {
+    runSimulation(iterations: number, frameDurationSec: number, mode: 'sync' | 'async') {
       const modelStore = useModelStore();
 
       if (!modelStore.model) return;
@@ -117,9 +117,11 @@ export const useSimulationStore = defineStore('simulation', {
         }
       });
 
+      const currStep = this.targetStep ?? 0;
       socket.emit('start', {
         model: modelStore.model,
-        iterations: this.isPause && iterations > this.step ? iterations - this.step : iterations,
+        iterations: this.isPause && iterations > currStep ? iterations - currStep : iterations,
+        frameDurationSec: frameDurationSec,
         mode: mode,
         dotGraph: serializeDot(graphStore.graph, false)
       });
