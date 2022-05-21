@@ -28,10 +28,15 @@ export const useChartStore = defineStore('chart', {
     maximized: undefined
   }),
   actions: {
-    updateStatistic(name: StatisticName, value: number, label: any) {
+    updateStatistic(name: StatisticName, value: number | number[], label: any) {
       const statistic = this.getStatistic(name);
-      statistic.data.push(value);
-      statistic.labels.push(label);
+      if (typeof value === 'number') {
+        statistic.data.push(value);
+        statistic.labels.push(label);
+      } else {
+        statistic.data.push(...value);
+        statistic.labels.push(...label);
+      }
       statistic.update();
     },
     clear(name: StatisticName) {

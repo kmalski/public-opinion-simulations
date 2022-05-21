@@ -2,11 +2,19 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ChildProcess, execFile } from 'child_process';
 import { WsException, WsResponse } from '@nestjs/websockets';
 import { v4 as uuid } from 'uuid';
-import { Observable } from 'rxjs';
+import { Observable, Subscriber } from 'rxjs';
 import { SimulationDto } from './simulations.dto';
-import { createGraphFile, deleteGraphFile, killRunner, runnerExeName, runnerPath } from '../utils/runner';
+import {
+  createInputGraphFile,
+  readOutputGraphFile,
+  deleteInputGraphFile,
+  deleteOutputGraphFile,
+  killRunner,
+  runnerExeName,
+  runnerPath
+} from '../utils/runner';
 import { Queue } from '../utils/queue';
-import { MAX_PROCESS_COUNT, STEP_REGEX } from '../config';
+import { FILE_TAG, MAX_PROCESS_COUNT, STEP_REGEX } from '../config';
 import { Outgoing } from './simulations.events';
 
 interface Message {
@@ -37,19 +45,15 @@ export class SimulationsService {
     if (simulationDto.iterations < 1) throw new WsException('Iterations number can not be smaller than 1');
 
     const id = uuid() as string;
-    await createGraphFile(id, simulationDto.dotGraph);
-    const runner = execFile(`${runnerPath}/${runnerExeName}`, [
-      '-i',
-      `${simulationDto.iterations}`,
-      '-g',
-      `graphs/${id}.dot`
-    ]);
+    await createInputGraphFile(id, simulationDto.dotGraph);
+    const runner = execFile(`${runnerPath}/${runnerExeName}`, this.createArgs(simulationDto, id), { cwd: runnerPath });
+
     const simulation = {
       id,
       runner,
       messageQueue: new Queue<Message>(),
       isIdle: true,
-      frameDurationMiliSec: (simulationDto.frameDurationSec ?? 1) * 1000
+      frameDurationMiliSec: simulationDto.frameDurationSec * 1000
     };
     this.idToSimulationMap.set(id, simulation);
 
@@ -78,36 +82,6 @@ export class SimulationsService {
         throw new WsException(err.message);
       });
 
-      simulation.sendMessage = () => {
-        if (simulation.messageQueue.size() > 0) {
-          subscriber.next(simulation.messageQueue.dequeue());
-          simulation.isIdle = false;
-        } else if (simulation.exitMessage) {
-          subscriber.next(simulation.exitMessage);
-          simulation.exitMessage = undefined;
-          this.cleanupSimulation(simulation);
-        } else {
-          simulation.isIdle = true;
-        }
-      };
-      this.refreshInterval(simulation);
-
-      runner.stdout.addListener('data', (chunk) => {
-        if (typeof chunk === 'string') {
-          let matched;
-          while ((matched = STEP_REGEX.exec(chunk))) {
-            const step = matched[1];
-            const message = { event: Outgoing.STEP, data: step };
-            simulation.messageQueue.enqueue(message);
-
-            if (simulation.isIdle) {
-              this.sendMessageImmediately(simulation);
-              this.refreshInterval(simulation);
-            }
-          }
-        }
-      });
-
       runner.addListener('exit', (code, signal) => {
         const message = { event: Outgoing.EXIT, data: { code, signal } };
         if (signal) {
@@ -120,6 +94,49 @@ export class SimulationsService {
           simulation.exitMessage = message;
         }
       });
+
+      simulation.sendMessage = this.createSendMessageFunc(simulation, subscriber);
+      if (simulation.frameDurationMiliSec === 0) {
+        this.bindResult(runner, simulation);
+      } else {
+        this.bindSteps(runner, simulation);
+      }
+    });
+  }
+
+  private bindSteps(runner: ChildProcess, simulation: Simulation) {
+    this.refreshMessageInterval(simulation);
+
+    runner.stdout.addListener('data', (chunk) => {
+      if (typeof chunk === 'string') {
+        let matched;
+        while ((matched = STEP_REGEX.exec(chunk))) {
+          const step = matched[1];
+          const message = { event: Outgoing.STEP, data: step };
+          simulation.messageQueue.enqueue(message);
+
+          if (simulation.isIdle) {
+            this.sendMessageImmediately(simulation);
+            this.refreshMessageInterval(simulation);
+          }
+        }
+      }
+    });
+  }
+
+  private bindResult(runner: ChildProcess, simulation: Simulation) {
+    runner.stdout.addListener('data', async (chunk) => {
+      if (typeof chunk === 'string') {
+        if (chunk.includes(FILE_TAG)) {
+          const data = await readOutputGraphFile(simulation.id);
+          const message = { event: Outgoing.RESULT, data: data };
+          simulation.messageQueue.enqueue(message);
+          this.sendMessageImmediately(simulation);
+
+          simulation.frameDurationMiliSec = 500;
+          this.refreshMessageInterval(simulation);
+        }
+      }
     });
   }
 
@@ -132,9 +149,6 @@ export class SimulationsService {
 
     runner.addListener('exit', (code, signal) => {
       this.logger.log(`Simulation ${id} exited with code: ${code} and signal: ${signal}`);
-      deleteGraphFile(id).then(() => {
-        this.logger.log(`Removed ${id} simulation graph file`);
-      });
     });
   }
 
@@ -149,14 +163,45 @@ export class SimulationsService {
     simulation.sendMessage();
   }
 
-  private refreshInterval(simulation: Simulation) {
+  private refreshMessageInterval(simulation: Simulation) {
     simulation.updatesTimer = setInterval(simulation.sendMessage, simulation.frameDurationMiliSec);
   }
 
   private cleanupSimulation(simulation: Simulation) {
-    clearInterval(simulation.updatesTimer);
+    if (simulation.updatesTimer) clearInterval(simulation.updatesTimer);
     simulation.messageQueue.clear();
-    simulation.sendMessage();
+    if (simulation.sendMessage) simulation.sendMessage();
+    Promise.all([deleteInputGraphFile(simulation.id), deleteOutputGraphFile(simulation.id)]).then(() =>
+      this.logger.log(`Removed ${simulation.id} simulation graph files`)
+    );
     this.idToSimulationMap.delete(simulation.id);
+  }
+
+  private createArgs(simulationDto: SimulationDto, id: string) {
+    const args = [
+      '-i',
+      `${simulationDto.iterations}`,
+      '-g',
+      `graphs/input-${id}.dot`,
+      '-o',
+      `graphs/output-${id}.json`
+    ];
+    if (simulationDto.frameDurationSec !== 0) args.push('--verbose');
+    return args;
+  }
+
+  private createSendMessageFunc(simulation: Simulation, subscriber: Subscriber<WsResponse>) {
+    return () => {
+      if (simulation.messageQueue.size() > 0) {
+        subscriber.next(simulation.messageQueue.dequeue());
+        simulation.isIdle = false;
+      } else if (simulation.exitMessage) {
+        subscriber.next(simulation.exitMessage);
+        simulation.exitMessage = undefined;
+        this.cleanupSimulation(simulation);
+      } else {
+        simulation.isIdle = true;
+      }
+    };
   }
 }

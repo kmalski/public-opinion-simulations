@@ -2,8 +2,9 @@
   <prime-dialog class="simulation-modal" v-model:visible="visible" @hide="onHide" @show="onShow" :closeOnEscape="false">
     <template #header>
       <div class="simulation-modal-header-icons">
-        <div>
+        <div class="simulation-modal-header-text">
           <p>Step: {{ step }}</p>
+          <p>Left: {{ targetIterations ? targetIterations - targetStep : state.iterations }}</p>
         </div>
         <prime-button
           v-tooltip.top="{
@@ -50,7 +51,7 @@
 
           <span class="simulation-modal-input">
             <label for="mode">Sync</label>
-            <input-switch :disabled="isRunning" v-model="state.isAsync"></input-switch>
+            <input-switch :disabled="isRunning || isPause" v-model="state.isAsync"></input-switch>
             <label for="mode">Async</label>
           </span>
         </accordion-tab>
@@ -62,37 +63,37 @@
           class="p-button-sm"
           :icon="PrimeIcons.STEP_FORWARD"
           :disabled="isRunning"
-          @click="() => simulationStore.runSimulation(1, 1, mode)"
+          @click="runOneIteration"
         ></prime-button>
         <prime-button
           v-tooltip.bottom="'Run simulation'"
           class="p-button-sm"
           :icon="PrimeIcons.PLAY"
           :disabled="isRunning"
-          @click="() => simulationStore.runSimulation(state.iterations, state.frameDurationSec, mode)"
+          @click="runSimulation"
         ></prime-button>
         <prime-button
-          v-tooltip.bottom="'Forward to simulation end'"
+          v-tooltip.bottom="'Run simulation and skip animation'"
           class="p-button-sm"
           :icon="PrimeIcons.FORWARD"
           :disabled="isRunning"
-          @click="() => simulationStore.runSimulation(state.iterations, 0, mode)"
+          @click="forwardSimulation"
         ></prime-button>
         <prime-button
           v-tooltip.bottom="'Pause simulation'"
           class="p-button-sm"
           :icon="PrimeIcons.PAUSE"
-          :disabled="!isRunning || isPause"
-          @click="simulationStore.pauseSimulation()"
+          :disabled="!isRunning || isPause || simulationMode === 'forward'"
+          @click="pauseSimulation"
         ></prime-button>
         <prime-button
           v-tooltip.bottom="'Stop and clear simulation'"
           class="p-button-sm"
           :icon="PrimeIcons.STOP"
-          @click="simulationStore.stopSimulation()"
+          @click="stopSimulation"
         ></prime-button>
       </div>
-      <progress-bar v-if="isRunning || isPause" :value="simulationPercentage">
+      <progress-bar v-if="isRunning || isPause" :value="simulationPercentage" :mode="progressBarMode">
         {{ targetStep }} / {{ state.iterations }} ({{ simulationPercentage }}%)
       </progress-bar>
     </div>
@@ -122,7 +123,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 const vTooltip = Tooltip;
 const simulationStore = useSimulationStore();
-const { isRunning, isPause, step, targetStep, targetIterations } = storeToRefs(simulationStore);
+const { isRunning, isPause, step, targetStep, targetIterations, simulationMode } = storeToRefs(simulationStore);
 
 const state = reactive({
   iterations: 10,
@@ -134,11 +135,35 @@ const mode = computed(() => {
   return state.isAsync ? 'async' : 'sync';
 });
 
+const progressBarMode = computed(() => {
+  return simulationMode.value === 'animation' ? 'determinate' : 'indeterminate';
+});
+
 const simulationPercentage = computed(() => {
   if (targetStep?.value && targetIterations?.value) {
     return Math.trunc((targetStep.value / targetIterations.value) * 100);
   } else return 0;
 });
+
+const runOneIteration = () => {
+  simulationStore.runSimulation('animation', {
+    iterations: 1,
+    frameDurationSec: state.frameDurationSec,
+    mode: mode.value
+  });
+};
+const runSimulation = () => {
+  simulationStore.runSimulation('animation', {
+    iterations: state.iterations,
+    frameDurationSec: state.frameDurationSec,
+    mode: mode.value
+  });
+};
+const forwardSimulation = () => {
+  simulationStore.runSimulation('forward', { iterations: state.iterations, frameDurationSec: 0, mode: mode.value });
+};
+const pauseSimulation = simulationStore.pauseSimulation;
+const stopSimulation = simulationStore.stopSimulation;
 
 const { visible, onShow, onHide } = useDialog(props, emit);
 </script>
@@ -172,7 +197,7 @@ const { visible, onShow, onHide } = useDialog(props, emit);
         padding: 0.5rem;
 
         .p-accordion-toggle-icon {
-          font-size: 13px;
+          font-size: 12px;
         }
       }
     }
@@ -254,10 +279,22 @@ const { visible, onShow, onHide } = useDialog(props, emit);
       width: 100%;
 
       p {
-        font-weight: bold;
+        font-weight: 500;
         padding: 0;
         margin: 0;
       }
+    }
+
+    .simulation-modal-header-text {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      text-align: left;
+      align-content: center;
+      align-items: center;
+      width: 100%;
+      column-gap: 0.5rem;
+      font-size: 14px;
     }
 
     .p-dialog-header-icons {

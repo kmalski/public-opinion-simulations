@@ -6,5 +6,6 @@ export enum Incoming {
 export enum Outgoing {
   ID = 'id',
   STEP = 'step',
+  RESULT = 'result',
   EXIT = 'exit'
 }

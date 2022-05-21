@@ -1,19 +1,27 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
-import { serializeDot } from '@/helpers/parsers';
+import { parseDot, serializeDot } from '@/helpers/parsers';
 import { useGraphStore } from '@/stores/graph.store';
 import { useToastStore } from '@/stores/toast.store';
-import { Optional } from '@/helpers/types';
+import { BinaryOpinion, Optional } from '@/helpers/types';
 import { useModelStore } from '@/stores/model.store';
 import { io } from 'socket.io-client';
 import { opinionToColor } from '@/helpers/graph';
 import { useChartStore } from '@/stores/chart.store';
 import { StatisticName } from '@/composables/useChart';
+import { range } from '@/helpers/utils';
+
+interface SimulationOptions {
+  iterations: number;
+  mode: 'sync' | 'async';
+  frameDurationSec: number;
+}
 
 interface State {
   isOpen: boolean;
   isRunning: boolean;
   isPause: boolean;
   step: number;
+  simulationMode: Optional<'animation' | 'forward'>;
   targetStep: Optional<number>;
   targetIterations: Optional<number>;
   id: Optional<string>;
@@ -34,6 +42,7 @@ export const useSimulationStore = defineStore('simulation', {
     isRunning: false,
     isPause: false,
     step: 0,
+    simulationMode: undefined,
     targetStep: undefined,
     targetIterations: undefined,
     id: undefined
@@ -51,10 +60,11 @@ export const useSimulationStore = defineStore('simulation', {
       }
       this.isPause = false;
       this.step = 0;
+      this.simulationMode = undefined;
       this.targetStep = undefined;
       this.targetIterations = undefined;
     },
-    runSimulation(iterations: number, frameDurationSec: number, mode: 'sync' | 'async') {
+    runSimulation(mode: 'animation' | 'forward', options: SimulationOptions) {
       const modelStore = useModelStore();
 
       if (!modelStore.model) return;
@@ -64,35 +74,17 @@ export const useSimulationStore = defineStore('simulation', {
       const chartStore = useChartStore();
 
       if (this.step === 0) chartStore.clearAll();
+
       if (!this.isPause) {
         this.targetStep = 0;
-        this.targetIterations = iterations;
+        this.targetIterations = options.iterations;
       }
+
+      if (mode == 'animation') this.listenStep();
+      else this.listenResult();
 
       socket.on('id', (data) => {
         this.id = data.id;
-      });
-
-      socket.on('step', (data) => {
-        const update = JSON.parse(data);
-        this.step += 1;
-        // @ts-ignore
-        this.targetStep += 1;
-
-        const opinion = update.changes[0].opinion.toString();
-        const color = opinionToColor(opinion);
-        graphStore.graph.forEachNode((node, attributes) => {
-          if (attributes.label !== opinion) {
-            attributes.label = opinion;
-            attributes.color = color;
-          }
-        });
-        graphStore.renderer?.refresh();
-
-        const stats = update.stats ?? [];
-        stats.forEach((stat: { name: StatisticName; value: number }) => {
-          chartStore.updateStatistic(stat.name, stat.value, this.step);
-        });
       });
 
       socket.on('exception', (data) => {
@@ -118,16 +110,75 @@ export const useSimulationStore = defineStore('simulation', {
       });
 
       const currStep = this.targetStep ?? 0;
+      const iterLeft = options.iterations > currStep ? options.iterations - currStep : options.iterations;
+
       socket.emit('start', {
         model: modelStore.model,
-        iterations: this.isPause && iterations > currStep ? iterations - currStep : iterations,
-        frameDurationSec: frameDurationSec,
-        mode: mode,
+        iterations: iterLeft,
+        frameDurationSec: options.frameDurationSec,
+        mode: options.mode,
         dotGraph: serializeDot(graphStore.graph, false)
       });
 
-      this.isPause = this.isPause && iterations === 1;
+      this.isPause = this.isPause && options.iterations === 1;
       this.isRunning = true;
+      this.simulationMode = mode;
+    },
+    listenStep() {
+      const graphStore = useGraphStore();
+      const chartStore = useChartStore();
+
+      socket.on('step', (data) => {
+        const update = JSON.parse(data);
+
+        const opinion = update.changes[0].opinion.toString();
+        const color = opinionToColor(opinion);
+        graphStore.graph.forEachNode((node, attributes) => {
+          if (attributes.label !== opinion) {
+            attributes.label = opinion;
+            attributes.color = color;
+          }
+        });
+        graphStore.renderer?.refresh();
+
+        const stats = update.stats ?? [];
+        stats.forEach((stat: { name: StatisticName; values: number[] }) => {
+          chartStore.updateStatistic(stat.name, stat.values, this.labels(stat.values.length));
+        });
+
+        this.step += 1;
+        // @ts-ignore
+        this.targetStep += 1;
+      });
+    },
+    listenResult() {
+      const graphStore = useGraphStore();
+      const chartStore = useChartStore();
+
+      socket.on('result', (data) => {
+        const result = JSON.parse(data);
+
+        const resultingGraph = parseDot(result.graph);
+        graphStore.graph.forEachNode((node, attributes) => {
+          const opinion = resultingGraph.getNodeAttribute(node, 'label') as BinaryOpinion;
+          const color = opinionToColor(opinion);
+          attributes.label = opinion;
+          attributes.color = color;
+        });
+        graphStore.renderer?.refresh();
+
+        const stats = result.stats ?? [];
+        stats.forEach((stat: { name: StatisticName; values: number[] }) => {
+          chartStore.updateStatistic(stat.name, stat.values, this.labels(stat.values.length));
+        });
+
+        this.step += result.step;
+        // @ts-ignore
+        this.targetStep += result.step;
+      });
+    },
+    labels(count: number) {
+      return range(this.step + 1, this.step + count + 1);
     }
   }
 });
