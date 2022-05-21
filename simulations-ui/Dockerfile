@@ -8,4 +8,5 @@ RUN npm run build
 
 FROM nginx:1.20 as serve
 COPY --from=build /opt/ui/dist /usr/share/nginx/html
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 80
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

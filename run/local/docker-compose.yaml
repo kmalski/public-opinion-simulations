@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  simulations-api:
+    build:
+      context: ../../simulations-api
+    container_name: simulations-api
+    ports:
+      - "4000:4000"
+
+  simulations-ui:
+    build:
+      context: ../../simulations-ui
+      dockerfile: Dockerfile-local
+    container_name: simulations-ui
+    ports:
+      - "3000:3000"

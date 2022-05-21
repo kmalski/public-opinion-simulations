@@ -1,0 +1,7 @@
+FROM node:14 as build
+WORKDIR /opt/ui
+RUN npm install -g npm@8.4.0
+COPY package*.json ./
+RUN npm ci
+COPY . .
+ENTRYPOINT ["npm", "run", "local"]
