@@ -87,9 +87,6 @@ export class SimulationsService {
         if (signal) {
           simulation.exitMessage = message;
           this.cleanupSimulation(simulation);
-        } else if (simulation.messageQueue.size() === 0) {
-          simulation.exitMessage = message;
-          this.cleanupSimulation(simulation);
         } else {
           simulation.exitMessage = message;
         }

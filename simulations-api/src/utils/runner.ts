@@ -24,16 +24,16 @@ export async function readOutputGraphFile(id: string): Promise<string> {
 
 export async function deleteInputGraphFile(id: string) {
   try {
-    return unlink(`${runnerPath}/graphs/input-${id}.dot`);
+    return await unlink(`${runnerPath}/graphs/input-${id}.dot`);
   } catch (err) {
-    return Promise.resolve();
+    return await Promise.resolve();
   }
 }
 
 export async function deleteOutputGraphFile(id: string) {
   try {
-    return unlink(`${runnerPath}/graphs/output-${id}.json`);
+    return await unlink(`${runnerPath}/graphs/output-${id}.json`);
   } catch (err) {
-    return Promise.resolve();
+    return await Promise.resolve();
   }
 }
