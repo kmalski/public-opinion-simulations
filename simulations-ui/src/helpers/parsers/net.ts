@@ -79,9 +79,10 @@ function parseEdges(graph: Graph, lines: string[]) {
 function addEdges(graph: Graph, lines: string[]) {
   for (const line of lines) {
     if (line.startsWith('*')) throw new Error('Invalid marker before end of edges section');
+    if (!line) continue;
 
     const edgeLine = line.split(whitespaceSeparator);
-    if (edgeLine.length !== 2) break;
+    if (edgeLine.length !== 2) throw new Error(`Invalid edge definition: ${line}`);
 
     graph.addEdge(edgeLine[0], edgeLine[1]);
   }

@@ -23,10 +23,10 @@ import SpeedDial from '@/components/primevue/SpeedDial.vue';
 const graphStore = useGraphStore();
 const simulationStore = useSimulationStore();
 const { isLayoutRunning, isHoveringEnabled, isDragAndDropEnabled, isOpinionChangeEnabled } = storeToRefs(graphStore);
-const { isRunning } = storeToRefs(simulationStore);
+const { isRunning, isPause } = storeToRefs(simulationStore);
 
 const isDragAndDropEnabledOrIsRunning = computed(() => {
-  return isDragAndDropEnabled.value || isRunning.value;
+  return isDragAndDropEnabled.value || isRunning.value || isPause.value;
 });
 
 const state = reactive({

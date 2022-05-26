@@ -70,18 +70,40 @@ function parseVertices(graph: Graph, lines: string[]): string[] {
 }
 
 function parseMatrix(graph: Graph, lines: string[]) {
-  const marker = 'matrix';
+  const matrix = buildMatrix(graph, lines);
 
-  if (lines.length < graph.order) throw new Error('Matrix size is smaller than defined vertices');
+  for (let i = 0; i < graph.order; i++) {
+    for (let j = 0; j < i; j++) {
+      const val = matrix[i][j];
+      if (val !== matrix[j][i]) throw new Error('Adjacency matrix must be symmetric');
+      if (val === '1') graph.addEdge(i + 1, j + 1);
+    }
+  }
+}
+
+function buildMatrix(graph: Graph, lines: string[]): string[][] {
+  const marker = 'matrix';
 
   const matrixLine = lines[0].split(whitespaceSeparator);
   if (matrixLine.length !== 1) throw new Error(`Invalid matrix marker: ${lines[0]}`);
-  if (matrixLine[0].toLowerCase() !== marker) throw new Error(`File must start with ${marker} marker`);
+  if (matrixLine[0].toLowerCase() !== marker) throw new Error(`File must contains section with ${marker} marker`);
 
-  for (let i = 0; i < graph.order; i++) {
-    const lineTokens = lines[i + 1].split(whitespaceSeparator);
-    for (let j = 0; j < i; j++) {
-      if (lineTokens[j] === '1') graph.addEdge(i + 1, j + 1);
-    }
+  const matrix = [];
+  for (const line of lines.slice(1, graph.order + 1)) {
+    if (!line) throw new Error('Matrix line can not be empty');
+
+    const lineTokens = line.split(whitespaceSeparator);
+    if (!lineTokens.every((token) => token === '0' || token === '1'))
+      throw new Error('Matrix contains invalid value, only 1 and 0 are allowed');
+
+    checkMatrixSize(lineTokens.length, graph.order);
+    matrix.push(lineTokens);
   }
+
+  checkMatrixSize(matrix.length, graph.order);
+  return matrix;
+}
+
+function checkMatrixSize(length: number, expectedLength: number) {
+  if (length != expectedLength) throw new Error(`Matrix size is different than defined: ${expectedLength}`);
 }
