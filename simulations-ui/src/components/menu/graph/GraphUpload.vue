@@ -7,7 +7,7 @@
         <a class="graph-upload-link" :href="'/files/graph.gexf'" download="graph.gexf">*.gexf</a>
         <a class="graph-upload-link" :href="'/files/graph.json'" download="graph.json">*.json</a>
         <a class="graph-upload-link" :href="'/files/graph.net'" download="graph.net">*.net</a>
-        <a class="graph-upload-link" :href="'/files/graph.gam'" download="graph.gam">*.gam</a>
+        <a class="graph-upload-link" :href="'/files/graph.mat'" download="graph.mat">*.mat</a>
       </div>
     </div>
     <div class="graph-upload-button">
@@ -18,7 +18,7 @@
         mode="basic"
         :custom-upload="true"
         @uploader="readFile"
-        accept=".gexf,.dot,.json,.net,.gam"
+        accept=".gexf,.dot,.json,.net,.mat"
       ></file-upload>
     </div>
   </div>
@@ -30,7 +30,7 @@ import { useGraphStore } from '@/stores/graph.store';
 import { useToastStore } from '@/stores/toast.store';
 import { useSimulationStore } from '@/stores/simulation.store';
 import { assignMissingOpinions } from '@/helpers/graph';
-import { parseDot, parseGexf, parseJson, parseNet, parseGam } from '@/helpers/parsers';
+import { parseDot, parseGexf, parseJson, parseNet, parseMat } from '@/helpers/parsers';
 
 const graphStore = useGraphStore();
 const toastStore = useToastStore();
@@ -57,8 +57,8 @@ async function readFile(event: { files: File | File[] }) {
       case 'net':
         graph = parseNet(text);
         break;
-      case 'gam':
-        graph = parseGam(text);
+      case 'mat':
+        graph = parseMat(text);
         break;
     }
   } catch (error) {

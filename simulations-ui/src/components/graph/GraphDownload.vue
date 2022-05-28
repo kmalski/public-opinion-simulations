@@ -39,7 +39,7 @@
 import { reactive, ref } from 'vue';
 import PrimeDialog from 'primevue/dialog';
 import { useGraphStore } from '@/stores/graph.store';
-import { saveAsDot, saveAsGam, saveAsGexf, saveAsJson, saveAsNet } from '@/helpers/download';
+import { saveAsDot, saveAsMat, saveAsGexf, saveAsJson, saveAsNet } from '@/helpers/download';
 import { useDialog } from '@/composables/useDialog';
 
 interface Props {
@@ -57,7 +57,7 @@ const emit = defineEmits<Emits>();
 const { visible, onShow, onHide } = useDialog(props, emit);
 const visibleRef = ref(visible);
 
-const formats = ['dot', 'json', 'gexf', 'net', 'gam'];
+const formats = ['dot', 'json', 'gexf', 'net', 'mat'];
 const state = reactive({
   format: 'dot',
   filename: 'graph',
@@ -79,8 +79,8 @@ function onOk() {
     case 'net':
       saveAsNet(graphStore.graph, state.filename, state.withPositions);
       break;
-    case 'gam':
-      saveAsGam(graphStore.graph, state.filename, state.withPositions);
+    case 'mat':
+      saveAsMat(graphStore.graph, state.filename, state.withPositions);
       break;
   }
   visibleRef.value = false;

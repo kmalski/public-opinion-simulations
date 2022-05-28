@@ -7,7 +7,7 @@ import { parseLabel, serializePos } from '@/helpers/parsers/common';
 
 export { parseNet, serializeNet } from '@/helpers/parsers/net';
 export { parseDot, serializeDot } from '@/helpers/parsers/dot';
-export { parseGam, serializeGam } from '@/helpers/parsers/gam';
+export { parseMat, serializeMat } from '@/helpers/parsers/mat';
 
 export function serializeJson(graph: Graph, withPositions: boolean): string {
   const serializedGraph = graph.export();

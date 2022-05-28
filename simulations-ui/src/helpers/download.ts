@@ -1,10 +1,10 @@
 import { Sigma } from 'sigma';
 import { Graph } from '@/helpers/types';
-import { serializeDot, serializeGexf, serializeJson, serializeNet, serializeGam } from '@/helpers/parsers';
+import { serializeDot, serializeGexf, serializeJson, serializeNet, serializeMat } from '@/helpers/parsers';
 
-export function saveAsGam(graph: Graph, filename: string, withPositions = false) {
-  const graphStr = serializeGam(graph, withPositions);
-  saveBlob(strToBlob(graphStr), filename + '.gam');
+export function saveAsMat(graph: Graph, filename: string, withPositions = false) {
+  const graphStr = serializeMat(graph, withPositions);
+  saveBlob(strToBlob(graphStr), filename + '.mat');
 }
 
 export function saveAsNet(graph: Graph, filename: string, withPositions = false) {
