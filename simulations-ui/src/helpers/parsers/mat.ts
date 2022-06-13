@@ -43,7 +43,7 @@ function parseMatrix(graph: Graph, lines: string[]) {
   if (matrixLine.length !== 1) throw new Error(`Invalid matrix marker: ${lines[0]}`);
   if (matrixLine[0].toLowerCase() !== marker) throw new Error(`File must contains section with ${marker} marker`);
 
-  const matrix = readMatrix(graph, lines.slice(1, graph.order + 1));
+  const matrix = readMatrix(graph, lines.slice(1));
   for (let i = 0; i < graph.order; i++) {
     for (let j = 0; j < i; j++) {
       const val = matrix[i][j];
@@ -56,7 +56,7 @@ function parseMatrix(graph: Graph, lines: string[]) {
 function readMatrix(graph: Graph, lines: string[]): string[][] {
   const matrix = [];
   for (const line of lines) {
-    if (!line) throw new Error('Matrix line can not be empty');
+    if (!line) continue;
 
     const lineTokens = line.split(whitespaceSeparator);
     if (!lineTokens.every((token) => token === '0' || token === '1'))

@@ -35,20 +35,19 @@ function generateGraph() {
 
   if (width === 1 && height === 1) graph.addNode(0);
 
+  let i = 0;
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
-      const i = x + y * width;
-
       if (width > 1) {
-        const targetX = ((x + 1) % width) + width * y;
+        const targetX = ((x + 1) % width) + y * width;
         if (targetX > i || periodicBoundary) graph.mergeEdge(i, targetX);
       }
 
       if (height > 1) {
-        const targetY1 = (i + width) % order;
-        if (targetY1 > i || periodicBoundary) graph.mergeEdge(i, targetY1);
+        const targetY = (i + width) % order;
+        if (targetY > i || periodicBoundary) graph.mergeEdge(i, targetY);
       }
-      graph.replaceNodeAttributes(i, { x, y });
+      graph.replaceNodeAttributes(i++, { x, y });
     }
   }
   return graph;
