@@ -1,6 +1,6 @@
-FROM node:14 as build
+FROM node:16 as build
 WORKDIR /opt/ui
-RUN npm install -g npm@8.4.0
+RUN npm install -g npm@8.15.1
 COPY package*.json ./
 RUN npm ci
 COPY . .

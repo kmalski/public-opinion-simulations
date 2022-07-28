@@ -4,7 +4,7 @@
       <div class="simulation-modal-header-icons">
         <div class="simulation-modal-header-text">
           <p>Step: {{ step }}</p>
-          <p>Left: {{ targetIterations ? targetIterations - targetStep : state.iterations }}</p>
+          <p>Left: {{ targetIterations && targetStep ? targetIterations - targetStep : state.iterations }}</p>
         </div>
         <prime-button
           v-tooltip.top="{
@@ -21,7 +21,7 @@
     <div class="simulation-modal-content">
       <accordion class="simulation-modal-accordion">
         <accordion-tab header="Settings">
-          <span class="simulation-modal-input">
+          <div class="simulation-modal-input">
             <label for="iterations">Iterations</label>
             <input-number
               id="iterations"
@@ -30,30 +30,28 @@
               v-model="state.iterations"
               :disabled="isRunning || isPause"
             ></input-number>
-          </span>
+          </div>
 
-          <span class="simulation-modal-input">
+          <div class="simulation-modal-input">
             <label for="frameDuration">Frame duration</label>
-            <div class="col-12 md:col-4">
-              <div class="p-inputgroup">
-                <input-number
-                  id="frameDuration"
-                  :min="0.05"
-                  v-model="state.frameDurationSec"
-                  :disabled="isRunning"
-                  mode="decimal"
-                  :max-fraction-digits="2"
-                ></input-number>
-                <span class="p-inputgroup-addon">s</span>
-              </div>
+            <div class="p-inputgroup">
+              <input-number
+                id="frameDuration"
+                :min="0.05"
+                v-model="state.frameDurationSec"
+                :disabled="isRunning"
+                mode="decimal"
+                :max-fraction-digits="2"
+              ></input-number>
+              <span class="p-inputgroup-addon">s</span>
             </div>
-          </span>
+          </div>
 
-          <span class="simulation-modal-input">
+          <div class="simulation-modal-input">
             <label for="mode">Sync</label>
             <input-switch :disabled="isRunning || isPause" v-model="state.isAsync"></input-switch>
             <label for="mode">Async</label>
-          </span>
+          </div>
         </accordion-tab>
       </accordion>
 
@@ -224,6 +222,8 @@ const { visible, onShow, onHide } = useDialog(props, emit);
     }
 
     :deep(.p-inputgroup) {
+      width: min-content;
+
       .p-inputtext {
         width: 3rem;
         height: 2rem;

@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
-import vue from '@vitejs/plugin-vue';
 import { fileURLToPath, URL } from 'url';
+import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
   assetsInclude: ['**/*.gexf', '**/*.dot'],
@@ -11,6 +11,9 @@ export default defineConfig({
   },
   build: {
     chunkSizeWarningLimit: 1000
+  },
+  server: {
+    port: 3000
   },
   plugins: [vue()]
 });

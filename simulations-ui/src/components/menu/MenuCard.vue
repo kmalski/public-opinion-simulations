@@ -17,10 +17,17 @@
 </template>
 
 <script setup lang="ts">
+import { DefineComponent } from 'vue';
 import { PrimeIcons } from 'primevue/api';
 import GraphTab from '@/components/menu/graph/GraphTab.vue';
 import ChartsTab from '@/components/menu/chart/ChartsTab.vue';
 import ModelTab from '@/components/menu/model/ModelTab.vue';
+
+interface TabDefinition {
+  title: string;
+  icon: string;
+  item: DefineComponent;
+}
 
 const tabs = [
   {
@@ -38,7 +45,7 @@ const tabs = [
     icon: PrimeIcons.CHART_LINE,
     item: ChartsTab
   }
-];
+] as Array<TabDefinition>;
 </script>
 
 <style scoped lang="scss">

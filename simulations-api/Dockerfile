@@ -1,6 +1,6 @@
-FROM node:14
+FROM node:16
 WORKDIR /opt/api
-RUN npm install -g npm@8.4.0
+RUN npm install -g npm@8.15.1
 RUN apt-get update & apt-get install -y g++
 COPY package*.json ./
 RUN npm ci

@@ -47,15 +47,6 @@ body {
       top: 1.2rem;
       left: 1.2rem;
     }
-
-    //.p-toast-message {
-    //  margin: 0.5rem 0 0 0;
-    //}
-    //
-    //&-bottom-right {
-    //  bottom: 1.4rem;
-    //  right: 1.4rem;
-    //}
   }
 }
 
