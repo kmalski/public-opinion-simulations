@@ -1,4 +1,4 @@
-FROM node:16 as build
+FROM node:16-bullseye as build
 WORKDIR /opt/ui
 RUN npm install -g npm@8.15.1
 COPY package*.json ./

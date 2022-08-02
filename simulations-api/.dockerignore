@@ -3,3 +3,4 @@ node_modules
 ./runner/main.exe
 ./runner/runner
 ./runner/main
+./runner/build

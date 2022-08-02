@@ -2,7 +2,7 @@ import { unlink, writeFile, readFile } from 'fs/promises';
 import { resolve } from 'path';
 import { ChildProcess } from 'child_process';
 
-export const runnerPath = resolve(__dirname, '../../runner');
+export const runnerPath = resolve(__dirname, '../../runner/build');
 export const runnerExeName = process.platform === 'win32' ? 'main.exe' : 'main';
 
 export function killRunner(runner: ChildProcess) {
