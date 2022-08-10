@@ -1,9 +1,10 @@
 export class SimulationDto {
+  model: 'MajorityModel' | 'VoterModel' | 'SznajdModel';
+  modelParams: object;
   iterations: number;
-  frameDurationSec: number;
   mode: 'sync' | 'async';
-  model: any;
   dotGraph: string;
+  frameDurationSec: number;
 }
 
 export class SimulationId {

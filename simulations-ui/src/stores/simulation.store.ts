@@ -67,7 +67,7 @@ export const useSimulationStore = defineStore('simulation', {
     runSimulation(mode: 'animation' | 'forward', options: SimulationOptions) {
       const modelStore = useModelStore();
 
-      if (!modelStore.model) return;
+      if (!modelStore.modelName) return;
 
       const graphStore = useGraphStore();
       const toastStore = useToastStore();
@@ -113,11 +113,12 @@ export const useSimulationStore = defineStore('simulation', {
       const iterLeft = options.iterations > currStep ? options.iterations - currStep : options.iterations;
 
       socket.emit('start', {
-        model: modelStore.model,
+        model: modelStore.modelName,
+        modelParams: modelStore.modelParams,
         iterations: iterLeft,
-        frameDurationSec: options.frameDurationSec,
         mode: options.mode,
-        dotGraph: serializeDot(graphStore.graph, false)
+        dotGraph: serializeDot(graphStore.graph, false),
+        frameDurationSec: options.frameDurationSec
       });
 
       this.isPause = this.isPause && options.iterations === 1;
@@ -128,16 +129,13 @@ export const useSimulationStore = defineStore('simulation', {
       const graphStore = useGraphStore();
       const chartStore = useChartStore();
 
-      socket.on('step', (data) => {
-        const update = JSON.parse(data);
+      socket.on('step', (update) => {
+        update.changes.forEach((change: { node: string; opinion: number }) => {
+          const opinion = update.changes[0].opinion.toString();
+          const color = opinionToColor(opinion);
+          const node = change.node;
 
-        const opinion = update.changes[0].opinion.toString();
-        const color = opinionToColor(opinion);
-        graphStore.graph.forEachNode((node, attributes) => {
-          if (attributes.label !== opinion) {
-            attributes.label = opinion;
-            attributes.color = color;
-          }
+          graphStore.graph.mergeNodeAttributes(node, { color: color, label: opinion });
         });
         graphStore.renderer?.refresh();
 
@@ -155,9 +153,7 @@ export const useSimulationStore = defineStore('simulation', {
       const graphStore = useGraphStore();
       const chartStore = useChartStore();
 
-      socket.on('result', (data) => {
-        const result = JSON.parse(data);
-
+      socket.on('result', (result) => {
         const resultingGraph = parseDot(result.graph);
         graphStore.graph.forEachNode((node, attributes) => {
           const opinion = resultingGraph.getNodeAttribute(node, 'label') as BinaryOpinion;

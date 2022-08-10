@@ -26,7 +26,7 @@
             <input-number
               id="iterations"
               :min="1"
-              :max="100"
+              :max="10000"
               v-model="state.iterations"
               :disabled="isRunning || isPause"
             ></input-number>
@@ -124,7 +124,7 @@ const simulationStore = useSimulationStore();
 const { isRunning, isPause, step, targetStep, targetIterations, simulationMode } = storeToRefs(simulationStore);
 
 const state = reactive({
-  iterations: 10,
+  iterations: 100,
   frameDurationSec: 1,
   isAsync: false
 });

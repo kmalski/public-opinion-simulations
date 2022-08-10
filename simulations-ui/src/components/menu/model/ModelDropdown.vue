@@ -1,9 +1,9 @@
 <template>
   <dropdown
     class="simulation-model-dropdown"
-    v-model="selectedModel"
+    v-model="selectedOption"
     :options="options"
-    :disabled="isRunning"
+    :disabled="isRunning || isPause"
     option-label="label"
     placeholder="Select Model"
   ></dropdown>
@@ -23,13 +23,17 @@ interface Option {
 
 const modelStore = useModelStore();
 const simulationStore = useSimulationStore();
-const { isRunning } = storeToRefs(simulationStore);
+const { isRunning, isPause } = storeToRefs(simulationStore);
 
-const selectedModel = ref<Option | null>(null);
-const options = [{ label: 'Local Majority Rule', model: 'local-majority-rule-model' }];
+const selectedOption = ref<Option | null>(null);
+const options = [
+  { label: 'Local Majority Rule', model: ModelName.MAJORITY_MODEL },
+  { label: 'Voter', model: ModelName.VOTER_MODEL },
+  { label: 'Sznajd', model: ModelName.SZNAJD_MODEL }
+] as Array<Option>;
 
-watch(selectedModel, (newModel) => {
-  modelStore.modelName = newModel?.model;
+watch(selectedOption, (newOption) => {
+  modelStore.modelName = newOption?.model;
 });
 </script>
 

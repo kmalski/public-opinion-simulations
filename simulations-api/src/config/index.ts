@@ -5,6 +5,6 @@ export const CORS = {
 
 export const MAX_PROCESS_COUNT = 3;
 
-export const STEP_REGEX = /^\[STEP] (.*)$/gm;
+export const STEP_REGEX = /^\[STEP](.*)$/gm;
 
 export const FILE_TAG = '[FILE]';

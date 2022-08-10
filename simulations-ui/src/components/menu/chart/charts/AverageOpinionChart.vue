@@ -12,14 +12,14 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import Chart from 'primevue/chart';
-import { useChart } from '@/composables/useChart';
+import { ChartName, StatisticName, useChart } from '@/composables/useChart';
 import ChartControlButtons from '@/components/menu/chart/charts/ChartControlButtons.vue';
 
 const chartComponent = ref<Chart | null>(null);
 
 const { data, options, plugins, onClear, onDownload, onMaximize } = useChart(
-  'average-opinion',
-  'average-opinion-chart',
+  StatisticName.AVERAGE_OPINION,
+  ChartName.AVERAGE_OPINION_CHART,
   chartComponent,
   {
     borderColor: '#42A5F5',

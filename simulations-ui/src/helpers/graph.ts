@@ -1,4 +1,4 @@
-import { BinaryOpinion, Graph } from '@/helpers/types';
+import { BinaryOpinion, Color, Graph } from '@/helpers/types';
 import { NODE_COLOR_DOWN, NODE_COLOR_UP, NODE_SIZE } from '@/helpers/defaults';
 import { random } from 'graphology-layout';
 
@@ -35,6 +35,6 @@ export function randomOpinion(positiveProbability: number): BinaryOpinion {
   return '-1';
 }
 
-export function opinionToColor(opinion: BinaryOpinion): string {
+export function opinionToColor(opinion: BinaryOpinion): Color {
   return opinion === '1' ? NODE_COLOR_UP : NODE_COLOR_DOWN;
 }

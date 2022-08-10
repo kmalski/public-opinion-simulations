@@ -21,7 +21,7 @@ interface Option {
 
 const chartStore = useChartStore();
 
-const options = ref<Option[]>([{ name: 'Average Opinion', chart: 'average-opinion-chart' }]);
+const options = ref<Option[]>([{ name: 'Average Opinion', chart: ChartName.AVERAGE_OPINION_CHART }]);
 const selectedCharts = ref<Option[]>([...options.value]);
 
 watch(

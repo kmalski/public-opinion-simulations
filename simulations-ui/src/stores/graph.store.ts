@@ -20,6 +20,7 @@ import { SigmaNodeEventPayload } from 'sigma/sigma';
 import { MouseCoords } from 'sigma/types';
 import { bindOpinionChangeEvents, onClickNodeImpl, unbindOpinionChangeEvents } from '@/helpers/opinion-change';
 import { useToastStore } from '@/stores/toast.store';
+import { useSimulationStore } from '@/stores/simulation.store';
 import { parseJson } from '@/helpers/parsers';
 import startGraph from '@/assets/startGraph.json?raw';
 
@@ -64,6 +65,7 @@ export const useGraphStore = defineStore('graph', {
     setGraph(graph: Graph) {
       validatePositions(graph);
       this.graph = graph;
+      useSimulationStore().stopSimulation();
       if (!graph.getAttribute('predefinedPositions')) {
         this.startLayout();
         setTimeout(() => this.stopLayout(), 2000);

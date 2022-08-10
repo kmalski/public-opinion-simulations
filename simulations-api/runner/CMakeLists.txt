@@ -11,8 +11,9 @@ file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/graphs)
 
 add_subdirectory("PODSL")
 
-add_executable(main main.cpp)
+add_executable(${PROJECT_NAME} main.cpp)
 
-target_link_libraries(${MODULE_NAME}
-    PODSL
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE
+    PODSL::PODSL
 )

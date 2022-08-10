@@ -6,10 +6,11 @@ import { Observable, Subscriber } from 'rxjs';
 import { SimulationDto } from './simulations.dto';
 import {
   createInputGraphFile,
-  readOutputGraphFile,
   deleteInputGraphFile,
-  deleteOutputGraphFile,
+  deleteOutputGraphFiles,
   killRunner,
+  readOutputGraphFile,
+  readOutputInfoFile,
   runnerExeName,
   runnerPath
 } from '../utils/runner';
@@ -46,7 +47,8 @@ export class SimulationsService {
 
     const id = uuid() as string;
     await createInputGraphFile(id, simulationDto.dotGraph);
-    const runner = execFile(`${runnerPath}/${runnerExeName}`, this.createArgs(simulationDto, id), { cwd: runnerPath });
+    const args = this.createArgs(simulationDto, id);
+    const runner = execFile(`${runnerPath}/${runnerExeName}`, args, { cwd: runnerPath });
 
     const simulation = {
       id,
@@ -109,7 +111,7 @@ export class SimulationsService {
         let matched;
         while ((matched = STEP_REGEX.exec(chunk))) {
           const step = matched[1];
-          const message = { event: Outgoing.STEP, data: step };
+          const message = { event: Outgoing.STEP, data: JSON.parse(step) };
           simulation.messageQueue.enqueue(message);
 
           if (simulation.isIdle) {
@@ -125,8 +127,12 @@ export class SimulationsService {
     runner.stdout.addListener('data', async (chunk) => {
       if (typeof chunk === 'string') {
         if (chunk.includes(FILE_TAG)) {
-          const data = await readOutputGraphFile(simulation.id);
-          const message = { event: Outgoing.RESULT, data: data };
+          const resultGraph = await readOutputGraphFile(simulation.id);
+          const resultInfo = await readOutputInfoFile(simulation.id);
+          const data = JSON.parse(resultInfo);
+          data.graph = resultGraph;
+
+          const message = { event: Outgoing.RESULT, data };
           simulation.messageQueue.enqueue(message);
           this.sendMessageImmediately(simulation);
 
@@ -168,23 +174,20 @@ export class SimulationsService {
     if (simulation.updatesTimer) clearInterval(simulation.updatesTimer);
     simulation.messageQueue.clear();
     if (simulation.sendMessage) simulation.sendMessage();
-    Promise.all([deleteInputGraphFile(simulation.id), deleteOutputGraphFile(simulation.id)]).then(() =>
+    Promise.all([deleteInputGraphFile(simulation.id), deleteOutputGraphFiles(simulation.id)]).then(() =>
       this.logger.log(`Removed ${simulation.id} simulation graph files`)
     );
     this.idToSimulationMap.delete(simulation.id);
   }
 
   private createArgs(simulationDto: SimulationDto, id: string) {
-    const args = [
-      '-i',
+    return [
+      simulationDto.model,
       `${simulationDto.iterations}`,
-      '-g',
       `graphs/input-${id}.dot`,
-      '-o',
+      `graphs/output-${id}.dot`,
       `graphs/output-${id}.json`
     ];
-    if (simulationDto.frameDurationSec !== 0) args.push('--verbose');
-    return args;
   }
 
   private createSendMessageFunc(simulation: Simulation, subscriber: Subscriber<WsResponse>) {

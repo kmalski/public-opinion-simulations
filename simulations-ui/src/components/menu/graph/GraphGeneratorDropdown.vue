@@ -1,7 +1,7 @@
 <template>
   <dropdown
     class="graph-generator-dropdown"
-    v-model="selectedGenerator"
+    v-model="selectedOption"
     :options="options"
     option-label="label"
     placeholder="Select Generator"
@@ -19,26 +19,26 @@ interface Option {
 }
 
 const generatorStore = useGeneratorStore();
-const selectedGenerator = ref<Option | null>(null);
+const selectedOption = ref<Option | null>(null);
 const options = ref<Option[]>([
-  { label: 'Complete', generator: 'complete-generator' },
-  { label: 'Empty', generator: 'empty-generator' },
-  { label: 'Ladder', generator: 'ladder-generator' },
-  { label: 'Path', generator: 'path-generator' },
-  { label: 'Regular Square', generator: 'regular-square-generator' },
-  { label: 'Regular Triangular', generator: 'regular-triangular-generator' },
-  { label: 'Caveman', generator: 'caveman-generator' },
-  { label: 'Connected Caveman', generator: 'connected-caveman-generator' },
-  { label: 'Clusters', generator: 'clusters-generator' },
-  { label: 'Erdos-Renyi', generator: 'erdos-renyi-generator' },
-  { label: 'Girvan-Newman', generator: 'girvan-newman-generator' },
-  { label: 'Krackhardt kite', generator: 'krackhardt-kite-generator' },
-  { label: 'Florentine families’', generator: 'florentine-families-generator' },
-  { label: 'Zachary’s karate club', generator: 'karate-club-generator' }
+  { label: 'Complete', generator: GeneratorName.COMPLETE_GENERATOR },
+  { label: 'Empty', generator: GeneratorName.EMPTY_GENERATOR },
+  { label: 'Ladder', generator: GeneratorName.LADDER_GENERATOR },
+  { label: 'Path', generator: GeneratorName.PATH_GENERATOR },
+  { label: 'Regular Square', generator: GeneratorName.REGULAR_SQUARE_GENERATOR },
+  { label: 'Regular Triangular', generator: GeneratorName.REGULAR_TRIANGULAR_GENERATOR },
+  { label: 'Caveman', generator: GeneratorName.CAVEMAN_GENERATOR },
+  { label: 'Connected Caveman', generator: GeneratorName.CONNECTED_CAVEMAN_GENERATOR },
+  { label: 'Clusters', generator: GeneratorName.CLUSTERS_GENERATOR },
+  { label: 'Erdos-Renyi', generator: GeneratorName.ERDOS_RENYI_GENERATOR },
+  { label: 'Girvan-Newman', generator: GeneratorName.GIRVAN_NEWMAN_GENERATOR },
+  { label: 'Krackhardt kite', generator: GeneratorName.KRACKHARDT_KITE_GENERATOR },
+  { label: 'Florentine families’', generator: GeneratorName.FLORENTINE_FAMILIES_GENERATOR },
+  { label: 'Zachary’s karate club', generator: GeneratorName.KARATE_CLUB_GENERATOR }
 ]);
 
-watch(selectedGenerator, (newGenerator) => {
-  generatorStore.generatorName = newGenerator?.generator;
+watch(selectedOption, (newOption) => {
+  generatorStore.generatorName = newOption?.generator;
 });
 </script>
 

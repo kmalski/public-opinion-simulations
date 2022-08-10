@@ -5,21 +5,22 @@ import { Graph } from '@/helpers/types';
 import { assignOpinion } from '@/helpers/graph';
 import { useToastStore } from '@/stores/toast.store';
 
-export type GeneratorName =
-  | 'complete-generator'
-  | 'empty-generator'
-  | 'ladder-generator'
-  | 'path-generator'
-  | 'regular-square-generator'
-  | 'regular-triangular-generator'
-  | 'caveman-generator'
-  | 'connected-caveman-generator'
-  | 'clusters-generator'
-  | 'erdos-renyi-generator'
-  | 'girvan-newman-generator'
-  | 'krackhardt-kite-generator'
-  | 'florentine-families-generator'
-  | 'karate-club-generator';
+export enum GeneratorName {
+  COMPLETE_GENERATOR = 'complete-generator',
+  EMPTY_GENERATOR = 'empty-generator',
+  LADDER_GENERATOR = 'ladder-generator',
+  PATH_GENERATOR = 'path-generator',
+  REGULAR_SQUARE_GENERATOR = 'regular-square-generator',
+  REGULAR_TRIANGULAR_GENERATOR = 'regular-triangular-generator',
+  CAVEMAN_GENERATOR = 'caveman-generator',
+  CONNECTED_CAVEMAN_GENERATOR = 'connected-caveman-generator',
+  CLUSTERS_GENERATOR = 'clusters-generator',
+  ERDOS_RENYI_GENERATOR = 'erdos-renyi-generator',
+  GIRVAN_NEWMAN_GENERATOR = 'girvan-newman-generator',
+  KRACKHARDT_KITE_GENERATOR = 'krackhardt-kite-generator',
+  FLORENTINE_FAMILIES_GENERATOR = 'florentine-families-generator',
+  KARATE_CLUB_GENERATOR = 'karate-club-generator'
+}
 
 export function useGenerator(generateGraph: () => Graph) {
   const graphStore = useGraphStore();

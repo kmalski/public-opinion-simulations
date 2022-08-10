@@ -3,16 +3,20 @@ import { useModelStore } from '@/stores/model.store';
 import { useSimulationStore } from '@/stores/simulation.store';
 import { storeToRefs } from 'pinia';
 
-export type ModelName = 'local-majority-rule-model';
+export enum ModelName {
+  MAJORITY_MODEL = 'MajorityModel',
+  VOTER_MODEL = 'VoterModel',
+  SZNAJD_MODEL = 'SznajdModel'
+}
 
-export function useModel(model: Ref<object> | object) {
+export function useModel(modelParams: Ref<object> | object) {
   const modelStore = useModelStore();
   const simulationStore = useSimulationStore();
-  const { isRunning } = storeToRefs(simulationStore);
+  const { isRunning, isPause } = storeToRefs(simulationStore);
 
   onMounted(() => {
-    modelStore.model = unref(model);
+    modelStore.modelParams = unref(modelParams);
   });
 
-  return { isRunning };
+  return { isRunning, isPause };
 }

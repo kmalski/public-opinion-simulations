@@ -12,7 +12,7 @@ export interface GraphAttributes extends Attributes {
 
 export interface NodeAttributes extends Attributes {
   size?: number;
-  color?: string;
+  color?: Color;
   label?: string;
   x?: number;
   y?: number;

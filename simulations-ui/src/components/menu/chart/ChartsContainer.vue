@@ -17,7 +17,10 @@ import AverageOpinionChart from '@/components/menu/chart/charts/AverageOpinionCh
 const chartStore = useChartStore();
 const { chartComponentsNames } = storeToRefs(chartStore);
 
-const nameToComponent = new Map([['average-opinion-chart', AverageOpinionChart]]) as Map<ChartName, DefineComponent>;
+const nameToComponent = new Map([[ChartName.AVERAGE_OPINION_CHART, AverageOpinionChart]]) as Map<
+  ChartName,
+  DefineComponent
+>;
 
 function getChartComponent(name: ChartName) {
   return nameToComponent.get(name);

@@ -39,20 +39,20 @@ import FlorentineFamiliesGenerator from '@/components/menu/graph/generators/Flor
 import KarateClubGenerator from '@/components/menu/graph/generators/KarateClubGenerator.vue';
 
 const nameToComponent = new Map([
-  ['complete-generator', CompleteGenerator],
-  ['empty-generator', EmptyGenerator],
-  ['ladder-generator', LadderGenerator],
-  ['path-generator', PathGenerator],
-  ['regular-square-generator', RegularSquareGenerator],
-  ['regular-triangular-generator', RegularTriangularGenerator],
-  ['caveman-generator', CavemanGenerator],
-  ['connected-caveman-generator', ConnectedCavemanGenerator],
-  ['clusters-generator', ClustersGenerator],
-  ['erdos-renyi-generator', ErdosRenyiGenerator],
-  ['girvan-newman-generator', GirvanNewmanGenerator],
-  ['krackhardt-kite-generator', KrackhardtKiteGenerator],
-  ['florentine-families-generator', FlorentineFamiliesGenerator],
-  ['karate-club-generator', KarateClubGenerator]
+  [GeneratorName.COMPLETE_GENERATOR, CompleteGenerator],
+  [GeneratorName.EMPTY_GENERATOR, EmptyGenerator],
+  [GeneratorName.LADDER_GENERATOR, LadderGenerator],
+  [GeneratorName.PATH_GENERATOR, PathGenerator],
+  [GeneratorName.REGULAR_SQUARE_GENERATOR, RegularSquareGenerator],
+  [GeneratorName.REGULAR_TRIANGULAR_GENERATOR, RegularTriangularGenerator],
+  [GeneratorName.CAVEMAN_GENERATOR, CavemanGenerator],
+  [GeneratorName.CONNECTED_CAVEMAN_GENERATOR, ConnectedCavemanGenerator],
+  [GeneratorName.CLUSTERS_GENERATOR, ClustersGenerator],
+  [GeneratorName.ERDOS_RENYI_GENERATOR, ErdosRenyiGenerator],
+  [GeneratorName.GIRVAN_NEWMAN_GENERATOR, GirvanNewmanGenerator],
+  [GeneratorName.KRACKHARDT_KITE_GENERATOR, KrackhardtKiteGenerator],
+  [GeneratorName.FLORENTINE_FAMILIES_GENERATOR, FlorentineFamiliesGenerator],
+  [GeneratorName.KARATE_CLUB_GENERATOR, KarateClubGenerator]
 ]) as Map<GeneratorName, DefineComponent>;
 
 const generatorStore = useGeneratorStore();

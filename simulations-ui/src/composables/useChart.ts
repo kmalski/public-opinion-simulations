@@ -16,9 +16,13 @@ export interface ChartOptions {
   yAxisTitle: string;
 }
 
-export type ChartName = 'average-opinion-chart';
+export enum ChartName {
+  AVERAGE_OPINION_CHART = 'average-opinion-chart'
+}
 
-export type StatisticName = 'average-opinion';
+export enum StatisticName {
+  AVERAGE_OPINION = 'average-opinion'
+}
 
 export function useChart(
   statisticName: StatisticName,
@@ -97,7 +101,7 @@ export function useChart(
     if (chart.value) {
       const chartjs = chart.value?.getChart() as ChartJS;
       const url = chartjs.toBase64Image('image/jpeg', 1);
-      saveUrl(url, statisticName + 'jpg');
+      saveUrl(url, statisticName);
     }
   };
 
