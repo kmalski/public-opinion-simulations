@@ -125,7 +125,7 @@ const { isRunning, isPause, step, targetStep, targetIterations, simulationMode }
 
 const state = reactive({
   iterations: 100,
-  frameDurationSec: 1,
+  frameDurationSec: 0.1,
   isAsync: false
 });
 

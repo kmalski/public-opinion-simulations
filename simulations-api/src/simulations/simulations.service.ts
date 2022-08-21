@@ -5,10 +5,14 @@ import { v4 as uuid } from 'uuid';
 import { Observable, Subscriber } from 'rxjs';
 import { SimulationDto } from './simulations.dto';
 import {
+  createConfigFile,
   createInputGraphFile,
-  deleteInputGraphFile,
-  deleteOutputGraphFiles,
+  deleteInputFiles,
+  deleteOutputFiles,
+  inputConfigFilename,
   killRunner,
+  outputGraphFilename,
+  outputInfoFilename,
   readOutputGraphFile,
   readOutputInfoFile,
   runnerExeName,
@@ -46,8 +50,9 @@ export class SimulationsService {
     if (simulationDto.iterations < 1) throw new WsException('Iterations number can not be smaller than 1');
 
     const id = uuid() as string;
-    await createInputGraphFile(id, simulationDto.dotGraph);
-    const args = this.createArgs(simulationDto, id);
+    await createInputGraphFile(id, simulationDto);
+    await createConfigFile(id, simulationDto);
+    const args = [inputConfigFilename(id), outputGraphFilename(id), outputInfoFilename(id)];
     const runner = execFile(`${runnerPath}/${runnerExeName}`, args, { cwd: runnerPath });
 
     const simulation = {
@@ -174,20 +179,17 @@ export class SimulationsService {
     if (simulation.updatesTimer) clearInterval(simulation.updatesTimer);
     simulation.messageQueue.clear();
     if (simulation.sendMessage) simulation.sendMessage();
-    Promise.all([deleteInputGraphFile(simulation.id), deleteOutputGraphFiles(simulation.id)]).then(() =>
-      this.logger.log(`Removed ${simulation.id} simulation graph files`)
+    Promise.allSettled([deleteInputFiles(simulation.id), deleteOutputFiles(simulation.id)]).then(
+      ([inputResult, outputResult]) => {
+        if (inputResult?.status === 'fulfilled' && inputResult.value) {
+          this.logger.log(`Removed ${simulation.id} simulation input graph files`);
+        }
+        if (outputResult?.status === 'fulfilled' && outputResult.value) {
+          this.logger.log(`Removed ${simulation.id} simulation output graph files`);
+        }
+      }
     );
     this.idToSimulationMap.delete(simulation.id);
-  }
-
-  private createArgs(simulationDto: SimulationDto, id: string) {
-    return [
-      simulationDto.model,
-      `${simulationDto.iterations}`,
-      `graphs/input-${id}.dot`,
-      `graphs/output-${id}.dot`,
-      `graphs/output-${id}.json`
-    ];
   }
 
   private createSendMessageFunc(simulation: Simulation, subscriber: Subscriber<WsResponse>) {

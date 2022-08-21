@@ -1,6 +1,7 @@
 import { unlink, writeFile, readFile } from 'fs/promises';
 import { resolve } from 'path';
 import { ChildProcess } from 'child_process';
+import { SimulationDto } from '../simulations/simulations.dto';
 
 export const runnerPath = resolve(__dirname, '../../runner/build');
 export const runnerExeName = process.platform === 'win32' ? 'Runner.exe' : 'Runner';
@@ -14,33 +15,64 @@ export function killRunner(runner: ChildProcess) {
   }
 }
 
-export async function createInputGraphFile(id: string, data: any) {
-  return writeFile(`${runnerPath}/graphs/input-${id}.dot`, data);
+export async function createConfigFile(id: string, simulationDto: SimulationDto) {
+  const config = {
+    model: simulationDto.model,
+    pathToGraph: `graphs/input-${id}.dot`,
+    maxIterations: simulationDto.iterations,
+    averageOpinion: true
+  };
+  return writeFile(`${runnerPath}/${inputConfigFilename(id)}`, JSON.stringify(config));
+}
+
+export async function createInputGraphFile(id: string, simulationDto: SimulationDto) {
+  return writeFile(`${runnerPath}/${inputGraphFilename(id)}`, simulationDto.dotGraph);
 }
 
 export async function readOutputGraphFile(id: string): Promise<string> {
-  return readFile(`${runnerPath}/graphs/output-${id}.dot`, 'utf8');
+  return readFile(`${runnerPath}/${outputGraphFilename(id)}`, 'utf8');
 }
 
 export async function readOutputInfoFile(id: string): Promise<string> {
-  return readFile(`${runnerPath}/graphs/output-${id}.json`, 'utf8');
+  return readFile(`${runnerPath}/${outputInfoFilename(id)}`, 'utf8');
 }
 
-export async function deleteInputGraphFile(id: string) {
+export async function deleteInputFiles(id: string): Promise<boolean> {
   try {
-    return await unlink(`${runnerPath}/graphs/input-${id}.dot`);
-  } catch (err) {
-    return await Promise.resolve(); // assume no file to delete
-  }
-}
-
-export async function deleteOutputGraphFiles(id: string) {
-  try {
-    return await Promise.all([
-      unlink(`${runnerPath}/graphs/output-${id}.json`),
-      unlink(`${runnerPath}/graphs/output-${id}.dot`)
+    await Promise.all([
+      unlink(`${runnerPath}/${inputGraphFilename(id)}`),
+      unlink(`${runnerPath}/${inputConfigFilename(id)}`)
     ]);
+    return true;
   } catch (err) {
-    return await Promise.resolve(); // assume no files to delete
+    return false;
   }
+}
+
+export async function deleteOutputFiles(id: string): Promise<boolean> {
+  try {
+    await Promise.all([
+      unlink(`${runnerPath}/${outputGraphFilename(id)}`),
+      unlink(`${runnerPath}/${outputInfoFilename(id)}`)
+    ]);
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+export function inputGraphFilename(id: string) {
+  return `graphs/input-${id}.dot`;
+}
+
+export function outputGraphFilename(id: string) {
+  return `graphs/output-${id}.dot`;
+}
+
+export function inputConfigFilename(id: string) {
+  return `graphs/config-${id}.dot`;
+}
+
+export function outputInfoFilename(id: string) {
+  return `graphs/info-${id}.dot`;
 }

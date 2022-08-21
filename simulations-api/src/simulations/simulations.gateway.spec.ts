@@ -61,9 +61,7 @@ describe('SimulationsGateway', () => {
 
     jest.spyOn(service, 'start').mockImplementation(async () => observable);
 
-    jest.spyOn(service, 'stop').mockImplementation(async () => {
-      observable.pipe(take(1));
-    });
+    jest.spyOn(service, 'stop').mockImplementation(async () => observable.pipe(take(1)));
 
     ws.emit(Incoming.START, {});
 
