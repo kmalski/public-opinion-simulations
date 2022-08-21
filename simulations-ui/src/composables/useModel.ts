@@ -6,7 +6,8 @@ import { storeToRefs } from 'pinia';
 export enum ModelName {
   MAJORITY_MODEL = 'MajorityModel',
   VOTER_MODEL = 'VoterModel',
-  SZNAJD_MODEL = 'SznajdModel'
+  SZNAJD_MODEL = 'SznajdModel',
+  Q_VOTER_MODEL = 'QVoterModel'
 }
 
 export function useModel(modelParams: Ref<object> | object) {

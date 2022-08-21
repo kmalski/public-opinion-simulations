@@ -27,9 +27,10 @@ const { isRunning, isPause } = storeToRefs(simulationStore);
 
 const selectedOption = ref<Option | null>(null);
 const options = [
-  { label: 'Local Majority Rule', model: ModelName.MAJORITY_MODEL },
+  { label: 'Majority', model: ModelName.MAJORITY_MODEL },
   { label: 'Voter', model: ModelName.VOTER_MODEL },
-  { label: 'Sznajd', model: ModelName.SZNAJD_MODEL }
+  { label: 'Sznajd', model: ModelName.SZNAJD_MODEL },
+  { label: 'Q-Voter', model: ModelName.Q_VOTER_MODEL }
 ] as Array<Option>;
 
 watch(selectedOption, (newOption) => {

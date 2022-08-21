@@ -1,5 +1,5 @@
 export class SimulationDto {
-  model: 'MajorityModel' | 'VoterModel' | 'SznajdModel';
+  model: 'MajorityModel' | 'VoterModel' | 'SznajdModel' | 'QVoterModel';
   modelParams: object;
   iterations: number;
   mode: 'sync' | 'async';

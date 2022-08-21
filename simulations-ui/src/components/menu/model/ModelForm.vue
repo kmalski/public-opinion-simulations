@@ -10,17 +10,19 @@ import { computed, DefineComponent } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useModelStore } from '@/stores/model.store';
 import { ModelName } from '@/composables/useModel';
-import LocalMajorityRuleModel from '@/components/menu/model/models/LocalMajorityRuleModel.vue';
+import MajorityModel from '@/components/menu/model/models/MajorityModel.vue';
 import VoterModel from '@/components/menu/model/models/VoterModel.vue';
 import SznajdModel from '@/components/menu/model/models/SznajdModel.vue';
+import QVoterModel from '@/components/menu/model/models/QVoterModel.vue';
 
 const modelStore = useModelStore();
 const { modelName } = storeToRefs(modelStore);
 
 const nameToComponent = new Map([
-  [ModelName.MAJORITY_MODEL, LocalMajorityRuleModel],
+  [ModelName.MAJORITY_MODEL, MajorityModel],
   [ModelName.VOTER_MODEL, VoterModel],
-  [ModelName.SZNAJD_MODEL, SznajdModel]
+  [ModelName.SZNAJD_MODEL, SznajdModel],
+  [ModelName.Q_VOTER_MODEL, QVoterModel]
 ]) as Map<ModelName, DefineComponent>;
 
 const model = computed(() => {
