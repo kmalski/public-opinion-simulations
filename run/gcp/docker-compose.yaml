@@ -4,12 +4,14 @@ services:
   simulations-api:
     image: kmalski/simulations-api:latest
     container_name: simulations-api
+    restart: on-failure
     networks:
       - simulations
 
   simulations-ui:
     image: kmalski/simulations-ui:latest
     container_name: simulations-ui
+    restart: on-failure
     networks:
       - simulations
 

@@ -6,10 +6,6 @@ import { Ref, toRaw, watch } from 'vue';
 import { saveUrl } from '@/helpers/download';
 import { storeToRefs } from 'pinia';
 
-const TENSION = 0.3;
-const GRID_COLOR = '#ebedef';
-const TICK_COLOR = '#495057';
-
 export interface ChartOptions {
   borderColor: Color;
   xAxisTitle: string;
@@ -55,13 +51,17 @@ export function useChart(
     datasets: [
       {
         data: toRaw(statistic.data),
-        tension: TENSION,
-        borderColor: chartOptions.borderColor
+        tension: 0.2,
+        borderColor: chartOptions.borderColor,
+        borderWidth: 2,
+        pointRadius: 0
       }
     ]
   };
 
   const options = {
+    normalized: true,
+    animation: false,
     plugins: {
       legend: {
         display: false
@@ -73,11 +73,8 @@ export function useChart(
           display: true,
           text: chartOptions.xAxisTitle
         },
-        ticks: {
-          color: TICK_COLOR
-        },
         grid: {
-          color: GRID_COLOR
+          color: '#ebedef'
         }
       },
       y: {
@@ -85,11 +82,8 @@ export function useChart(
           display: true,
           text: chartOptions.yAxisTitle
         },
-        ticks: {
-          color: TICK_COLOR
-        },
         grid: {
-          color: GRID_COLOR
+          color: '#ebedef'
         }
       }
     }

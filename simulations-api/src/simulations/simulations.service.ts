@@ -3,7 +3,7 @@ import { ChildProcess, execFile } from 'child_process';
 import { WsException, WsResponse } from '@nestjs/websockets';
 import { v4 as uuid } from 'uuid';
 import { Observable, Subscriber } from 'rxjs';
-import { SimulationDto } from './simulations.dto';
+import { isAnimation, SimulationDto } from './simulations.dto';
 import {
   createConfigFile,
   createInputGraphFile,
@@ -47,13 +47,16 @@ export class SimulationsService {
     if (this.idToSimulationMap.size === MAX_PROCESS_COUNT)
       throw new WsException('The maximum limit of parallel simulations has been reached');
 
-    if (simulationDto.iterations < 1) throw new WsException('Iterations number can not be smaller than 1');
+    if (simulationDto.iterations < 1) throw new WsException('The number of iterations can not be smaller than 1');
+
+    if (isAnimation(simulationDto) && simulationDto.iterations > 5000)
+      throw new WsException('The number of iterations during the animation must not exceed 5000');
 
     const id = uuid() as string;
     await createInputGraphFile(id, simulationDto);
     await createConfigFile(id, simulationDto);
     const args = [inputConfigFilename(id), outputGraphFilename(id), outputInfoFilename(id)];
-    const runner = execFile(`${runnerPath}/${runnerExeName}`, args, { cwd: runnerPath });
+    const runner = execFile(`${runnerPath}/${runnerExeName}`, args, { cwd: runnerPath, maxBuffer: 5000 * 1024 });
 
     const simulation = {
       id,

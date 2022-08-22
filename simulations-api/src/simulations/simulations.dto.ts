@@ -10,3 +10,7 @@ export class SimulationDto {
 export class SimulationId {
   id: any;
 }
+
+export function isAnimation(simulationDto: SimulationDto) {
+  return simulationDto.frameDurationSec !== 0;
+}

@@ -1,7 +1,7 @@
 import { unlink, writeFile, readFile } from 'fs/promises';
 import { resolve } from 'path';
 import { ChildProcess } from 'child_process';
-import { SimulationDto } from '../simulations/simulations.dto';
+import { isAnimation, SimulationDto } from '../simulations/simulations.dto';
 
 export const runnerPath = resolve(__dirname, '../../runner/build');
 export const runnerExeName = process.platform === 'win32' ? 'Runner.exe' : 'Runner';
@@ -20,7 +20,9 @@ export async function createConfigFile(id: string, simulationDto: SimulationDto)
     model: simulationDto.model,
     pathToGraph: `graphs/input-${id}.dot`,
     maxIterations: simulationDto.iterations,
-    averageOpinion: true
+    averageOpinion: true,
+    verbose: isAnimation(simulationDto),
+    modelParams: simulationDto.modelParams
   };
   return writeFile(`${runnerPath}/${inputConfigFilename(id)}`, JSON.stringify(config));
 }

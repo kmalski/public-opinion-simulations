@@ -26,7 +26,6 @@
             <input-number
               id="iterations"
               :min="1"
-              :max="10000"
               v-model="state.iterations"
               :disabled="isRunning || isPause"
             ></input-number>
@@ -151,6 +150,8 @@ const runOneIteration = () => {
   });
 };
 const runSimulation = () => {
+  state.iterations = Math.min(state.iterations, 5000);
+
   simulationStore.runSimulation('animation', {
     iterations: state.iterations,
     frameDurationSec: state.frameDurationSec,
