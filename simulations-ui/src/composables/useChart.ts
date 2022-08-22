@@ -62,9 +62,32 @@ export function useChart(
   const options = {
     normalized: true,
     animation: false,
+    hover: {
+      mode: 'nearest',
+      intersect: false
+    },
     plugins: {
       legend: {
         display: false
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: true
+      },
+      zoom: {
+        limits: {
+          x: { min: 'original', max: 'original' },
+          y: { min: 'original', max: 'original' }
+        },
+        zoom: {
+          wheel: {
+            enabled: true
+          },
+          pinch: {
+            enabled: true
+          },
+          mode: 'xy'
+        }
       }
     },
     scales: {

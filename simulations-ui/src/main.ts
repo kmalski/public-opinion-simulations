@@ -4,6 +4,8 @@ import App from './App.vue';
 import PrimeVue from 'primevue/config';
 import ToastService from 'primevue/toastservice';
 import VueFullscreen from 'vue-fullscreen';
+import { Chart } from 'chart.js';
+import zoomPlugin from 'chartjs-plugin-zoom';
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';
@@ -23,6 +25,8 @@ import TabPanel from 'primevue/tabpanel';
 import TabView from 'primevue/tabview';
 import Toast from 'primevue/toast';
 import ProgressBar from 'primevue/progressbar';
+
+Chart.register(zoomPlugin);
 
 createApp(App)
   .use(createPinia())

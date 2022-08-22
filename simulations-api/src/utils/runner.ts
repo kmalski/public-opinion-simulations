@@ -17,11 +17,11 @@ export function killRunner(runner: ChildProcess) {
 
 export async function createConfigFile(id: string, simulationDto: SimulationDto) {
   const config = {
-    model: simulationDto.model,
     pathToGraph: `graphs/input-${id}.dot`,
     maxIterations: simulationDto.iterations,
     averageOpinion: true,
     verbose: isAnimation(simulationDto),
+    model: simulationDto.model,
     modelParams: simulationDto.modelParams
   };
   return writeFile(`${runnerPath}/${inputConfigFilename(id)}`, JSON.stringify(config));
