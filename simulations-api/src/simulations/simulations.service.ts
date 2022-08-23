@@ -113,18 +113,32 @@ export class SimulationsService {
 
   private bindSteps(runner: ChildProcess, simulation: Simulation) {
     this.refreshMessageInterval(simulation);
+    let partialStep = null;
+    const sendStep = (data) => {
+      const message = { event: Outgoing.STEP, data };
+      simulation.messageQueue.enqueue(message);
+
+      if (simulation.isIdle) {
+        this.sendMessageImmediately(simulation);
+        this.refreshMessageInterval(simulation);
+      }
+    };
 
     runner.stdout.addListener('data', (chunk) => {
       if (typeof chunk === 'string') {
+        if (partialStep) {
+          const step = partialStep + chunk.split('\n', 1)[0];
+          sendStep(JSON.parse(step));
+          partialStep = null;
+        }
+
         let matched;
         while ((matched = STEP_REGEX.exec(chunk))) {
           const step = matched[1];
-          const message = { event: Outgoing.STEP, data: JSON.parse(step) };
-          simulation.messageQueue.enqueue(message);
-
-          if (simulation.isIdle) {
-            this.sendMessageImmediately(simulation);
-            this.refreshMessageInterval(simulation);
+          try {
+            sendStep(JSON.parse(step));
+          } catch (err) {
+            partialStep = step;
           }
         }
       }
