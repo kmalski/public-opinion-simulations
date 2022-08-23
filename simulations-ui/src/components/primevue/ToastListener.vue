@@ -11,7 +11,7 @@ import { useToast } from 'primevue/usetoast';
 
 const toastService = useToast();
 const toastStore = useToastStore();
-const { error, success } = storeToRefs(toastStore);
+const { error, warning, success } = storeToRefs(toastStore);
 
 watch(error, (newError) => {
   if (newError) {
@@ -19,6 +19,17 @@ watch(error, (newError) => {
       severity: ToastSeverity.ERROR,
       summary: newError.summary,
       detail: newError.detail,
+      life: 10000
+    });
+  }
+});
+
+watch(warning, (newWarning) => {
+  if (newWarning) {
+    toastService.add({
+      severity: ToastSeverity.WARN,
+      summary: newWarning.summary,
+      detail: newWarning.detail,
       life: 10000
     });
   }

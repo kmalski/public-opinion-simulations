@@ -68,6 +68,7 @@ export const useSimulationStore = defineStore('simulation', {
       const modelStore = useModelStore();
 
       if (!modelStore.modelName) return;
+      if (!modelStore.validateFunc()) return;
 
       const graphStore = useGraphStore();
       const toastStore = useToastStore();

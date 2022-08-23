@@ -1,5 +1,9 @@
-export function emptyFun() {
+export function noop(): void {
   // empty immutable function
+}
+
+export function valid(): boolean {
+  return true;
 }
 
 export function range(start: number, end: number) {

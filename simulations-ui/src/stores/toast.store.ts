@@ -9,12 +9,14 @@ export interface Message {
 interface State {
   error: Optional<Message>;
   success: Optional<Message>;
+  warning: Optional<Message>;
 }
 
 export const useToastStore = defineStore('toast', {
   state: (): State => ({
     error: undefined,
-    success: undefined
+    success: undefined,
+    warning: undefined
   })
 });
 

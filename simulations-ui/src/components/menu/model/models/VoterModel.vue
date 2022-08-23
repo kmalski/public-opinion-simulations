@@ -4,8 +4,9 @@
 
 <script setup lang="ts">
 import { useModel } from '@/composables/useModel';
+import { valid } from '@/helpers/utils';
 
-const { isRunning } = useModel({});
+useModel({}, valid);
 </script>
 
 <style scoped lang="scss">

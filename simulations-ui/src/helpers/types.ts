@@ -31,6 +31,10 @@ export class Graph extends UndirectedGraph<NodeAttributes, EdgeAttributes, Graph
     graph.import(data, false);
     return graph;
   }
+
+  isComplete(): boolean {
+    return this.size == (this.order * (this.order - 1)) / 2;
+  }
 }
 
 export type BinaryOpinion = '-1' | '1';

@@ -46,7 +46,7 @@
             </div>
           </div>
 
-          <div class="simulation-modal-input">
+          <div v-if="false" class="simulation-modal-input">
             <label for="mode">Sync</label>
             <input-switch :disabled="isRunning || isPause" v-model="state.isAsync"></input-switch>
             <label for="mode">Async</label>
@@ -107,6 +107,8 @@ import Tooltip from 'primevue/tooltip';
 import { useSimulationStore } from '@/stores/simulation.store';
 import { storeToRefs } from 'pinia';
 import { useDialog } from '@/composables/useDialog';
+import { useToastStore } from '@/stores/toast.store';
+import { MAX_ANIMATION_ITERATIONS } from '@/helpers/defaults';
 
 interface Props {
   modelValue: boolean;
@@ -120,6 +122,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<Emits>();
 const vTooltip = Tooltip;
 const simulationStore = useSimulationStore();
+const toastStore = useToastStore();
 const { isRunning, isPause, step, targetStep, targetIterations, simulationMode } = storeToRefs(simulationStore);
 
 const state = reactive({
@@ -149,8 +152,15 @@ const runOneIteration = () => {
     mode: mode.value
   });
 };
+
 const runSimulation = () => {
-  state.iterations = Math.min(state.iterations, 5000);
+  if (state.iterations > MAX_ANIMATION_ITERATIONS) {
+    state.iterations = Math.min(state.iterations, MAX_ANIMATION_ITERATIONS);
+    toastStore.warning = {
+      summary: 'Large number of iterations',
+      detail: 'The maximum allowed number of iterations for animation was exceeded. The value has been reduced to 5000.'
+    };
+  }
 
   simulationStore.runSimulation('animation', {
     iterations: state.iterations,
@@ -158,7 +168,15 @@ const runSimulation = () => {
     mode: mode.value
   });
 };
+
 const forwardSimulation = () => {
+  if (state.iterations > MAX_ANIMATION_ITERATIONS) {
+    toastStore.warning = {
+      summary: 'Large number of iterations',
+      detail: 'Note that charts may not be able to handle this amount of data. Charts will not be updated.'
+    };
+  }
+
   simulationStore.runSimulation('forward', { iterations: state.iterations, frameDurationSec: 0, mode: mode.value });
 };
 const pauseSimulation = simulationStore.pauseSimulation;
@@ -175,7 +193,7 @@ const { visible, onShow, onHide } = useDialog(props, emit);
     justify-content: flex-start;
     align-content: center;
     align-items: flex-start;
-    width: 15rem;
+    min-width: 15rem;
     padding: 0.5rem 0.75rem 0.75rem;
 
     .p-progressbar {

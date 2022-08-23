@@ -20,7 +20,7 @@ export async function createConfigFile(id: string, simulationDto: SimulationDto)
     pathToGraph: `graphs/input-${id}.dot`,
     maxIterations: simulationDto.iterations,
     averageOpinion: true,
-    verbose: isAnimation(simulationDto),
+    printInfoAboutChanges: isAnimation(simulationDto),
     model: simulationDto.model,
     modelParams: simulationDto.modelParams
   };

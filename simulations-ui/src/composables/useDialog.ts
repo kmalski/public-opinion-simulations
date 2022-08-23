@@ -1,5 +1,5 @@
 import { ref, toRefs, watch } from 'vue';
-import { emptyFun } from '@/helpers/utils';
+import { noop } from '@/helpers/utils';
 
 export interface Props {
   modelValue: boolean;
@@ -12,8 +12,8 @@ export interface Emits {
 export function useDialog(
   props: Props,
   emit: Emits,
-  customOnShow: () => void = emptyFun,
-  customOnHide: () => void = emptyFun
+  customOnShow: () => void = noop,
+  customOnHide: () => void = noop
 ) {
   const { modelValue } = toRefs(props);
 

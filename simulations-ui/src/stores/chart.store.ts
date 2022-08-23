@@ -1,7 +1,8 @@
 import { acceptHMRUpdate, defineStore } from 'pinia';
 import { Optional } from '@/helpers/types';
-import { emptyFun } from '@/helpers/utils';
+import { noop } from '@/helpers/utils';
 import { ChartName, StatisticName } from '@/composables/useChart';
+import { MAX_ANIMATION_ITERATIONS } from '@/helpers/defaults';
 
 interface Statistic {
   data: number[];
@@ -34,8 +35,14 @@ export const useChartStore = defineStore('chart', {
         statistic.data.push(value);
         statistic.labels.push(label);
       } else {
-        statistic.data.push(...value);
-        statistic.labels.push(...label);
+        if (value.length > MAX_ANIMATION_ITERATIONS) return;
+        const chunkSize = 10000;
+        for (let i = 0; i < value.length; i += chunkSize) {
+          const valueChunk = value.slice(i, i + chunkSize);
+          const labelChunk = label.slice(i, i + chunkSize);
+          statistic.data.push(...valueChunk);
+          statistic.labels.push(...labelChunk);
+        }
       }
       statistic.update();
     },
@@ -59,7 +66,7 @@ export const useChartStore = defineStore('chart', {
         statistic = {
           data: [],
           labels: [],
-          update: emptyFun
+          update: noop
         };
         this.stats[name] = statistic;
       }
