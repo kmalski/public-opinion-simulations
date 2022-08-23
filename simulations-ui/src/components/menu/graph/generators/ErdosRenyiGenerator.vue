@@ -34,7 +34,7 @@ function generateGraph() {
   return erdosRenyi(Graph, {
     order: state.nodesNumber,
     probability: state.edgeProbability
-  });
+  }) as Graph;
 }
 
 useGenerator(generateGraph);

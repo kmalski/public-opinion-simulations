@@ -9,7 +9,7 @@ import { Graph } from '@/helpers/types';
 import { useGenerator } from '@/composables/useGenerator';
 
 function generateGraph() {
-  const graph = karateClub(Graph);
+  const graph = karateClub(Graph) as Graph;
   circular.assign(graph);
   return graph;
 }

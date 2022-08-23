@@ -77,7 +77,7 @@ export function serializeGexf(graph: Graph, withPositions: boolean): string {
 }
 
 export function parseGexf(fileText: string): Graph {
-  const graph = gexfParse(Graph, fileText);
+  const graph = gexfParse(Graph, fileText) as Graph;
 
   if (graph.type !== 'undirected') throw new Error('Graph has to be undirected');
 

@@ -48,7 +48,7 @@ function generateGraph() {
     size: state.edgesNumber,
     clusters: state.clustersNumber,
     clusterDensity: state.clusterDensity
-  });
+  }) as Graph;
 }
 
 useGenerator(generateGraph);

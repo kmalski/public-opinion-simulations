@@ -24,7 +24,7 @@ const state = reactive({
 });
 
 function generateGraph() {
-  return caveman(Graph, state.componentsNumber, state.nodesNumber);
+  return caveman(Graph, state.componentsNumber, state.nodesNumber) as Graph;
 }
 
 useGenerator(generateGraph);

@@ -8,7 +8,7 @@ import { Graph } from '@/helpers/types';
 import { useGenerator } from '@/composables/useGenerator';
 
 function generateGraph() {
-  return krackhardtKite(Graph);
+  return krackhardtKite(Graph) as Graph;
 }
 
 useGenerator(generateGraph);

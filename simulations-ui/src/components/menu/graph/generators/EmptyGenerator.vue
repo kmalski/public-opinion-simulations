@@ -18,7 +18,7 @@ const state = reactive({
 });
 
 function generateGraph() {
-  return empty(Graph, state.nodesNumber);
+  return empty(Graph, state.nodesNumber) as Graph;
 }
 
 useGenerator(generateGraph);

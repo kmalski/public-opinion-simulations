@@ -35,6 +35,12 @@ export class Graph extends UndirectedGraph<NodeAttributes, EdgeAttributes, Graph
   isComplete(): boolean {
     return this.size == (this.order * (this.order - 1)) / 2;
   }
+
+  copy(): Graph {
+    const graph = new Graph();
+    graph.import(super.copy(), false);
+    return graph;
+  }
 }
 
 export type BinaryOpinion = '-1' | '1';

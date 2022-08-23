@@ -18,7 +18,7 @@ const state = reactive({
 });
 
 function generateGraph() {
-  return girvanNewman(Graph, { zOut: state.zOut });
+  return girvanNewman(Graph, { zOut: state.zOut }) as Graph;
 }
 
 useGenerator(generateGraph);

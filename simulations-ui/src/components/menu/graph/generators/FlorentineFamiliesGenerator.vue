@@ -8,7 +8,7 @@ import { Graph } from '@/helpers/types';
 import { useGenerator } from '@/composables/useGenerator';
 
 function generateGraph() {
-  return florentineFamilies(Graph);
+  return florentineFamilies(Graph) as Graph;
 }
 
 useGenerator(generateGraph);

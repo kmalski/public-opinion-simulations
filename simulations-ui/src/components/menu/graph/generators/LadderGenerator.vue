@@ -24,7 +24,7 @@ const state = reactive({
 });
 
 function generateGraph() {
-  const graph = ladder(Graph, state.ladderLength);
+  const graph = ladder(Graph, state.ladderLength) as Graph;
   if (state.closed && state.ladderLength > 2) {
     const nodes = graph.filterNodes((node) => graph.neighbors(node).length === 2).sort();
     graph.addEdge(nodes[0], nodes[3]);
