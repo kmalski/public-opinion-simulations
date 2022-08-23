@@ -93,6 +93,12 @@ export const useSimulationStore = defineStore('simulation', {
           summary: 'Error during simulation',
           detail: data.message
         };
+        if (this.id !== undefined) {
+          socket.emit('stop', { id: this.id });
+        } else {
+          this.isRunning = false;
+          socket.off();
+        }
       });
 
       socket.on('exit', (data) => {
@@ -104,6 +110,7 @@ export const useSimulationStore = defineStore('simulation', {
         }
         socket.off();
         this.isRunning = false;
+        this.id = undefined;
         if (!this.isPause) {
           this.targetIterations = undefined;
           this.targetStep = undefined;

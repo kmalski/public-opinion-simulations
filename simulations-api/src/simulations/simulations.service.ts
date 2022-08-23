@@ -21,6 +21,7 @@ import {
 import { Queue } from '../utils/queue';
 import { FILE_TAG, MAX_PROCESS_COUNT, STEP_REGEX } from '../config';
 import { Outgoing } from './simulations.events';
+import { SimulationsValidator } from './simulations.validator';
 
 interface Message {
   event: Outgoing;
@@ -43,14 +44,14 @@ export class SimulationsService {
   private readonly idToSimulationMap: Map<string, Simulation> = new Map();
   private readonly logger = new Logger(SimulationsService.name);
 
+  constructor(private simulationsValidator: SimulationsValidator) {}
+
   async start(simulationDto: SimulationDto): Promise<Observable<WsResponse>> {
-    if (this.idToSimulationMap.size === MAX_PROCESS_COUNT)
+    if (this.idToSimulationMap.size === MAX_PROCESS_COUNT) {
       throw new WsException('The maximum limit of parallel simulations has been reached');
+    }
 
-    if (simulationDto.iterations < 1) throw new WsException('The number of iterations can not be smaller than 1');
-
-    if (isAnimation(simulationDto) && simulationDto.iterations > 5000)
-      throw new WsException('The number of iterations during the animation must not exceed 5000');
+    this.simulationsValidator.validate(simulationDto);
 
     const id = uuid() as string;
     await createInputGraphFile(id, simulationDto);
@@ -69,18 +70,18 @@ export class SimulationsService {
 
     this.logger.log(`Starting simulation ${id}`);
 
-    this.bindSystemEvents(runner, simulation);
     return this.subscribe(runner, simulation);
   }
 
   stop(id: string) {
-    const simulation = this.getIfExists(id);
+    const simulation = this.getSimulationIfExists(id);
     if (!simulation.exitMessage) killRunner(simulation.runner);
     this.cleanupSimulation(simulation);
   }
 
   private subscribe(runner: ChildProcess, simulation: Simulation): Observable<WsResponse> {
     this.logger.log(`Subscribing to ${simulation.id}`);
+    this.bindSystemEvents(runner, simulation);
 
     return new Observable<WsResponse>((subscriber) => {
       subscriber.next({
@@ -113,16 +114,8 @@ export class SimulationsService {
 
   private bindSteps(runner: ChildProcess, simulation: Simulation) {
     this.refreshMessageInterval(simulation);
+    const sendStep = this.createSendStepFunc(simulation);
     let partialStep = null;
-    const sendStep = (data) => {
-      const message = { event: Outgoing.STEP, data };
-      simulation.messageQueue.enqueue(message);
-
-      if (simulation.isIdle) {
-        this.sendMessageImmediately(simulation);
-        this.refreshMessageInterval(simulation);
-      }
-    };
 
     runner.stdout.addListener('data', (chunk) => {
       if (typeof chunk === 'string') {
@@ -177,12 +170,6 @@ export class SimulationsService {
     });
   }
 
-  private getIfExists(id: string) {
-    const simulation = this.idToSimulationMap.get(id);
-    if (!simulation) throw new WsException(`Simulation with id ${id} does not exist`);
-    return simulation;
-  }
-
   private sendMessageImmediately(simulation: Simulation) {
     clearInterval(simulation.updatesTimer);
     simulation.sendMessage();
@@ -190,6 +177,12 @@ export class SimulationsService {
 
   private refreshMessageInterval(simulation: Simulation) {
     simulation.updatesTimer = setInterval(simulation.sendMessage, simulation.frameDurationMiliSec);
+  }
+
+  private getSimulationIfExists(id: string): Simulation {
+    const simulation = this.idToSimulationMap.get(id);
+    if (!simulation) throw new WsException(`Simulation with id ${id} does not exist`);
+    return simulation;
   }
 
   private cleanupSimulation(simulation: Simulation) {
@@ -220,6 +213,18 @@ export class SimulationsService {
         this.cleanupSimulation(simulation);
       } else {
         simulation.isIdle = true;
+      }
+    };
+  }
+
+  private createSendStepFunc(simulation: Simulation) {
+    return (data) => {
+      const message = { event: Outgoing.STEP, data };
+      simulation.messageQueue.enqueue(message);
+
+      if (simulation.isIdle) {
+        this.sendMessageImmediately(simulation);
+        this.refreshMessageInterval(simulation);
       }
     };
   }

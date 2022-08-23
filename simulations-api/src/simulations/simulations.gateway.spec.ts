@@ -1,83 +1,67 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SimulationsGateway } from './simulations.gateway';
 import { SimulationsService } from './simulations.service';
-import { Observable, of, take } from 'rxjs';
-import { INestApplication } from '@nestjs/common';
-import { io, Socket } from 'socket.io-client';
-import { Incoming, Outgoing } from './simulations.events';
+import { first, of } from 'rxjs';
+import { Outgoing } from './simulations.events';
 import { WsResponse } from '@nestjs/websockets';
+import { SimulationsValidator } from './simulations.validator';
 
 describe('SimulationsGateway', () => {
-  let service: SimulationsService;
-  let app: INestApplication;
-  let ws: Socket;
+  let gateway: SimulationsGateway;
+
+  const simulationsService = {} as SimulationsService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SimulationsGateway, SimulationsService]
-    }).compile();
+      providers: [SimulationsGateway, SimulationsService, SimulationsValidator]
+    })
+      .overrideProvider(SimulationsService)
+      .useValue(simulationsService)
+      .compile();
 
-    service = module.get<SimulationsService>(SimulationsService);
-    app = module.createNestApplication();
-    ws = io('http://localhost:3000/simulation');
-    await app.listen(3000);
+    gateway = module.get(SimulationsGateway);
   });
 
-  it('should start new simulation', async () => {
+  it('should start new simulation', (done) => {
     const simulationDto = {
       iterations: 100,
       frameDurationSec: 1,
       mode: 'sync' as const,
-      model: {},
+      model: 'VoterModel' as const,
+      modelParams: {},
       dotGraph: 'graph {}'
     };
 
-    jest.spyOn(service, 'start').mockImplementation(
-      async () =>
-        new Observable<WsResponse>((subscriber) => {
-          subscriber.next({
-            event: Outgoing.ID,
-            data: { id: 'abc' }
-          });
-        })
-    );
+    simulationsService.start = async () => of({ event: Outgoing.ID, data: { id: 'abc' } } as WsResponse);
 
-    ws.emit(Incoming.START, simulationDto);
-    await new Promise<void>((resolve) =>
-      ws.on(Outgoing.ID, (data) => {
-        expect(data.id).toBe('abc');
-        expect(service.start).toBeCalledWith(simulationDto);
-        resolve();
-      })
-    );
-  });
+    const response = gateway.start(simulationDto);
 
-  it('should stop simulation', async () => {
-    const simulationId = { id: 'abc' };
-    const observable = of({
-      event: Outgoing.EXIT,
-      data: { code: null, signal: null }
-    });
-
-    jest.spyOn(service, 'start').mockImplementation(async () => observable);
-
-    jest.spyOn(service, 'stop').mockImplementation(async () => observable.pipe(take(1)));
-
-    ws.emit(Incoming.START, {});
-
-    await new Promise<void>((resolve) => {
-      ws.emit(Incoming.STOP, simulationId);
-
-      ws.on(Outgoing.EXIT, (data) => {
-        expect(data.code).toBeNull();
-        expect(data.signal).toBeNull();
-        resolve();
+    response.then((observable) => {
+      observable.pipe(first()).subscribe((value) => {
+        expect(value.event).toBe(Outgoing.ID);
+        expect(value.data.id).toBe('abc');
+        done();
       });
     });
   });
 
-  afterEach(() => {
-    app.close();
-    ws.close();
+  it('should stop simulation', (done) => {
+    const simulationId = { id: 'abc' };
+    const observable = of({
+      event: Outgoing.EXIT,
+      data: { code: null, signal: null }
+    } as WsResponse);
+
+    simulationsService.start = async () => observable;
+    simulationsService.stop = async () => observable.pipe(first());
+
+    gateway.stop(simulationId);
+
+    observable.subscribe((value) => {
+      expect(value.event).toBe(Outgoing.EXIT);
+      expect(value.data.code).toBeNull();
+      expect(value.data.signal).toBeNull();
+      done();
+    });
   });
 });
