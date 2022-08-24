@@ -114,14 +114,22 @@ export class SimulationsService {
 
   private bindSteps(runner: ChildProcess, simulation: Simulation) {
     this.refreshMessageInterval(simulation);
-    const sendStep = this.createSendStepFunc(simulation);
+    const sendStep = (step) => {
+      const message = { event: Outgoing.STEP, data: JSON.parse(step) };
+      simulation.messageQueue.enqueue(message);
+
+      if (simulation.isIdle) {
+        this.sendMessageImmediately(simulation);
+        this.refreshMessageInterval(simulation);
+      }
+    };
     let partialStep = null;
 
     runner.stdout.addListener('data', (chunk) => {
       if (typeof chunk === 'string') {
         if (partialStep) {
           const step = partialStep + chunk.split('\n', 1)[0];
-          sendStep(JSON.parse(step));
+          sendStep(step);
           partialStep = null;
         }
 
@@ -129,7 +137,7 @@ export class SimulationsService {
         while ((matched = STEP_REGEX.exec(chunk))) {
           const step = matched[1];
           try {
-            sendStep(JSON.parse(step));
+            sendStep(step);
           } catch (err) {
             partialStep = step;
           }
@@ -213,18 +221,6 @@ export class SimulationsService {
         this.cleanupSimulation(simulation);
       } else {
         simulation.isIdle = true;
-      }
-    };
-  }
-
-  private createSendStepFunc(simulation: Simulation) {
-    return (data) => {
-      const message = { event: Outgoing.STEP, data };
-      simulation.messageQueue.enqueue(message);
-
-      if (simulation.isIdle) {
-        this.sendMessageImmediately(simulation);
-        this.refreshMessageInterval(simulation);
       }
     };
   }

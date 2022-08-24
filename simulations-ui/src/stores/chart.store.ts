@@ -2,7 +2,7 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 import { Optional } from '@/helpers/types';
 import { noop } from '@/helpers/utils';
 import { ChartName, StatisticName } from '@/composables/useChart';
-import { MAX_ANIMATION_ITERATIONS } from '@/helpers/defaults';
+import { MAX_ANIMATION_ITERATIONS, MAX_CHART_ITERATIONS } from '@/helpers/defaults';
 
 interface Statistic {
   data: number[];
@@ -35,8 +35,8 @@ export const useChartStore = defineStore('chart', {
         statistic.data.push(value);
         statistic.labels.push(label);
       } else {
-        if (value.length > MAX_ANIMATION_ITERATIONS) return;
-        const chunkSize = 10000;
+        if (value.length > MAX_CHART_ITERATIONS) return;
+        const chunkSize = 10_000;
         for (let i = 0; i < value.length; i += chunkSize) {
           const valueChunk = value.slice(i, i + chunkSize);
           const labelChunk = label.slice(i, i + chunkSize);

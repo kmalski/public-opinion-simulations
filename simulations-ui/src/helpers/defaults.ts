@@ -4,4 +4,5 @@ export const NODE_SIZE = 10;
 export const HOVERED_EDGE_SIZE = 3;
 export const DIMMED_COLOR = '#f6f6f6';
 
-export const MAX_ANIMATION_ITERATIONS = 5000;
+export const MAX_ANIMATION_ITERATIONS = 5_000;
+export const MAX_CHART_ITERATIONS = 50_000;

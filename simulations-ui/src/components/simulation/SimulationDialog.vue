@@ -108,7 +108,7 @@ import { useSimulationStore } from '@/stores/simulation.store';
 import { storeToRefs } from 'pinia';
 import { useDialog } from '@/composables/useDialog';
 import { useToastStore } from '@/stores/toast.store';
-import { MAX_ANIMATION_ITERATIONS } from '@/helpers/defaults';
+import { MAX_ANIMATION_ITERATIONS, MAX_CHART_ITERATIONS } from '@/helpers/defaults';
 
 interface Props {
   modelValue: boolean;
@@ -170,7 +170,7 @@ const runSimulation = () => {
 };
 
 const forwardSimulation = () => {
-  if (state.iterations > MAX_ANIMATION_ITERATIONS) {
+  if (state.iterations > MAX_CHART_ITERATIONS) {
     toastStore.warning = {
       summary: 'Large number of iterations',
       detail: 'Note that charts may not be able to handle this amount of data. Charts will not be updated.'
