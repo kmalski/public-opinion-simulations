@@ -37,14 +37,6 @@ const validateFunc = () => {
     return false;
   }
 
-  if (!graphStore.graph.isComplete()) {
-    toastStore.error = {
-      summary: 'Invalid Majority model params',
-      detail: 'Majority model can only be used with a complete graph'
-    };
-    return false;
-  }
-
   return true;
 };
 

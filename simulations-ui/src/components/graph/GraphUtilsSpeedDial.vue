@@ -35,16 +35,16 @@ const state = reactive({
   downloadVisible: false,
   items: [
     {
-      label: 'Save graph backup',
-      icon: PrimeIcons.CLONE,
-      disabled: isRunning,
-      command: () => graphStore.backupGraph()
-    },
-    {
       label: 'Restore graph backup',
       icon: PrimeIcons.HISTORY,
       disabled: isRunning,
       command: () => graphStore.restoreToBackup()
+    },
+    {
+      label: 'Save graph backup',
+      icon: PrimeIcons.CLONE,
+      disabled: isRunning,
+      command: () => graphStore.backupGraph()
     },
     {
       label: 'Download as image',

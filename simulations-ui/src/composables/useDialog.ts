@@ -9,12 +9,7 @@ export interface Emits {
   (e: 'update:modelValue', modelValue: boolean): void;
 }
 
-export function useDialog(
-  props: Props,
-  emit: Emits,
-  customOnShow: () => void = noop,
-  customOnHide: () => void = noop
-) {
+export function useDialog(props: Props, emit: Emits, customOnShow: () => void = noop, customOnHide: () => void = noop) {
   const { modelValue } = toRefs(props);
 
   const visible = ref(false);

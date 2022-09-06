@@ -2,7 +2,7 @@ import { acceptHMRUpdate, defineStore } from 'pinia';
 import { Optional } from '@/helpers/types';
 import { noop } from '@/helpers/utils';
 import { ChartName, StatisticName } from '@/composables/useChart';
-import { MAX_ANIMATION_ITERATIONS, MAX_CHART_ITERATIONS } from '@/helpers/defaults';
+import { MAX_CHART_ITERATIONS } from '@/helpers/defaults';
 
 interface Statistic {
   data: number[];
